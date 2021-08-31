@@ -1,0 +1,14 @@
+---
+environment_variables:
+  NEXTCLOUD_VERSION: "19.0.13"
+git:
+  branch: main
+triggers:
+  cron: "@daily"
+clean_workspace: true
+builders:
+  - docker
+docker_name: drive/nextcloud-custom
+docker_tags:
+  - "${NEXTCLOUD_VERSION}"
+docker_no_cache: true
