@@ -9,6 +9,9 @@ RUN ln -s /etc/apache2/mods-available/socache_shmcb.load /etc/apache2/mods-enabl
 RUN ln -s /etc/apache2/mods-available/ssl.conf /etc/apache2/mods-enabled/
 RUN ln -s /etc/apache2/mods-available/ssl.load /etc/apache2/mods-enabled/
 COPY --chown=root:root ./000-default.conf /etc/apache2/sites-available/
+COPY --chown=root:root ./crontab /var/spool/cron/crontabs/www-data
+COPY --chown=root:root ./crontab /var/spool/cron/crontabs/www-data
+COPY --chown=root:root ./cron.sh /cron.sh
 RUN wget https://download.nextcloud.com/server/releases/nextcloud-19.0.13.tar.bz2 -O /tmp/nextcloud.tar.bz2
 RUN cd /tmp && tar xfvj /tmp/nextcloud.tar.bz2
 RUN mkdir -p /var/www/html/data && touch /var/www/html/data/.ocdata
