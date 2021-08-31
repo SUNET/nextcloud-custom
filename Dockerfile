@@ -17,3 +17,4 @@ RUN mkdir -p /var/www/html/custom_apps
 RUN cp -a /tmp/nextcloud/* /var/www/html
 RUN chown -R www-data:root /var/www/html
 RUN usermod -a -G tty www-data
+
