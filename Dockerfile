@@ -1,6 +1,6 @@
 FROM ubuntu/apache2
 
-RUN apt-get update && apt-get install -y  \
+RUN apt-get update && apt-get upgrade -y && apt-get install -y  \
 	bzip2 \
 	libapache2-mod-php \
 	mariadb-client \
@@ -18,11 +18,11 @@ RUN apt-get update && apt-get install -y  \
 	php7.4-zip \
 	redis-tools \
 	ssl-cert \
-	tar \
 	vim \
 	wget
 RUN wget https://downloads.rclone.org/v1.56.0/rclone-v1.56.0-linux-amd64.deb \
-	&& dpkg -i ./rclone-v1.56.0-linux-amd64.deb && rm ./rclone-v1.56.0-linux-amd64.deb
+	&& dpkg -i ./rclone-v1.56.0-linux-amd64.deb \
+	&& rm ./rclone-v1.56.0-linux-amd64.deb && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /etc/apache2/mods-enabled/
 RUN ln -s /etc/apache2/mods-available/socache_shmcb.load /etc/apache2/mods-enabled/
 RUN ln -s /etc/apache2/mods-available/ssl.conf /etc/apache2/mods-enabled/
@@ -35,7 +35,7 @@ RUN cd /tmp && tar xfvj /tmp/nextcloud.tar.bz2
 RUN mkdir -p /var/www/html/data && touch /var/www/html/data/.ocdata
 RUN mkdir -p /var/www/html/config
 RUN mkdir -p /var/www/html/custom_apps
-RUN cp -a /tmp/nextcloud/* /var/www/html
+RUN cp -a /tmp/nextcloud/* /var/www/html && rm -rf /tmp/nextcloud* 
 RUN chown -R www-data:root /var/www/html
 RUN usermod -a -G tty www-data
 
