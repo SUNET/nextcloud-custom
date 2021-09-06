@@ -1,6 +1,7 @@
 FROM ubuntu/apache2
 
 RUN apt-get update && apt-get upgrade -y && apt-get install -y  \
+	busybox \
 	bzip2 \
 	libapache2-mod-php \
 	mariadb-client \
