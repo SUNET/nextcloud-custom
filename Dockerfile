@@ -45,6 +45,8 @@ RUN wget https://github.com/nextcloud/twofactor_totp/releases/download/v5.0.0/tw
 	&& cd /tmp && tar xfvz /tmp/twofactor_totp.tar.gz && mv /tmp/twofactor_totp /var/www/html/custom_apps 
 RUN wget https://github.com/nextcloud/twofactor_u2f/releases/download/v6.0.0/twofactor_u2f.tar.gz -O /tmp/twofactor_u2f.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/twofactor_u2f.tar.gz && mv /tmp/twofactor_u2f /var/www/html/custom_apps 
+RUN wget https://github.com/nextcloud/user_saml/releases/download/v3.2.3/user_saml-3.2.3.tar.gz -O /tmp/user_saml.tar.gz \
+	&& cd /tmp && tar xfvz /tmp/user_saml.tar.gz && mv /tmp/user_saml /var/www/html/custom_apps 
 RUN rm -rf /tmp/*.tar.* &&  chown -R www-data:root /var/www/html && chmod +x /var/www/html/occ
 RUN usermod -a -G tty www-data
 
