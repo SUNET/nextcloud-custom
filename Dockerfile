@@ -49,7 +49,4 @@ RUN wget https://github.com/nextcloud/user_saml/releases/download/v3.3.5/user_sa
 	&& cd /tmp && tar xfvz /tmp/user_saml.tar.gz && mv /tmp/user_saml /var/www/html/custom_apps 
 RUN rm -rf /tmp/*.tar.* &&  chown -R www-data:root /var/www/html && chmod +x /var/www/html/occ
 RUN usermod -a -G tty www-data
-USER www-data
-RUN cd /var/www/html && ./occ upgrade 
-RUN cd /var/www/html && ./occ app:enable --force globalsiteselector
 
