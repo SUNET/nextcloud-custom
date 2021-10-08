@@ -37,7 +37,8 @@ RUN wget https://download.nextcloud.com/server/releases/nextcloud-21.0.4.tar.bz2
 	&& mkdir /var/www/html/custom_apps && cp -a /tmp/nextcloud/* /var/www/html && rm -rf /tmp/nextcloud 
 RUN wget https://github.com/nextcloud/globalsiteselector/archive/refs/tags/v1.4.0.tar.gz -O /tmp/globalsiteselector.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/globalsiteselector.tar.gz \
-        && mv /tmp/globalsiteselector-1.4.0 /var/www/html/custom_apps/globalsiteselector
+        && mv /tmp/globalsiteselector-1.4.0 /var/www/html/custom_apps/globalsiteselector \
+	&& sed -i -e "s/Type::BIGINT/'bigint'" -e "s/Type::STRING/'string'" /var/www/html/custom_apps/globalsiteselector/lib/Migration/Version0110Date20180925143400.php
 RUN wget https://github.com/ONLYOFFICE/onlyoffice-nextcloud/releases/download/v7.1.2/onlyoffice.tar.gz -O /tmp/onlyoffice.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/onlyoffice.tar.gz && mv /tmp/onlyoffice /var/www/html/custom_apps 
 RUN wget https://github.com/nextcloud-releases/richdocuments/releases/download/v4.2.3/richdocuments.tar.gz -O /tmp/richdocuments.tar.gz \
