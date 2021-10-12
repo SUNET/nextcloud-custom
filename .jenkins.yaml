@@ -1,6 +1,6 @@
 ---
 environment_variables:
-  NEXTCLOUD_VERSION: "21.0.5.1"
+  NEXTCLOUD_VERSION: "21.0.5.1-1"
 git:
   branch: main
 triggers:
@@ -13,32 +13,3 @@ docker_tags:
   - "${NEXTCLOUD_VERSION}"
   - "latest"
 docker_no_cache: true
-extra_jobs:
-  - name: drive-nextcloud-19
-    environment_variables:
-      NEXTCLOUD_VERSION: "19.0.13.1"
-    git:
-      branch: nextcloud-19
-    triggers:
-      cron: "@daily"
-    clean_workspace: true
-    builders:
-      - docker
-    docker_name: drive/nextcloud-custom
-    docker_tags:
-      - "${NEXTCLOUD_VERSION}"
-    docker_no_cache: true
-  - name: drive-nextcloud-20
-    environment_variables:
-      NEXTCLOUD_VERSION: "20.0.12.1"
-    git:
-      branch: nextcloud-20
-    triggers:
-      cron: "@daily"
-    clean_workspace: true
-    builders:
-      - docker
-    docker_name: drive/nextcloud-custom
-    docker_tags:
-      - "${NEXTCLOUD_VERSION}"
-    docker_no_cache: true
