@@ -34,7 +34,8 @@ COPY --chown=root:root ./cron.sh /cron.sh
 RUN wget https://download.nextcloud.com/server/releases/nextcloud-21.0.5.tar.bz2 -O /tmp/nextcloud.tar.bz2 \
 	&& cd /tmp && tar xfvj /tmp/nextcloud.tar.bz2 \
 	&& mkdir -p /var/www/html/data && touch /var/www/html/data/.ocdata && mkdir /var/www/html/config \
-	&& mkdir /var/www/html/custom_apps && cp -a /tmp/nextcloud/* /var/www/html && rm -rf /tmp/nextcloud 
+	&& mkdir /var/www/html/custom_apps && cp -a /tmp/nextcloud/* /var/www/html && rm -rf /tmp/nextcloud \
+        && rm -f /var/www/html/apps/globalsiteselector 
 RUN wget https://github.com/nextcloud/globalsiteselector/archive/refs/tags/v2.0.0.tar.gz -O /tmp/globalsiteselector.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/globalsiteselector.tar.gz \
         && mv /tmp/globalsiteselector-2.0.0 /var/www/html/custom_apps/globalsiteselector 
