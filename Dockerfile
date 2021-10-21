@@ -25,6 +25,7 @@ RUN wget https://downloads.rclone.org/v1.56.0/rclone-v1.56.0-linux-amd64.deb \
 	&& dpkg -i ./rclone-v1.56.0-linux-amd64.deb \
 	&& rm ./rclone-v1.56.0-linux-amd64.deb && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /etc/apache2/mods-enabled/ \
+	&& ln -s /etc/apache2/mods-available/rewrite.load  /etc/apache2/mods-enabled/ \
 	&& ln -s /etc/apache2/mods-available/socache_shmcb.load /etc/apache2/mods-enabled/ \
 	&& ln -s /etc/apache2/mods-available/ssl.conf /etc/apache2/mods-enabled/ \
 	&& ln -s /etc/apache2/mods-available/ssl.load /etc/apache2/mods-enabled/
