@@ -8,15 +8,15 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y  \
 	php-apcu \
 	php-imagick \
 	php-redis \
-	php7.4-bcmath \
-	php7.4-curl \
-	php7.4-gd \
-	php7.4-gmp \
-	php7.4-intl \
-	php7.4-mbstring \
-	php7.4-mysql \
-	php7.4-xml \
-	php7.4-zip \
+	php8.0-bcmath \
+	php8.0-curl \
+	php8.0-gd \
+	php8.0-gmp \
+	php8.0-intl \
+	php8.0-mbstring \
+	php8.0-mysql \
+	php8.0-xml \
+	php8.0-zip \
 	redis-tools \
 	ssl-cert \
 	unzip \
