@@ -37,7 +37,7 @@ RUN wget https://download.nextcloud.com/.customers/server/21.0.5-c3b27686/nextcl
 	&& cd /tmp && unzip /tmp/nextcloud.zip \
 	&& mkdir -p /var/www/html/data && touch /var/www/html/data/.ocdata && mkdir /var/www/html/config \
 	&& mkdir /var/www/html/custom_apps && cp -a /tmp/nextcloud/* /var/www/html && rm -rf /tmp/nextcloud \
-        && rm -f /var/www/html/apps/globalsiteselector 
+        && rm -rf /var/www/html/apps/globalsiteselector 
 RUN wget https://github.com/nextcloud/globalsiteselector/archive/refs/tags/v2.0.0.tar.gz -O /tmp/globalsiteselector.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/globalsiteselector.tar.gz \
         && mv /tmp/globalsiteselector-2.0.0 /var/www/html/apps/globalsiteselector 
