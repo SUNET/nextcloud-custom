@@ -3,6 +3,7 @@ FROM ubuntu/apache2
 RUN apt-get update && apt-get upgrade -y && apt-get install -y  \
 	busybox \
 	bzip2 \
+        cron \
 	libapache2-mod-php \
 	mariadb-client \
 	php-apcu \
