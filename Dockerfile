@@ -34,7 +34,7 @@ RUN mkdir -p /etc/apache2/mods-enabled/ \
 COPY --chown=root:root ./000-default.conf /etc/apache2/sites-available/
 COPY --chown=root:root ./crontab /var/spool/cron/crontabs/www-data
 COPY --chown=root:root ./cron.sh /cron.sh
-RUN wget https://download.nextcloud.com/.customers/server/21.0.5-c3b27686/nextcloud-21.0.5-enterprise.zip -O /tmp/nextcloud.zip \
+RUN wget https://download.nextcloud.com/.customers/server/21.0.6-677dff24/nextcloud-21.0.6-enterprise.zip -O /tmp/nextcloud.zip \
 	&& cd /tmp && unzip /tmp/nextcloud.zip \
 	&& mkdir -p /var/www/html/data && touch /var/www/html/data/.ocdata && mkdir /var/www/html/config \
 	&& mkdir /var/www/html/custom_apps && cp -a /tmp/nextcloud/* /var/www/html && rm -rf /tmp/nextcloud \
