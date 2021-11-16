@@ -55,6 +55,8 @@ RUN wget https://github.com/nextcloud/user_saml/releases/download/v4.1.1/user_sa
 #COPY ./Session.php /var/www/html/lib/private/User/Session.php
 #RUN sed -i 's|$this->userSession->createSessionToken($this->request, $uid, $uid, null, 0);|$this->userSession->createSessionToken($this->request, $uid, $uid, null, 1);|' \
 #        /var/www/html/apps/globalsiteselector/lib/Controller/SlaveController.php
+COPY ./29161.diff /var/www/html/29161.diff
+RUN cd /var/www/html && patch -p1 --reverse < 29161.diff
 RUN rm -rf /tmp/*.tar.* &&  chown -R www-data:root /var/www/html && chmod +x /var/www/html/occ
 RUN usermod -a -G tty www-data
 
