@@ -6,7 +6,6 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y  \
         cron \
 	libapache2-mod-php \
 	mariadb-client \
-	patch \
 	php-apcu \
 	php-imagick \
 	php-redis \
@@ -53,11 +52,6 @@ RUN wget https://github.com/nextcloud-releases/twofactor_u2f/releases/download/v
 	&& cd /tmp && tar xfvz /tmp/twofactor_u2f.tar.gz && mv /tmp/twofactor_u2f /var/www/html/custom_apps 
 RUN wget https://github.com/nextcloud/user_saml/releases/download/v4.1.1/user_saml-4.1.1.tar.gz -O /tmp/user_saml.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/user_saml.tar.gz && mv /tmp/user_saml /var/www/html/custom_apps 
-#COPY ./Session.php /var/www/html/lib/private/User/Session.php
-#RUN sed -i 's|$this->userSession->createSessionToken($this->request, $uid, $uid, null, 0);|$this->userSession->createSessionToken($this->request, $uid, $uid, null, 1);|' \
-#        /var/www/html/apps/globalsiteselector/lib/Controller/SlaveController.php
-COPY ./29161.diff /var/www/html/29161.diff
-RUN cd /var/www/html && patch -p1 --reverse < 29161.diff
 RUN rm -rf /tmp/*.tar.* &&  chown -R www-data:root /var/www/html && chmod +x /var/www/html/occ
 RUN usermod -a -G tty www-data
 
