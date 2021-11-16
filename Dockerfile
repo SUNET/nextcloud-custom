@@ -6,6 +6,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y  \
         cron \
 	libapache2-mod-php \
 	mariadb-client \
+	patch \
 	php-apcu \
 	php-imagick \
 	php-redis \
