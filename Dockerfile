@@ -42,7 +42,7 @@ RUN wget https://download.nextcloud.com/.customers/server/21.0.6-677dff24/nextcl
 RUN wget https://github.com/nextcloud/globalsiteselector/archive/refs/tags/v2.0.0.tar.gz -O /tmp/globalsiteselector.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/globalsiteselector.tar.gz \
         && mv /tmp/globalsiteselector-2.0.0 /var/www/html/apps/globalsiteselector 
-RUN wget https://github.com/ONLYOFFICE/onlyoffice-nextcloud/releases/download/v7.1.2/onlyoffice.tar.gz -O /tmp/onlyoffice.tar.gz \
+RUN wget https://github.com/ONLYOFFICE/onlyoffice-nextcloud/releases/download/v7.2.0/onlyoffice.tar.gz -O /tmp/onlyoffice.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/onlyoffice.tar.gz && mv /tmp/onlyoffice /var/www/html/custom_apps 
 RUN wget https://github.com/nextcloud-releases/richdocuments/releases/download/v4.2.3/richdocuments.tar.gz -O /tmp/richdocuments.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/richdocuments.tar.gz && mv /tmp/richdocuments /var/www/html/custom_apps 
