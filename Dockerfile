@@ -52,6 +52,8 @@ RUN wget https://github.com/nextcloud-releases/twofactor_u2f/releases/download/v
 	&& cd /tmp && tar xfvz /tmp/twofactor_u2f.tar.gz && mv /tmp/twofactor_u2f /var/www/html/custom_apps 
 RUN wget https://github.com/nextcloud/user_saml/releases/download/v4.1.1/user_saml-4.1.1.tar.gz -O /tmp/user_saml.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/user_saml.tar.gz && mv /tmp/user_saml /var/www/html/custom_apps 
+RUN wget https://github.com/SUNET/drive-email-template/archive/refs/tags/0.0.1.tar.gz -O /tmp/drive-email-template.tar.gz \
+	&& cd /tmp && tar xfvz /tmp/drive-email-template.tar.gz && mv /tmp/drive-email-template-* /var/www/html/custom_apps/drive-email-template 
 RUN rm -rf /tmp/*.tar.* &&  chown -R www-data:root /var/www/html && chmod +x /var/www/html/occ
 RUN usermod -a -G tty www-data
 
