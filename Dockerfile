@@ -5,6 +5,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y  \
 	bzip2 \
         cron \
 	libapache2-mod-php \
+	libmagickcore-6.q16-6-extra \
 	mariadb-client \
 	php-apcu \
 	php-imagick \
@@ -37,11 +38,11 @@ COPY --chown=root:root ./cron.sh /cron.sh
 RUN wget https://download.nextcloud.com/.customers/server/21.0.6-677dff24/nextcloud-21.0.6-enterprise.zip -O /tmp/nextcloud.zip \
 	&& cd /tmp && unzip /tmp/nextcloud.zip \
 	&& mkdir -p /var/www/html/data && touch /var/www/html/data/.ocdata && mkdir /var/www/html/config \
-	&& mkdir /var/www/html/custom_apps && cp -a /tmp/nextcloud/* /var/www/html && rm -rf /tmp/nextcloud \
-        && rm -rf /var/www/html/apps/globalsiteselector 
+	&& mkdir /var/www/html/custom_apps && cp -a /tmp/nextcloud/* /var/www/html && cp -a /tmp/nextcloud/.[^.]* /var/www/html \
+	&& rm -rf /tmp/nextcloud && rm -rf /var/www/html/apps/globalsiteselector
 RUN wget https://github.com/SUNET/globalsiteselector/archive/refs/tags/v2.0.0-sunet.tar.gz -O /tmp/globalsiteselector.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/globalsiteselector.tar.gz \
-        && mv /tmp/globalsiteselector-* /var/www/html/apps/globalsiteselector 
+        && mv /tmp/globalsiteselector-* /var/www/html/apps/globalsiteselector
 RUN wget https://github.com/ONLYOFFICE/onlyoffice-nextcloud/releases/download/v7.2.0/onlyoffice.tar.gz -O /tmp/onlyoffice.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/onlyoffice.tar.gz && mv /tmp/onlyoffice /var/www/html/custom_apps 
 RUN wget https://github.com/nextcloud-releases/richdocuments/releases/download/v4.2.3/richdocuments.tar.gz -O /tmp/richdocuments.tar.gz \
