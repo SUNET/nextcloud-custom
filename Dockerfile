@@ -59,6 +59,10 @@ RUN wget https://github.com/SUNET/loginpagebutton/archive/refs/tags/v.1.0.0.tar.
 	&& cd /tmp && tar xfvz /tmp/loginpagebutton.tar.gz && mv /tmp/loginpagebutton-* /var/www/html/custom_apps/loginpagebutton
 RUN wget https://github.com/ChristophWurst/twofactor_admin/releases/download/v3.2.0/twofactor_admin.tar.gz -O /tmp/twofactor_admin.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/twofactor_admin.tar.gz && mv /tmp/twofactor_admin /var/www/html/custom_apps/
+RUN wget https://github.com/icewind1991/files_markdown/releases/download/v2.3.5/files_markdown.tar.gz -O /tmp/files_markdown.tar.gz \
+	&& cd /tmp && tar xfvz /tmp/files_markdown.tar.gz && mv /tmp/files_markdown /var/www/html/custom_apps/
+RUN wget https://github.com/nextcloud-releases/files_texteditor/releases/download/v2.14.0/files_texteditor.tar.gz -O /tmp/files_texteditor.tar.gz \
+	&& cd /tmp && tar xfvz /tmp/files_texteditor.tar.gz && mv /tmp/files_texteditor /var/www/html/custom_apps/
 RUN rm -rf /tmp/*.tar.* &&  chown -R www-data:root /var/www/html && chmod +x /var/www/html/occ
 RUN usermod -a -G tty www-data
 
