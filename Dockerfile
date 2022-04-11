@@ -45,7 +45,7 @@ RUN wget https://github.com/SUNET/globalsiteselector/archive/refs/tags/v2.0.0-su
         && mv /tmp/globalsiteselector-* /var/www/html/apps/globalsiteselector
 RUN wget https://github.com/ONLYOFFICE/onlyoffice-nextcloud/releases/download/v7.2.0/onlyoffice.tar.gz -O /tmp/onlyoffice.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/onlyoffice.tar.gz && mv /tmp/onlyoffice /var/www/html/custom_apps 
-RUN wget https://github.com/nextcloud-releases/richdocuments/releases/download/v4.2.3/richdocuments.tar.gz -O /tmp/richdocuments.tar.gz \
+RUN wget https://github.com/nextcloud-releases/richdocuments/releases/download/v4.2.4/richdocuments.tar.gz -O /tmp/richdocuments.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/richdocuments.tar.gz && mv /tmp/richdocuments /var/www/html/custom_apps 
 RUN wget https://github.com/nextcloud-releases/twofactor_totp/releases/download/v6.1.0/twofactor_totp.tar.gz -O /tmp/twofactor_totp.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/twofactor_totp.tar.gz && mv /tmp/twofactor_totp /var/www/html/custom_apps 
