@@ -1,8 +1,13 @@
 diff --git a/lib/AppInfo/Application.php b/lib/AppInfo/Application.php
-index 8163d6ad..07e668dc 100644
+index 8163d6ad..b8e9b40f 100644
 --- a/lib/AppInfo/Application.php
 +++ b/lib/AppInfo/Application.php
-@@ -230,6 +230,8 @@ class Application extends App implements IBootstrap {
+@@ -226,10 +226,13 @@ class Application extends App implements IBootstrap {
+ 			$globalScale = $container->query(\OCP\GlobalScale\IConfig::class);
+ 			if ($globalScale->isGlobalScaleEnabled()) {
+ 				$trustedList = \OC::$server->getConfig()->getSystemValue('gs.trustedHosts', []);
++				$policy->allowEvalScript(true);
+ 				foreach ($trustedList as $server) {
  					$policy->addAllowedFrameDomain($server);
  					$this->addTrustedRemote($policy, $server);
  					$policy->addAllowedFormActionDomain($server);
