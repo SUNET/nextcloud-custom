@@ -49,7 +49,8 @@ RUN wget https://github.com/ONLYOFFICE/onlyoffice-nextcloud/releases/download/v7
 RUN wget https://github.com/nextcloud-releases/richdocuments/releases/download/v4.2.4/richdocuments.tar.gz -O /tmp/richdocuments.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/richdocuments.tar.gz && mv /tmp/richdocuments /var/www/html/custom_apps 
 COPY --chown=root:root ./richdocuments.patch /var/www/html/custom_apps/richdocuments
-RUN cd /var/www/html/custom_apps/richdocuments && patch -p 1 < ./richdocuments.patch
+COPY --chown=root:root ./script-src.patch /var/www/html/custom_apps/richdocuments
+RUN cd /var/www/html/custom_apps/richdocuments && patch -p 1 < ./richdocuments.patch && patch -p 1 < ./script-src.patch
 RUN wget https://github.com/nextcloud-releases/twofactor_totp/releases/download/v6.1.0/twofactor_totp.tar.gz -O /tmp/twofactor_totp.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/twofactor_totp.tar.gz && mv /tmp/twofactor_totp /var/www/html/custom_apps 
 RUN wget https://github.com/nextcloud-releases/twofactor_u2f/releases/download/v6.2.0/twofactor_u2f.tar.gz -O /tmp/twofactor_u2f.tar.gz \
