@@ -1,12 +1,13 @@
 diff --git a/lib/AppInfo/Application.php b/lib/AppInfo/Application.php
-index 8163d6ad..cc956bff 100644
+index 8163d6ad..07e668dc 100644
 --- a/lib/AppInfo/Application.php
 +++ b/lib/AppInfo/Application.php
-@@ -230,6 +230,7 @@ class Application extends App implements IBootstrap {
+@@ -230,6 +230,8 @@ class Application extends App implements IBootstrap {
  					$policy->addAllowedFrameDomain($server);
  					$this->addTrustedRemote($policy, $server);
  					$policy->addAllowedFormActionDomain($server);
 +					$policy->addAllowedScriptDomain($server);
++					$policy->addAllowedFrameAncestorDomain($server);
  				}
  			}
  			$remoteAccess = $container->getServer()->getRequest()->getParam('richdocuments_remote_access');
