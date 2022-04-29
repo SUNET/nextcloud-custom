@@ -11,15 +11,15 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y  \
 	php-apcu \
 	php-imagick \
 	php-redis \
-	php8.0-bcmath \
-	php8.0-curl \
-	php8.0-gd \
-	php8.0-gmp \
-	php8.0-intl \
-	php8.0-mbstring \
-	php8.0-mysql \
-	php8.0-xml \
-	php8.0-zip \
+	php8.1-bcmath \
+	php8.1-curl \
+	php8.1-gd \
+	php8.1-gmp \
+	php8.1-intl \
+	php8.1-mbstring \
+	php8.1-mysql \
+	php8.1-xml \
+	php8.1-zip \
 	redis-tools \
 	ssl-cert \
 	unzip \
@@ -50,7 +50,9 @@ RUN wget https://github.com/nextcloud-releases/richdocuments/releases/download/v
 	&& cd /tmp && tar xfvz /tmp/richdocuments.tar.gz && mv /tmp/richdocuments /var/www/html/custom_apps 
 COPY --chown=root:root ./richdocuments.patch /var/www/html/custom_apps/richdocuments
 COPY --chown=root:root ./script-src.patch /var/www/html/custom_apps/richdocuments
+COPY --chown=root:root ./timeout.patch /var/www/html
 RUN cd /var/www/html/custom_apps/richdocuments && patch -p 1 < ./richdocuments.patch && patch -p 1 < ./script-src.patch
+RUN cd /var/www/html && patch -p 1 < ./timeout.patch
 RUN wget https://github.com/nextcloud-releases/twofactor_totp/releases/download/v6.1.0/twofactor_totp.tar.gz -O /tmp/twofactor_totp.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/twofactor_totp.tar.gz && mv /tmp/twofactor_totp /var/www/html/custom_apps 
 RUN wget https://github.com/nextcloud-releases/twofactor_u2f/releases/download/v6.2.0/twofactor_u2f.tar.gz -O /tmp/twofactor_u2f.tar.gz \
