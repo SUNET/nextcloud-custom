@@ -1,6 +1,8 @@
 FROM ubuntu:impish
 
-RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get update && apt-get upgrade -y && apt-get install -y  \
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=Etc/UTC
+RUN apt-get update && apt-get upgrade -y && apt-get install -y  \
 	apache2 \
 	busybox \
 	bzip2 \
