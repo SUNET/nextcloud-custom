@@ -1,4 +1,4 @@
-FROM ubuntu:impish
+FROM debian:bullseye-slim
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Etc/UTC
