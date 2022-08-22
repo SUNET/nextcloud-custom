@@ -28,9 +28,9 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y  \
 	unzip \
 	vim \
 	wget
-RUN wget https://downloads.rclone.org/v1.57.0/rclone-v1.57.0-linux-amd64.deb \
-	&& dpkg -i ./rclone-v1.57.0-linux-amd64.deb \
-	&& rm ./rclone-v1.57.0-linux-amd64.deb && rm -rf /var/lib/apt/lists/*
+RUN wget https://downloads.rclone.org/v1.59.1/rclone-v1.59.1-linux-amd64.deb \
+	&& dpkg -i ./rclone-v1.59.1-linux-amd64.deb \
+	&& rm ./rclone-v1.59.1-linux-amd64.deb && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /etc/apache2/mods-enabled/ \
 	&& ln -s /etc/apache2/mods-available/rewrite.load  /etc/apache2/mods-enabled/ \
 	&& ln -s /etc/apache2/mods-available/socache_shmcb.load /etc/apache2/mods-enabled/ \
@@ -39,7 +39,7 @@ RUN mkdir -p /etc/apache2/mods-enabled/ \
 COPY --chown=root:root ./000-default.conf /etc/apache2/sites-available/
 COPY --chown=root:root ./crontab /var/spool/cron/crontabs/www-data
 COPY --chown=root:root ./cron.sh /cron.sh
-RUN wget https://download.nextcloud.com/.customers/server/22.2.7-9ae9152b/nextcloud-22.2.7-enterprise.zip -O /tmp/nextcloud.zip \
+RUN wget https://download.nextcloud.com/.customers/server/23.0.7-9f401e5f/nextcloud-23.0.7-enterprise.zip -O /tmp/nextcloud.zip \
 	&& cd /tmp && unzip /tmp/nextcloud.zip \
 	&& mkdir -p /var/www/html/data && touch /var/www/html/data/.ocdata && mkdir /var/www/html/config \
 	&& mkdir /var/www/html/custom_apps && cp -a /tmp/nextcloud/* /var/www/html && cp -a /tmp/nextcloud/.[^.]* /var/www/html \
@@ -49,13 +49,15 @@ RUN wget https://github.com/SUNET/globalsiteselector/archive/refs/tags/v2.0.0-su
         && mv /tmp/globalsiteselector-* /var/www/html/apps/globalsiteselector
 COPY --chown=root:root ./30687.diff /var/www/html/30687.diff
 RUN cd /var/www/html && patch -p1 -R < 30687.diff
-RUN wget https://cloud.nextcloud.com/s/87GRF98pYpdqkKW/download/richdocuments-4.2.7-2247.tar.gz -O /tmp/richdocuments.tar.gz \
+RUN wget https://github.com/nextcloud-releases/richdocuments/releases/download/v5.0.7/richdocuments-v5.0.7.tar.gz -O /tmp/richdocuments.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/richdocuments.tar.gz && mv /tmp/richdocuments /var/www/html/custom_apps 
-RUN wget https://github.com/nextcloud-releases/twofactor_totp/releases/download/v6.3.0/twofactor_totp.tar.gz -O /tmp/twofactor_totp.tar.gz \
-	&& cd /tmp && tar xfvz /tmp/twofactor_totp.tar.gz && mv /tmp/twofactor_totp /var/www/html/custom_apps 
-RUN wget https://github.com/nextcloud-releases/twofactor_u2f/releases/download/v6.3.0/twofactor_u2f.tar.gz -O /tmp/twofactor_u2f.tar.gz \
-	&& cd /tmp && tar xfvz /tmp/twofactor_u2f.tar.gz && mv /tmp/twofactor_u2f /var/www/html/custom_apps 
-RUN wget https://github.com/nextcloud-releases/user_saml/releases/download/v5.0.0/user_saml-v5.0.0.tar.gz -O /tmp/user_saml.tar.gz \
+RUN wget https://github.com/nextcloud-releases/twofactor_totp/releases/download/v6.4.0/twofactor_totp-v6.4.0.tar.gz -O /tmp/twofactor_totp.tar.gz \
+	&& cd /tmp && tar xfvz /tmp/twofactor_totp.tar.gz && mv /tmp/twofactor_totp /var/www/html/custom_apps
+# https://github.com/nextcloud/twofactor_webauthn#migration-from-two-factor-u2f
+RUN wget https://github.com/nextcloud-releases/twofactor_webauthn/releases/download/v0.3.1/twofactor_webauthn-v0.3.1.tar.gz \
+        -O /tmp/twofactor_webauthn.tar.gz \
+	&& cd /tmp && tar xfvz /tmp/twofactor_webauthn.tar.gz && mv /tmp/twofactor_webauthn /var/www/html/custom_apps
+RUN wget https://github.com/nextcloud-releases/user_saml/releases/download/v5.0.2/user_saml-v5.0.2.tar.gz -O /tmp/user_saml.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/user_saml.tar.gz && mv /tmp/user_saml /var/www/html/custom_apps 
 RUN wget https://github.com/SUNET/drive-email-template/archive/refs/tags/1.0.0.tar.gz -O /tmp/drive-email-template.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/drive-email-template.tar.gz && mv /tmp/drive-email-template-* /var/www/html/custom_apps/drive_email_template
