@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y  \
 	busybox \
 	bzip2 \
         cron \
-	libapache2-mod-php \
+	libapache2-mod-php8.0 \
 	libmagickcore-6.q16-6-extra \
 	mariadb-client \
 	php-apcu \
