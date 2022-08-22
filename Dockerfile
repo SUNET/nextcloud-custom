@@ -1,8 +1,11 @@
-FROM debian:bookworm-slim
+FROM debian:bullseye-slim
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Etc/UTC
-RUN apt-get update && apt-get upgrade -y && apt-get install -y  \
+RUN apt-get update && apt-get upgrade -y && apt-get install wget 
+RUN bash -c 'echo "deb https://packages.sury.org/php/ bullseye main" > /etc/apt/sources.list.d/sury-php.list'
+RUN bash -c 'wget -qO - https://packages.sury.org/php/apt.gpg | apt-key add -'
+RUN apt-get update && apt-get install -y  \
 	apache2 \
 	busybox \
 	bzip2 \
@@ -10,24 +13,22 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y  \
 	libapache2-mod-php \
 	libmagickcore-6.q16-6-extra \
 	mariadb-client \
-	patch \
 	php-apcu \
 	php-imagick \
 	php-redis \
-        php8.1-bcmath \
-        php8.1-curl \
-        php8.1-gd \
-        php8.1-gmp \
-        php8.1-intl \
-        php8.1-mbstring \
-        php8.1-mysql \
-        php8.1-xml \
-        php8.1-zip \
+        php8.0-bcmath \
+        php8.0-curl \
+        php8.0-gd \
+        php8.0-gmp \
+        php8.0-intl \
+        php8.0-mbstring \
+        php8.0-mysql \
+        php8.0-xml \
+        php8.0-zip \
 	redis-tools \
 	ssl-cert \
 	unzip \
-	vim \
-	wget
+	vim 
 RUN wget https://downloads.rclone.org/v1.59.1/rclone-v1.59.1-linux-amd64.deb \
 	&& dpkg -i ./rclone-v1.59.1-linux-amd64.deb \
 	&& rm ./rclone-v1.59.1-linux-amd64.deb && rm -rf /var/lib/apt/lists/*
