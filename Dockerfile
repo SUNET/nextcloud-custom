@@ -47,8 +47,6 @@ RUN wget https://download.nextcloud.com/.customers/server/23.0.7-9f401e5f/nextcl
 RUN wget https://github.com/SUNET/globalsiteselector/archive/refs/tags/v2.0.0-sunet1.tar.gz -O /tmp/globalsiteselector.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/globalsiteselector.tar.gz \
         && mv /tmp/globalsiteselector-* /var/www/html/apps/globalsiteselector
-COPY --chown=root:root ./30687.diff /var/www/html/30687.diff
-RUN cd /var/www/html && patch -p1 -R < 30687.diff
 RUN wget https://github.com/nextcloud-releases/richdocuments/releases/download/v5.0.7/richdocuments-v5.0.7.tar.gz -O /tmp/richdocuments.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/richdocuments.tar.gz && mv /tmp/richdocuments /var/www/html/custom_apps 
 RUN wget https://github.com/nextcloud-releases/twofactor_totp/releases/download/v6.4.0/twofactor_totp-v6.4.0.tar.gz -O /tmp/twofactor_totp.tar.gz \
