@@ -40,7 +40,7 @@ RUN mkdir -p /etc/apache2/mods-enabled/ \
 COPY --chown=root:root ./000-default.conf /etc/apache2/sites-available/
 COPY --chown=root:root ./crontab /var/spool/cron/crontabs/www-data
 COPY --chown=root:root ./cron.sh /cron.sh
-RUN wget https://download.nextcloud.com/.customers/server/23.0.7-9f401e5f/nextcloud-23.0.7-enterprise.zip -O /tmp/nextcloud.zip \
+RUN wget https://download.nextcloud.com/.customers/server/23.0.8-a3c33df1/nextcloud-23.0.8-enterprise.zip -O /tmp/nextcloud.zip \
 	&& cd /tmp && unzip /tmp/nextcloud.zip \
 	&& mkdir -p /var/www/html/data && touch /var/www/html/data/.ocdata && mkdir /var/www/html/config \
 	&& mkdir /var/www/html/custom_apps && cp -a /tmp/nextcloud/* /var/www/html && cp -a /tmp/nextcloud/.[^.]* /var/www/html \
