@@ -64,6 +64,8 @@ RUN wget https://github.com/SUNET/loginpagebutton/archive/refs/tags/v.1.0.0.tar.
 	&& cd /tmp && tar xfvz /tmp/loginpagebutton.tar.gz && mv /tmp/loginpagebutton-* /var/www/html/custom_apps/loginpagebutton
 RUN wget https://github.com/ChristophWurst/twofactor_admin/releases/download/v3.2.0/twofactor_admin.tar.gz -O /tmp/twofactor_admin.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/twofactor_admin.tar.gz && mv /tmp/twofactor_admin /var/www/html/custom_apps/
+RUN wget https://github.com/pondersource/nextcloud-mfa-awareness/archive/ecde2da7ab9f8ada5ca7e5976d99080e5e2b33ec.tar.gz -O /tmp/nextcloud-mfa-awareness.tar.gz \
+	&& cd /tmp && tar xfvz /tmp/nextcloud-mfa-awareness.tar.gz && mv /tmp/nextcloud-mfa-awareness-ecde2da7ab9f8ada5ca7e5976d99080e5e2b33ec/mfachecker  /var/www/html/custom_apps/
 RUN rm -rf /tmp/*.tar.* &&  chown -R www-data:root /var/www/html && chmod +x /var/www/html/occ
 RUN usermod -a -G tty www-data
 
