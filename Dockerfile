@@ -7,6 +7,7 @@ RUN bash -c 'echo "deb https://packages.sury.org/php/ bullseye main" > /etc/apt/
 RUN bash -c 'wget -qO - https://packages.sury.org/php/apt.gpg | apt-key add -'
 RUN apt-get update && apt-get install -y  \
 	apache2 \
+	build-essential \
 	busybox \
 	bzip2 \
         cron \
@@ -65,7 +66,7 @@ RUN wget https://github.com/SUNET/loginpagebutton/archive/refs/tags/v.1.0.0.tar.
 RUN wget https://github.com/ChristophWurst/twofactor_admin/releases/download/v3.2.0/twofactor_admin.tar.gz -O /tmp/twofactor_admin.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/twofactor_admin.tar.gz && mv /tmp/twofactor_admin /var/www/html/custom_apps/
 RUN wget https://github.com/pondersource/nextcloud-mfa-awareness/archive/ecde2da7ab9f8ada5ca7e5976d99080e5e2b33ec.tar.gz -O /tmp/nextcloud-mfa-awareness.tar.gz \
-	&& cd /tmp && tar xfvz /tmp/nextcloud-mfa-awareness.tar.gz && mv /tmp/nextcloud-mfa-awareness-ecde2da7ab9f8ada5ca7e5976d99080e5e2b33ec/mfachecker  /var/www/html/custom_apps/
+	&& cd /tmp && tar xfvz /tmp/nextcloud-mfa-awareness.tar.gz && mv /tmp/nextcloud-mfa-awareness-ecde2da7ab9f8ada5ca7e5976d99080e5e2b33ec/mfachecker  /var/www/html/custom_apps/ && cd /var/www/html/custom_apps/mfachecker && make build && apt remove build-essential
 RUN rm -rf /tmp/*.tar.* &&  chown -R www-data:root /var/www/html && chmod +x /var/www/html/occ
 RUN usermod -a -G tty www-data
 
