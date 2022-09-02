@@ -68,7 +68,8 @@ RUN wget https://github.com/ChristophWurst/twofactor_admin/releases/download/v3.
 	&& cd /tmp && tar xfvz /tmp/twofactor_admin.tar.gz && mv /tmp/twofactor_admin /var/www/html/custom_apps/
 RUN wget https://github.com/pondersource/nextcloud-mfa-awareness/archive/ecde2da7ab9f8ada5ca7e5976d99080e5e2b33ec.tar.gz -O /tmp/nextcloud-mfa-awareness.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/nextcloud-mfa-awareness.tar.gz && mv /tmp/nextcloud-mfa-awareness-ecde2da7ab9f8ada5ca7e5976d99080e5e2b33ec/mfachecker  /var/www/html/custom_apps/
-RUN cd /var/www/html/custom_apps/mfachecker && sed -i 's/composer.phar install --prefer-dist/composer.phar install --prefer-dist --no-dev/' Makefile && make build
+RUN cd /var/www/html/custom_apps/mfachecker && sed -i 's/composer.phar install --prefer-dist/composer.phar install --prefer-dist --no-dev/' Makefile \
+        && sed -i '/phpunit/d' composer.json && make build
 RUN apt remove -y build-essential curl && apt autoremove -y
 RUN rm -rf /tmp/*.tar.* &&  chown -R www-data:root /var/www/html && chmod +x /var/www/html/occ
 RUN usermod -a -G tty www-data
