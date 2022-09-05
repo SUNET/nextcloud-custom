@@ -2,6 +2,7 @@ FROM debian:bullseye-slim
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Etc/UTC
+RUN apt-get update && apt-get upgrade -y && apt-get install -y wget gnupg2
 RUN bash -c 'echo "deb https://packages.sury.org/php/ bullseye main" > /etc/apt/sources.list.d/sury-php.list'
 RUN bash -c 'wget -qO - https://packages.sury.org/php/apt.gpg | apt-key add -'
 RUN apt-get update && apt-get upgrade -y && apt-get install -y  \
@@ -28,8 +29,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y  \
 	redis-tools \
 	ssl-cert \
 	unzip \
-	vim \
-	wget
+	vim
 RUN wget https://downloads.rclone.org/v1.57.0/rclone-v1.57.0-linux-amd64.deb \
 	&& dpkg -i ./rclone-v1.57.0-linux-amd64.deb \
 	&& rm ./rclone-v1.57.0-linux-amd64.deb && rm -rf /var/lib/apt/lists/*
