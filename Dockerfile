@@ -14,9 +14,9 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y  \
 	libmagickcore-6.q16-6-extra \
 	mariadb-client \
 	patch \
-	php-apcu \
-	php-imagick \
-	php-redis \
+	php8.0-apcu \
+	php8.0-imagick \
+	php8.0-redis \
         php8.0-bcmath \
         php8.0-curl \
         php8.0-gd \
