@@ -40,8 +40,6 @@ RUN mkdir -p /etc/apache2/mods-enabled/ \
 COPY --chown=root:root ./000-default.conf /etc/apache2/sites-available/
 COPY --chown=root:root ./crontab /var/spool/cron/crontabs/www-data
 COPY --chown=root:root ./cron.sh /cron.sh
-COPY --chown=root:root ./nextcloud-rds.tar.gz /tmp
-RUN cd /tmp && tar xfv nextcloud-rds.tar.gz && mv rds/ /var/www/html/custom_apps
 RUN wget https://download.nextcloud.com/.customers/server/23.0.8-a3c33df1/nextcloud-23.0.8-enterprise.zip -O /tmp/nextcloud.zip \
 	&& cd /tmp && unzip /tmp/nextcloud.zip \
 	&& mkdir -p /var/www/html/data && touch /var/www/html/data/.ocdata && mkdir /var/www/html/config \
@@ -66,6 +64,8 @@ RUN wget https://github.com/SUNET/loginpagebutton/archive/refs/tags/v.1.0.0.tar.
 	&& cd /tmp && tar xfvz /tmp/loginpagebutton.tar.gz && mv /tmp/loginpagebutton-* /var/www/html/custom_apps/loginpagebutton
 RUN wget https://github.com/ChristophWurst/twofactor_admin/releases/download/v3.2.0/twofactor_admin.tar.gz -O /tmp/twofactor_admin.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/twofactor_admin.tar.gz && mv /tmp/twofactor_admin /var/www/html/custom_apps/
+COPY --chown=root:root ./nextcloud-rds.tar.gz /tmp
+RUN cd /tmp && tar xfv nextcloud-rds.tar.gz && mv rds/ /var/www/html/custom_apps
 RUN rm -rf /tmp/*.tar.* &&  chown -R www-data:root /var/www/html && chmod +x /var/www/html/occ
 RUN usermod -a -G tty www-data
 
