@@ -16,15 +16,15 @@ RUN apt-get update && apt-get install -y  \
 	php8.0-apcu \
 	php8.0-imagick \
 	php8.0-redis \
-        php8.0-bcmath \
-        php8.0-curl \
-        php8.0-gd \
-        php8.0-gmp \
-        php8.0-intl \
-        php8.0-mbstring \
-        php8.0-mysql \
-        php8.0-xml \
-        php8.0-zip \
+  php8.0-bcmath \
+  php8.0-curl \
+  php8.0-gd \
+  php8.0-gmp \
+  php8.0-intl \
+  php8.0-mbstring \
+  php8.0-mysql \
+  php8.0-xml \
+  php8.0-zip \
 	redis-tools \
 	ssl-cert \
 	unzip \
@@ -40,6 +40,8 @@ RUN mkdir -p /etc/apache2/mods-enabled/ \
 COPY --chown=root:root ./000-default.conf /etc/apache2/sites-available/
 COPY --chown=root:root ./crontab /var/spool/cron/crontabs/www-data
 COPY --chown=root:root ./cron.sh /cron.sh
+COPY --chown=root:root ./nextcloud-rds.tar.gz /tmp
+RUN cd /tmp && tar xfv nextcloud-rds.tar.gz && mv rds/ /var/www/html/custom_apps
 RUN wget https://download.nextcloud.com/.customers/server/23.0.8-a3c33df1/nextcloud-23.0.8-enterprise.zip -O /tmp/nextcloud.zip \
 	&& cd /tmp && unzip /tmp/nextcloud.zip \
 	&& mkdir -p /var/www/html/data && touch /var/www/html/data/.ocdata && mkdir /var/www/html/config \
