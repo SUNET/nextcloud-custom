@@ -40,12 +40,12 @@ RUN mkdir -p /etc/apache2/mods-enabled/ \
 COPY --chown=root:root ./000-default.conf /etc/apache2/sites-available/
 COPY --chown=root:root ./crontab /var/spool/cron/crontabs/www-data
 COPY --chown=root:root ./cron.sh /cron.sh
-RUN wget https://download.nextcloud.com/.customers/server/23.0.8-a3c33df1/nextcloud-23.0.8-enterprise.zip -O /tmp/nextcloud.zip \
+RUN wget https://download.nextcloud.com/.customers/server/23.0.11-533c249c/nextcloud-23.0.11-enterprise.zip -O /tmp/nextcloud.zip \
 	&& cd /tmp && unzip /tmp/nextcloud.zip \
 	&& mkdir -p /var/www/html/data && touch /var/www/html/data/.ocdata && mkdir /var/www/html/config \
 	&& mkdir /var/www/html/custom_apps && cp -a /tmp/nextcloud/* /var/www/html && cp -a /tmp/nextcloud/.[^.]* /var/www/html \
 	&& rm -rf /tmp/nextcloud && rm -rf /var/www/html/apps/globalsiteselector
-RUN wget https://github.com/SUNET/globalsiteselector/archive/refs/tags/v2.0.0-sunet1.tar.gz -O /tmp/globalsiteselector.tar.gz \
+RUN wget https://github.com/nextcloud/globalsiteselector/archive/refs/tags/v2.1.1.tar.gz -O /tmp/globalsiteselector.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/globalsiteselector.tar.gz \
         && mv /tmp/globalsiteselector-* /var/www/html/apps/globalsiteselector
 RUN wget https://github.com/nextcloud-releases/richdocuments/releases/download/v5.0.7/richdocuments-v5.0.7.tar.gz -O /tmp/richdocuments.tar.gz \
