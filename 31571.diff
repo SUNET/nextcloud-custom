@@ -1,0 +1,334 @@
+diff --git a/apps/files_sharing/lib/Controller/ShareAPIController.php b/apps/files_sharing/lib/Controller/ShareAPIController.php
+index c04414851326..31f784984dff 100644
+--- a/apps/files_sharing/lib/Controller/ShareAPIController.php
++++ b/apps/files_sharing/lib/Controller/ShareAPIController.php
+@@ -113,6 +113,8 @@ class ShareAPIController extends OCSController {
+ 	/** @var IPreview */
+ 	private $previewManager;
+ 
++	private $dynamicShareTypes;
++
+ 	/**
+ 	 * Share20OCS constructor.
+ 	 *
+@@ -161,6 +163,33 @@ public function __construct(
+ 		$this->serverContainer = $serverContainer;
+ 		$this->userStatusManager = $userStatusManager;
+ 		$this->previewManager = $previewManager;
++		$this->dynamicShareTypes = [];
++		// FIXME: Move this line into the sciencemesh app:
++		$this->registerHelper(IShare::TYPE_SCIENCEMESH, 'sciencemesh', '\OCA\ScienceMesh\ShareProvider\ShareAPIHelper');
++	}
++
++	public function registerHelper($shareType, $identifier, $helperClassName) {
++		$this->dynamicShareTypes[$shareType] = [
++			"identifier" => $identifier,
++			"helperClass" => $helperClassName
++		];
++	}
++
++	private function haveHelperFor($shareType) {
++		return isset($this->dynamicShareTypes[$shareType]);
++	}
++
++	private function getIdentifierFor($shareType) {
++		return $this->dynamicShareTypes[$shareType]["identifier"];
++	}
++
++	private function getHelperFor($shareType) {
++		$identifier = $this->getIdentifierFor($shareType);
++		if (!$this->appManager->isEnabledForUser($identifier)) {
++			throw new QueryException();
++		}
++
++		return $this->serverContainer->get($this->dynamicShareTypes[$shareType]["helperClass"]);
+ 	}
+ 
+ 	/**
+@@ -318,6 +347,14 @@ protected function formatShare(IShare $share, Node $recipientNode = null): array
+ 				$result = array_merge($result, $this->getDeckShareHelper()->formatShare($share));
+ 			} catch (QueryException $e) {
+ 			}
++		} elseif ($this->haveHelperFor($share->getShareType())) {
++			$result['share_with'] = $share->getSharedWith();
++			$result['share_with_displayname'] = '';
++
++			try {
++				$result = array_merge($result, $this->getHelperFor($share->getShareType())->formatShare($share));
++			} catch (QueryException $e) {
++			}
+ 		}
+ 
+ 
+@@ -663,6 +700,12 @@ public function createShare(
+ 			} catch (QueryException $e) {
+ 				throw new OCSForbiddenException($this->l->t('Sharing %s failed because the back end does not support room shares', [$node->getPath()]));
+ 			}
++		} elseif ($this->haveHelperFor($shareType)) {
++			try {
++				$this->getHelperFor($shareType)->createShare($share, $shareWith, $permissions, $expireDate);
++			} catch (QueryException $e) {
++				throw new OCSForbiddenException($this->l->t('Sharing %s failed because the back end does not support this type of shares', [$node->getPath()]));
++			}
+ 		} else {
+ 			throw new OCSBadRequestException($this->l->t('Unknown share type'));
+ 		}
+@@ -1568,6 +1611,17 @@ private function getShareById(string $id): IShare {
+ 			// Do nothing, just try the other share type
+ 		}
+ 
++		foreach ($this->dynamicShareTypes as $shareType => $details) {
++			try {
++				if ($this->shareManager->shareProviderExists($shareType)) {
++					$share = $this->shareManager->getShareById($details["identifier"] . ":" . $id, $this->currentUser);
++					return $share;
++				}
++			} catch (ShareNotFound $e) {
++				// Do nothing, just try the other share type
++			}
++		}
++
+ 		if (!$this->shareManager->outgoingServer2ServerSharesAllowed()) {
+ 			throw new ShareNotFound();
+ 		}
+@@ -1631,14 +1685,7 @@ private function getDeckShareHelper() {
+ 		return $this->serverContainer->get('\OCA\Deck\Sharing\ShareAPIHelper');
+ 	}
+ 
+-	/**
+-	 * @param string $viewer
+-	 * @param Node $node
+-	 * @param bool $reShares
+-	 *
+-	 * @return IShare[]
+-	 */
+-	private function getSharesFromNode(string $viewer, $node, bool $reShares): array {
++	private function getProvidersExceptOutgoing() {
+ 		$providers = [
+ 			IShare::TYPE_USER,
+ 			IShare::TYPE_GROUP,
+@@ -1648,6 +1695,23 @@ private function getSharesFromNode(string $viewer, $node, bool $reShares): array
+ 			IShare::TYPE_ROOM,
+ 			IShare::TYPE_DECK
+ 		];
++		foreach ($this->dynamicShareTypes as $shareType => $details) {
++			if ($this->shareManager->shareProviderExists($shareType)) {
++				array_push($providers, $shareType);
++			}
++		}
++		return $providers;
++	}
++
++	/**
++	 * @param string $viewer
++	 * @param Node $node
++	 * @param bool $reShares
++	 *
++	 * @return IShare[]
++	 */
++	private function getSharesFromNode(string $viewer, $node, bool $reShares): array {
++		$providers = $this->getProvidersExceptOutgoing();
+ 
+ 		// Should we assume that the (currentUser) viewer is the owner of the node !?
+ 		$shares = [];
+@@ -1785,21 +1849,13 @@ private function shareProviderResharingRights(string $userId, IShare $share, $no
+ 	 * @return IShare[]
+ 	 */
+ 	private function getAllShares(?Node $path = null, bool $reshares = false) {
+-		// Get all shares
+-		$userShares = $this->shareManager->getSharesBy($this->currentUser, IShare::TYPE_USER, $path, $reshares, -1, 0);
+-		$groupShares = $this->shareManager->getSharesBy($this->currentUser, IShare::TYPE_GROUP, $path, $reshares, -1, 0);
+-		$linkShares = $this->shareManager->getSharesBy($this->currentUser, IShare::TYPE_LINK, $path, $reshares, -1, 0);
+-
+-		// EMAIL SHARES
+-		$mailShares = $this->shareManager->getSharesBy($this->currentUser, IShare::TYPE_EMAIL, $path, $reshares, -1, 0);
+-
+-		// CIRCLE SHARES
+-		$circleShares = $this->shareManager->getSharesBy($this->currentUser, IShare::TYPE_CIRCLE, $path, $reshares, -1, 0);
+-
+-		// TALK SHARES
+-		$roomShares = $this->shareManager->getSharesBy($this->currentUser, IShare::TYPE_ROOM, $path, $reshares, -1, 0);
+-
+-		$deckShares = $this->shareManager->getSharesBy($this->currentUser, IShare::TYPE_DECK, $path, $reshares, -1, 0);
++		$providers = $this->getProvidersExceptOutgoing();
++		$shares = [];
++		foreach ($providers as $provider) {
++			$providerShares =
++				$this->shareManager->getSharesBy($this->currentUser, $provider, $path, $reshares, -1, 0);
++			$shares = array_merge($shares, $providerShares);
++		}
+ 
+ 		// FEDERATION
+ 		if ($this->shareManager->outgoingServer2ServerSharesAllowed()) {
+@@ -1813,7 +1869,7 @@ private function getAllShares(?Node $path = null, bool $reshares = false) {
+ 			$federatedGroupShares = [];
+ 		}
+ 
+-		return array_merge($userShares, $groupShares, $linkShares, $mailShares, $circleShares, $roomShares, $deckShares, $federatedShares, $federatedGroupShares);
++		return array_merge($shares, $federatedShares, $federatedGroupShares);
+ 	}
+ 
+ 
+diff --git a/apps/files_sharing/tests/Controller/ShareAPIControllerTest.php b/apps/files_sharing/tests/Controller/ShareAPIControllerTest.php
+index 5555aef14256..380611108ae4 100644
+--- a/apps/files_sharing/tests/Controller/ShareAPIControllerTest.php
++++ b/apps/files_sharing/tests/Controller/ShareAPIControllerTest.php
+@@ -199,10 +199,10 @@ public function testDeleteShareShareNotFound() {
+ 		$this->expectExceptionMessage('Wrong share ID, share doesn\'t exist');
+ 
+ 		$this->shareManager
+-			->expects($this->exactly(6))
++			->expects($this->exactly(7))
+ 			->method('getShareById')
+ 			->willReturnCallback(function ($id) {
+-				if ($id === 'ocinternal:42' || $id === 'ocRoomShare:42' || $id === 'ocFederatedSharing:42' || $id === 'ocCircleShare:42' || $id === 'ocMailShare:42' || $id === 'deck:42') {
++				if ($id === 'ocinternal:42' || $id === 'ocRoomShare:42' || $id === 'ocFederatedSharing:42' || $id === 'ocCircleShare:42' || $id === 'ocMailShare:42' || $id === 'deck:42' || $id === 'sciencemesh:42') {
+ 					throw new \OCP\Share\Exceptions\ShareNotFound();
+ 				} else {
+ 					throw new \Exception();
+diff --git a/lib/private/Share20/Manager.php b/lib/private/Share20/Manager.php
+index eed86bb41c38..8dff1d0c0af8 100644
+--- a/lib/private/Share20/Manager.php
++++ b/lib/private/Share20/Manager.php
+@@ -245,6 +245,7 @@ protected function generalCreateChecks(IShare $share) {
+ 			}
+ 		} elseif ($share->getShareType() === IShare::TYPE_ROOM) {
+ 		} elseif ($share->getShareType() === IShare::TYPE_DECK) {
++		} elseif ($this->factory->getProviderForType($share->getShareType())) {
+ 		} else {
+ 			// We cannot handle other types yet
+ 			throw new \InvalidArgumentException('unknown share type');
+diff --git a/lib/private/Share20/ProviderFactory.php b/lib/private/Share20/ProviderFactory.php
+index 434c0017d21c..443c0072963f 100644
+--- a/lib/private/Share20/ProviderFactory.php
++++ b/lib/private/Share20/ProviderFactory.php
+@@ -325,6 +325,20 @@ public function getProviderForType($shareType) {
+ 			$provider = $this->getRoomShareProvider();
+ 		} elseif ($shareType === IShare::TYPE_DECK) {
+ 			$provider = $this->getProvider('deck');
++		} else {
++			// try to autodetect in the registered providers;
++			foreach ($this->registeredShareProviders as $shareProvider) {
++				/** @var IShareProvider $instance */
++				$instance = $this->serverContainer->get($shareProvider);
++
++				// not all instances will have the isShareTypeSupported function;
++				if (method_exists($instance, "isShareTypeSupported")) {
++					if ($instance->isShareTypeSupported($shareType)) {
++						$provider = $this->getProvider($instance->identifier());
++						break;
++					}
++				}
++			}
+ 		}
+ 
+ 
+diff --git a/lib/public/Share/IShare.php b/lib/public/Share/IShare.php
+index 1d3cf9bbbdff..6c7a72024388 100644
+--- a/lib/public/Share/IShare.php
++++ b/lib/public/Share/IShare.php
+@@ -116,6 +116,11 @@ interface IShare {
+ 	 */
+ 	public const TYPE_DECK_USER = 13;
+ 
++	/**
++	 * @since ?
++	 */
++	public const TYPE_SCIENCEMESH = 1000;
++	
+ 	/**
+ 	 * @since 18.0.0
+ 	 */
+diff --git a/tests/lib/Share20/ManagerTest.php b/tests/lib/Share20/ManagerTest.php
+index 2ed99519df6e..ef9f578df323 100644
+--- a/tests/lib/Share20/ManagerTest.php
++++ b/tests/lib/Share20/ManagerTest.php
+@@ -4663,6 +4663,9 @@ public function getProvider($id) {
+ 	 * @return IShareProvider
+ 	 */
+ 	public function getProviderForType($shareType) {
++		if ($shareType == -1) {
++			return null;
++		}
+ 		return $this->provider;
+ 	}
+ 
+diff --git a/tests/lib/Share20/ProviderFactoryTest.php b/tests/lib/Share20/ProviderFactoryTest.php
+new file mode 100644
+index 000000000000..57a7b4e71d51
+--- /dev/null
++++ b/tests/lib/Share20/ProviderFactoryTest.php
+@@ -0,0 +1,73 @@
++<?php
++/**
++ * @author Michiel de Jong <michiel@unhosted.org>
++ *
++ * @copyright Copyright (c) 2022, Nextcloud, Inc.
++ * @license AGPL-3.0
++ *
++ * This code is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License, version 3,
++ * as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License, version 3,
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>
++ *
++ */
++
++namespace Test\Share20;
++
++use OCP\IServerContainer;
++
++const EXAMPLE_SHARE_TYPE = 123;
++const UNKNOWN_SHARE_TYPE = 456;
++
++class ExampleProvider {
++	public function isShareTypeSupported($shareType) {
++		return ($shareType == EXAMPLE_SHARE_TYPE);
++	}
++	public function identifier() {
++		return "example";	
++	}
++}
++
++/**
++ * Class ProviderFactoryTest
++ *
++ * @package Test\Share20
++ */
++class ProviderFactoryTest extends \Test\TestCase {
++
++	/** @var \OCP\IServerContainer|\PHPUnit\Framework\MockObject\MockObject */
++	protected $serverContainer;
++	/** @var \OCP\Share20\ProviderFactory */
++	protected $factory;
++
++	/** @var ExampleProvider */
++	protected $dynamicProvider;
++
++	protected function setUp(): void {
++		$this->dynamicProvider = new ExampleProvider();
++		$this->serverContainer = $this->createMock(IServerContainer::class);
++		$this->serverContainer->method('get')
++			->with(ExampleProvider::class)
++			->willReturn($this->dynamicProvider);
++		$this->factory = new \OC\Share20\ProviderFactory($this->serverContainer);
++		$this->factory->registerProvider(ExampleProvider::class);
++	}
++
++
++	public function testDynamicProvider() {
++		$provider = $this->factory->getProviderForType(EXAMPLE_SHARE_TYPE);
++		$this->assertEquals($provider, $this->dynamicProvider);
++	}
++
++	public function testUnknownType() {
++		$this->expectExceptionMessage('No share provider for share type 456');
++		$provider = $this->factory->getProviderForType(UNKNOWN_SHARE_TYPE);
++	}
++}

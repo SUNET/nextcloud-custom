@@ -9,10 +9,11 @@ RUN apt-get update && apt-get install -y  \
 	apache2 \
 	busybox \
 	bzip2 \
-        cron \
+  cron \
 	libapache2-mod-php8.0 \
 	libmagickcore-6.q16-6-extra \
 	mariadb-client \
+  patch \
 	php8.0-apcu \
 	php8.0-imagick \
 	php8.0-redis \
@@ -66,8 +67,12 @@ RUN wget https://github.com/ChristophWurst/twofactor_admin/releases/download/v3.
 	&& cd /tmp && tar xfvz /tmp/twofactor_admin.tar.gz && mv /tmp/twofactor_admin /var/www/html/custom_apps/
 RUN wget  https://github.com/juliushaertl/theming_customcss/releases/download/v1.12.0/theming_customcss.tar.gz  -O /tmp/theming_customcss.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/theming_customcss.tar.gz && mv /tmp/theming_customcss /var/www/html/custom_apps/theming_customcss
+RUN wget  https://github.com/pondersource/nc-sciencemesh/archive/refs/tags/v0.1.0.tar.gz -O /tmp/nc-sciencemesh.tar.gz \
+	&& cd /tmp && tar xfvz /tmp/nc-sciencemesh.tar.gz && mv /tmp/nc-sciencemesh* /var/www/html/custom_apps/nc-sciencemesh
 COPY --chown=root:root ./nextcloud-rds.tar.gz /tmp
+COPY ./31571.diff /var/www/html
 RUN cd /tmp && tar xfv nextcloud-rds.tar.gz && mv rds/ /var/www/html/custom_apps
+RUN cd /var/www/html && patch -p1 ./31571.diff
 RUN rm -rf /tmp/*.tar.* &&  chown -R www-data:root /var/www/html && chmod +x /var/www/html/occ
 RUN usermod -a -G tty www-data
 
