@@ -67,8 +67,8 @@ RUN wget https://github.com/ChristophWurst/twofactor_admin/releases/download/v3.
 	&& cd /tmp && tar xfvz /tmp/twofactor_admin.tar.gz && mv /tmp/twofactor_admin /var/www/html/custom_apps/
 RUN wget  https://github.com/juliushaertl/theming_customcss/releases/download/v1.12.0/theming_customcss.tar.gz  -O /tmp/theming_customcss.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/theming_customcss.tar.gz && mv /tmp/theming_customcss /var/www/html/custom_apps/theming_customcss
-RUN wget  https://github.com/pondersource/nc-sciencemesh/archive/refs/tags/v0.1.0.tar.gz -O /tmp/nc-sciencemesh.tar.gz \
-	&& cd /tmp && tar xfvz /tmp/nc-sciencemesh.tar.gz && mv /tmp/nc-sciencemesh-0.1.0 /var/www/html/custom_apps/sciencemesh
+RUN wget  https://github.com/pondersource/nc-sciencemesh/raw/main/release/sciencemesh.tar.gz -O /tmp/nc-sciencemesh.tar.gz \
+	&& cd /tmp && tar xfvz /tmp/nc-sciencemesh.tar.gz && mv /tmp/sciencemesh /var/www/html/custom_apps/
 COPY --chown=root:root ./nextcloud-rds.tar.gz /tmp
 COPY ./31571.diff /var/www/html
 RUN cd /tmp && tar xfv nextcloud-rds.tar.gz && mv rds/ /var/www/html/custom_apps
