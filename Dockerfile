@@ -1,17 +1,17 @@
 FROM debian:bullseye-slim
 
 # Set Nextcloud download url here
-ARG nc_download_url=https://download.nextcloud.com/.customers/server/24.0.9-2fa814e5/nextcloud-24.0.9-enterprise.zip
+ARG nc_download_url=https://download.nextcloud.com/.customers/server/25.0.3-9a76cc7a/nextcloud-25.0.3-enterprise.zip
 
 # Set app versions here
 ARG drive_email_template_version=1.0.0
 ARG gss_version=2.1.1
 ARG loginpagebutton_version=1.0.0
-ARG richdocuments_version=6.3.3
+ARG richdocuments_version=7.1.0
 ARG theming_customcss_version=1.12.0
 ARG twofactor_admin_version=4.1.9
 ARG twofactor_totp_version=6.4.1
-ARG twofactor_webauthn_version=0.3.3
+ARG twofactor_webauthn_version=1.0.0
 ARG user_saml_version=5.1.2
 
 # Should be no need to modify beyond this point, unless you need to patch something or add more apps
