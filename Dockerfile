@@ -83,7 +83,7 @@ RUN wget  https://github.com/pondersource/nc-sciencemesh/raw/main/release/scienc
 COPY --chown=root:root ./nextcloud-rds.tar.gz /tmp
 COPY ./31571.diff /var/www/html
 RUN cd /tmp && tar xfv nextcloud-rds.tar.gz && mv rds/ /var/www/html/custom_apps
-RUN cd /var/www/html && patch -p1 ./31571.diff
+RUN cd /var/www/html && patch -p1 ./31571.diff && rm ./31571.diff
 RUN rm -rf /tmp/*.tar.* &&  chown -R www-data:root /var/www/html && chmod +x /var/www/html/occ
 RUN usermod -a -G tty www-data
 
