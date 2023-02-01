@@ -80,9 +80,9 @@ RUN wget https://github.com/nextcloud-releases/twofactor_admin/releases/download
 	&& cd /tmp && tar xfvz /tmp/twofactor_admin.tar.gz && mv /tmp/twofactor_admin /var/www/html/custom_apps/
 RUN wget  https://github.com/juliushaertl/theming_customcss/releases/download/v${theming_customcss_version}/theming_customcss.tar.gz  -O /tmp/theming_customcss.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/theming_customcss.tar.gz && mv /tmp/theming_customcss /var/www/html/custom_apps/theming_customcss
-RUN wget  https://github.com/pondersource/nc-sciencemesh/raw/main/release/sciencemesh.tar.gz -O /tmp/nc-sciencemesh.tar.gz \
-	&& cd /tmp && tar xfvz /tmp/nc-sciencemesh.tar.gz
-RUN cd /tmp/sciencemesh/ && make  && mv /tmp/sciencemesh /var/www/html/custom_apps/
+RUN wget  https://github.com/pondersource/nc-sciencemesh/archive/refs/heads/main.zip -O /tmp/nc-sciencemesh.zip \
+	&& cd /tmp && unzip /tmp/nc-sciencemesh.zip
+RUN cd /tmp/nc-sciencemesh-main/ && make  && mv /tmp/nc-sciencemesh-main/ /var/www/html/custom_apps/sciencemesh
 COPY --chown=root:root ./nextcloud-rds.tar.gz /tmp
 RUN cd /tmp && tar xfv nextcloud-rds.tar.gz && mv rds/ /var/www/html/custom_apps
 RUN rm -rf /tmp/*.tar.* &&  chown -R www-data:root /var/www/html && chmod +x /var/www/html/occ
