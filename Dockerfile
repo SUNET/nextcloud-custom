@@ -24,6 +24,7 @@ RUN apt-get update && apt-get install -y  \
 	busybox \
 	bzip2 \
   cron \
+  curl \
 	libapache2-mod-php8.0 \
 	libmagickcore-6.q16-6-extra \
   make \
@@ -87,4 +88,4 @@ COPY --chown=root:root ./nextcloud-rds.tar.gz /tmp
 RUN cd /tmp && tar xfv nextcloud-rds.tar.gz && mv rds/ /var/www/html/custom_apps
 RUN rm -rf /tmp/*.tar.* &&  chown -R www-data:root /var/www/html && chmod +x /var/www/html/occ
 RUN usermod -a -G tty www-data
-RUN apt remove -y make npm && apt auto remove -y
+RUN apt remove -y wget curl make npm patch && apt autoremove -y
