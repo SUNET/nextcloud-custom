@@ -5,6 +5,7 @@ ARG nc_download_url=https://download.nextcloud.com/.customers/server/25.0.3-9a76
 
 # Set app versions here
 ARG drive_email_template_version=1.0.0
+ARG gss_version=2.1.1
 ARG loginpagebutton_version=1.0.0
 ARG richdocuments_version=7.1.0
 ARG theming_customcss_version=1.12.0
@@ -62,7 +63,10 @@ RUN wget ${nc_download_url} -O /tmp/nextcloud.zip \
 	&& cd /tmp && unzip /tmp/nextcloud.zip \
 	&& mkdir -p /var/www/html/data && touch /var/www/html/data/.ocdata && mkdir /var/www/html/config \
 	&& mkdir /var/www/html/custom_apps && cp -a /tmp/nextcloud/* /var/www/html && cp -a /tmp/nextcloud/.[^.]* /var/www/html \
-	&& rm -rf /tmp/nextcloud
+  && rm -rf /tmp/nextcloud && rm -rf /var/www/html/apps/globalsiteselector
+RUN wget https://github.com/nextcloud/globalsiteselector/archive/refs/tags/v${gss_version}.tar.gz -O /tmp/globalsiteselector.tar.gz \
+       && cd /tmp && tar xfvz /tmp/globalsiteselector.tar.gz \
+        && mv /tmp/globalsiteselector-* /var/www/html/apps/globalsiteselector
 RUN wget https://github.com/nextcloud-releases/richdocuments/releases/download/v${richdocuments_version}/richdocuments-v${richdocuments_version}.tar.gz -O /tmp/richdocuments.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/richdocuments.tar.gz && mv /tmp/richdocuments /var/www/html/custom_apps 
 RUN wget https://github.com/nextcloud-releases/twofactor_totp/releases/download/v${twofactor_totp_version}/twofactor_totp-v${twofactor_totp_version}.tar.gz -O /tmp/twofactor_totp.tar.gz \
