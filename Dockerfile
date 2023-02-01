@@ -5,7 +5,6 @@ ARG nc_download_url=https://download.nextcloud.com/.customers/server/25.0.3-9a76
 
 # Set app versions here
 ARG drive_email_template_version=1.0.0
-ARG gss_version=2.1.1
 ARG loginpagebutton_version=1.0.0
 ARG richdocuments_version=7.1.0
 ARG theming_customcss_version=1.12.0
@@ -27,7 +26,9 @@ RUN apt-get update && apt-get install -y  \
   cron \
 	libapache2-mod-php8.0 \
 	libmagickcore-6.q16-6-extra \
+  make \
 	mariadb-client \
+  npm \
   patch \
 	php8.0-apcu \
 	php8.0-imagick \
@@ -60,10 +61,7 @@ RUN wget ${nc_download_url} -O /tmp/nextcloud.zip \
 	&& cd /tmp && unzip /tmp/nextcloud.zip \
 	&& mkdir -p /var/www/html/data && touch /var/www/html/data/.ocdata && mkdir /var/www/html/config \
 	&& mkdir /var/www/html/custom_apps && cp -a /tmp/nextcloud/* /var/www/html && cp -a /tmp/nextcloud/.[^.]* /var/www/html \
-	&& rm -rf /tmp/nextcloud && rm -rf /var/www/html/apps/globalsiteselector
-RUN wget https://github.com/nextcloud/globalsiteselector/archive/refs/tags/v${gss_version}.tar.gz -O /tmp/globalsiteselector.tar.gz \
-	&& cd /tmp && tar xfvz /tmp/globalsiteselector.tar.gz \
-        && mv /tmp/globalsiteselector-* /var/www/html/apps/globalsiteselector
+	&& rm -rf /tmp/nextcloud
 RUN wget https://github.com/nextcloud-releases/richdocuments/releases/download/v${richdocuments_version}/richdocuments-v${richdocuments_version}.tar.gz -O /tmp/richdocuments.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/richdocuments.tar.gz && mv /tmp/richdocuments /var/www/html/custom_apps 
 RUN wget https://github.com/nextcloud-releases/twofactor_totp/releases/download/v${twofactor_totp_version}/twofactor_totp-v${twofactor_totp_version}.tar.gz -O /tmp/twofactor_totp.tar.gz \
@@ -83,10 +81,10 @@ RUN wget https://github.com/nextcloud-releases/twofactor_admin/releases/download
 RUN wget  https://github.com/juliushaertl/theming_customcss/releases/download/v${theming_customcss_version}/theming_customcss.tar.gz  -O /tmp/theming_customcss.tar.gz \
 	&& cd /tmp && tar xfvz /tmp/theming_customcss.tar.gz && mv /tmp/theming_customcss /var/www/html/custom_apps/theming_customcss
 RUN wget  https://github.com/pondersource/nc-sciencemesh/raw/main/release/sciencemesh.tar.gz -O /tmp/nc-sciencemesh.tar.gz \
-	&& cd /tmp && tar xfvz /tmp/nc-sciencemesh.tar.gz && mv /tmp/sciencemesh /var/www/html/custom_apps/
+	&& cd /tmp && tar xfvz /tmp/nc-sciencemesh.tar.gz
+RUN cd /tmp/sciencemesh/ && make  && mv /tmp/sciencemesh /var/www/html/custom_apps/
 COPY --chown=root:root ./nextcloud-rds.tar.gz /tmp
-COPY ./31571.diff /var/www/html
 RUN cd /tmp && tar xfv nextcloud-rds.tar.gz && mv rds/ /var/www/html/custom_apps
-RUN cd /var/www/html && patch -p1 ./31571.diff && rm ./31571.diff
 RUN rm -rf /tmp/*.tar.* &&  chown -R www-data:root /var/www/html && chmod +x /var/www/html/occ
 RUN usermod -a -G tty www-data
+RUN apt remove -y make npm && apt auto remove -y
