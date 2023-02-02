@@ -1,17 +1,17 @@
 FROM debian:bullseye-slim
 
 # Set Nextcloud download url here
-ARG nc_download_url=https://download.nextcloud.com/.customers/server/25.0.3-9a76cc7a/nextcloud-25.0.3-enterprise.zip
+ARG nc_download_url=https://download.nextcloud.com/.customers/server/24.0.9-2fa814e5/nextcloud-24.0.9-enterprise.zip
 
 # Set app versions here
 ARG drive_email_template_version=1.0.0
 ARG gss_version=2.1.1
 ARG loginpagebutton_version=1.0.0
-ARG richdocuments_version=7.1.0
+ARG richdocuments_version=6.3.3
 ARG theming_customcss_version=1.12.0
 ARG twofactor_admin_version=4.1.9
 ARG twofactor_totp_version=6.4.1
-ARG twofactor_webauthn_version=1.0.0
+ARG twofactor_webauthn_version=0.3.3
 ARG user_saml_version=5.1.2
 
 # Should be no need to modify beyond this point, unless you need to patch something or add more apps
@@ -87,6 +87,7 @@ RUN wget  https://github.com/pondersource/nc-sciencemesh/raw/main/release/scienc
 COPY --chown=root:root ./nextcloud-rds.tar.gz /tmp
 COPY ./31571.diff /var/www/html
 RUN cd /tmp && tar xfv nextcloud-rds.tar.gz && mv rds/ /var/www/html/custom_apps
-RUN cd /var/www/html && patch -p1 ./31571.diff && rm ./31571.diff
+RUN cd /var/www/html && patch -p1 ./31571.diff
 RUN rm -rf /tmp/*.tar.* &&  chown -R www-data:root /var/www/html && chmod +x /var/www/html/occ
 RUN usermod -a -G tty www-data
+
