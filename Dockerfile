@@ -63,6 +63,7 @@ RUN wget ${nc_download_url} -O /tmp/nextcloud.zip \
   && cd /tmp && unzip /tmp/nextcloud.zip
 COPY 36228-enterprise.patch /tmp/nextcloud
 RUN cd /tmp/nextcloud && patch -p1 < 36228-enterprise.patch && rm 36228-enterprise.patch
+COPY dist-36228/* /tmp/nextcloud/dist
 RUN mkdir -p /var/www/html/data && touch /var/www/html/data/.ocdata && mkdir /var/www/html/config \
   && mkdir /var/www/html/custom_apps && cp -a /tmp/nextcloud/* /var/www/html && cp -a /tmp/nextcloud/.[^.]* /var/www/html \
   && rm -rf /tmp/nextcloud && rm -rf /var/www/html/apps/globalsiteselector
