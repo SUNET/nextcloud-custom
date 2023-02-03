@@ -59,12 +59,9 @@ RUN mkdir -p /etc/apache2/mods-enabled/ \
 COPY --chown=root:root ./000-default.conf /etc/apache2/sites-available/
 COPY --chown=root:root ./crontab /var/spool/cron/crontabs/www-data
 COPY --chown=root:root ./cron.sh /cron.sh
-RUN wget ${nc_download_url} -O /tmp/nextcloud.zip \
-  && cd /tmp && unzip /tmp/nextcloud.zip
-COPY ./36228-enterprise.patch /tmp/nextcloud
-RUN cd /tmp/nextcloud && patch -p1 < 36228-enterprise.patch && rm 36228-enterprise.patch
-COPY --chown=root:root ./dist-36228/* /tmp/nextcloud/dist/
-RUN mkdir -p /var/www/html/data && touch /var/www/html/data/.ocdata && mkdir /var/www/html/config \
+RUN wget ${nc_download_url} -O /tmp/nextcloud.zip && cd /tmp && unzip /tmp/nextcloud.zip && cd /tmp/nextcloud \
+  && wget https://patch-diff.githubusercontent.com/raw/pondersource/server/pull/272.patch \
+  && patch -p1 < 272.patch && rm 272.patch &&  mkdir -p /var/www/html/data && touch /var/www/html/data/.ocdata && mkdir /var/www/html/config \
   && mkdir /var/www/html/custom_apps && cp -a /tmp/nextcloud/* /var/www/html && cp -a /tmp/nextcloud/.[^.]* /var/www/html \
   && rm -rf /tmp/nextcloud && rm -rf /var/www/html/apps/globalsiteselector
 RUN wget https://github.com/nextcloud/globalsiteselector/archive/refs/tags/v${gss_version}.tar.gz -O /tmp/globalsiteselector.tar.gz \
