@@ -4,6 +4,7 @@ FROM debian:bullseye-slim
 ARG nc_download_url=https://download.nextcloud.com/.customers/server/25.0.3-9a76cc7a/nextcloud-25.0.3-enterprise.zip
 
 # Set app versions here
+ARG checksum_version=1.2.0
 ARG drive_email_template_version=1.0.0
 ARG gss_version=2.1.1
 ARG loginpagebutton_version=1.0.0
@@ -24,7 +25,6 @@ RUN apt-get update && apt-get install -y  \
   apache2 \
   busybox \
   bzip2 \
-  cron \
   curl \
   libapache2-mod-php8.0 \
   libmagickcore-6.q16-6-extra \
@@ -57,7 +57,6 @@ RUN mkdir -p /etc/apache2/mods-enabled/ \
   && ln -s /etc/apache2/mods-available/ssl.conf /etc/apache2/mods-enabled/ \
   && ln -s /etc/apache2/mods-available/ssl.load /etc/apache2/mods-enabled/
 COPY --chown=root:root ./000-default.conf /etc/apache2/sites-available/
-COPY --chown=root:root ./crontab /var/spool/cron/crontabs/www-data
 COPY --chown=root:root ./cron.sh /cron.sh
 RUN wget ${nc_download_url} -O /tmp/nextcloud.zip && cd /tmp && unzip /tmp/nextcloud.zip && cd /tmp/nextcloud \
   &&  mkdir -p /var/www/html/data && touch /var/www/html/data/.ocdata && mkdir /var/www/html/config \
@@ -84,6 +83,8 @@ RUN wget https://github.com/nextcloud-releases/twofactor_admin/releases/download
   && cd /tmp && tar xfvz /tmp/twofactor_admin.tar.gz && mv /tmp/twofactor_admin /var/www/html/custom_apps/
 RUN wget  https://github.com/juliushaertl/theming_customcss/releases/download/v${theming_customcss_version}/theming_customcss.tar.gz  -O /tmp/theming_customcss.tar.gz \
   && cd /tmp && tar xfvz /tmp/theming_customcss.tar.gz && mv /tmp/theming_customcss /var/www/html/custom_apps/theming_customcss
+RUN wget https://github.com/westberliner/checksum/releases/download/v${checksum_version}}/checksum.tar.gz -O /tmp/checksum.tar.gz \
+  && cd /tmp && tar xfvz /tmp/checksum.tar.gz && mv /tmp/checksum /var/www/html/custom_apps/
 RUN wget  https://github.com/pondersource/nc-sciencemesh/archive/refs/heads/main.zip -O /tmp/nc-sciencemesh.zip \
   && cd /tmp && unzip /tmp/nc-sciencemesh.zip
 RUN cd /tmp/nc-sciencemesh-main/ && make  && mv /tmp/nc-sciencemesh-main/ /var/www/html/custom_apps/sciencemesh
