@@ -65,7 +65,7 @@ RUN wget ${nc_download_url} -O /tmp/nextcloud.zip && cd /tmp && unzip /tmp/nextc
 #RUN wget https://github.com/nextcloud/globalsiteselector/archive/refs/tags/v${gss_version}.tar.gz -O /tmp/globalsiteselector.tar.gz \
 COPY --chown=root:root ./globalsiteselector-${gss_version}.tar.gz /tmp/globalsiteselector.tar.gz
 RUN cd /tmp && tar xfvz /tmp/globalsiteselector.tar.gz \
-  && mv /tmp/globalsiteselector* /var/www/html/apps/globalsiteselector
+  && mv /tmp/globalsiteselector /var/www/html/apps/
 RUN wget https://github.com/nextcloud-releases/richdocuments/releases/download/v${richdocuments_version}/richdocuments-v${richdocuments_version}.tar.gz -O /tmp/richdocuments.tar.gz \
   && cd /tmp && tar xfvz /tmp/richdocuments.tar.gz && mv /tmp/richdocuments /var/www/html/custom_apps 
 RUN wget https://github.com/nextcloud-releases/twofactor_totp/releases/download/v${twofactor_totp_version}/twofactor_totp-v${twofactor_totp_version}.tar.gz -O /tmp/twofactor_totp.tar.gz \
