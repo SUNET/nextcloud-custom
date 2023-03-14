@@ -62,6 +62,8 @@ RUN wget ${nc_download_url} -O /tmp/nextcloud.zip && cd /tmp && unzip /tmp/nextc
   &&  mkdir -p /var/www/html/data && touch /var/www/html/data/.ocdata && mkdir /var/www/html/config \
   && mkdir /var/www/html/custom_apps && cp -a /tmp/nextcloud/* /var/www/html && cp -a /tmp/nextcloud/.[^.]* /var/www/html \
   && rm -rf /tmp/nextcloud && rm -rf /var/www/html/apps/globalsiteselector
+COPY ./verbose_debug_log_for_version_expiring_stable25.patch /var/www/html/
+RUN cd /var/www/html/ && patch -p2 < ./verbose_debug_log_for_version_expiring_stable25.patch
 RUN wget https://github.com/nextcloud/globalsiteselector/archive/refs/tags/v${gss_version}.tar.gz -O /tmp/globalsiteselector.tar.gz \
   && cd /tmp && tar xfvz /tmp/globalsiteselector.tar.gz \
   && mv /tmp/globalsiteselector-* /var/www/html/apps/globalsiteselector
