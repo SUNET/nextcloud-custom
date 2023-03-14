@@ -62,8 +62,6 @@ RUN wget ${nc_download_url} -O /tmp/nextcloud.zip && cd /tmp && unzip /tmp/nextc
   &&  mkdir -p /var/www/html/data && touch /var/www/html/data/.ocdata && mkdir /var/www/html/config \
   && mkdir /var/www/html/custom_apps && cp -a /tmp/nextcloud/* /var/www/html && cp -a /tmp/nextcloud/.[^.]* /var/www/html \
   && rm -rf /tmp/nextcloud && rm -rf /var/www/html/apps/globalsiteselector
-COPY ./verbose_debug_log_for_version_expiring_stable25.patch /var/www/html/
-RUN cd /var/www/html/ && patch -p1 < ./verbose_debug_log_for_version_expiring_stable25.patch
 RUN wget https://github.com/nextcloud/globalsiteselector/archive/refs/tags/v${gss_version}.tar.gz -O /tmp/globalsiteselector.tar.gz \
   && cd /tmp && tar xfvz /tmp/globalsiteselector.tar.gz \
   && mv /tmp/globalsiteselector-* /var/www/html/apps/globalsiteselector
@@ -90,6 +88,8 @@ RUN wget https://github.com/westberliner/checksum/releases/download/v${checksum_
 RUN wget  https://github.com/pondersource/nc-sciencemesh/archive/refs/heads/main.zip -O /tmp/nc-sciencemesh.zip \
   && cd /tmp && unzip /tmp/nc-sciencemesh.zip
 RUN cd /tmp/nc-sciencemesh-main/ && make  && mv /tmp/nc-sciencemesh-main/ /var/www/html/custom_apps/sciencemesh
+RUN wget https://github.com/SUNET/nextcloud-jupyter/archive/refs/tags/v0.0.1.tar.gz -O /tmp/jupyter.tar.gz \
+  && cd /tmp && tar xfvz /tmp/jupyter.tar.gz && mv /tmp/nextcloud-jupyter-0.0.1 /var/www/html/custom_apps/jupyter
 COPY --chown=root:root ./nextcloud-rds.tar.gz /tmp
 RUN cd /tmp && tar xfv nextcloud-rds.tar.gz && mv rds/ /var/www/html/custom_apps
 RUN rm -rf /tmp/*.tar.* &&  chown -R www-data:root /var/www/html && chmod +x /var/www/html/occ
