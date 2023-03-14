@@ -88,8 +88,8 @@ RUN wget https://github.com/westberliner/checksum/releases/download/v${checksum_
 RUN wget  https://github.com/pondersource/nc-sciencemesh/archive/refs/heads/main.zip -O /tmp/nc-sciencemesh.zip \
   && cd /tmp && unzip /tmp/nc-sciencemesh.zip
 RUN cd /tmp/nc-sciencemesh-main/ && make  && mv /tmp/nc-sciencemesh-main/ /var/www/html/custom_apps/sciencemesh
-RUN wget https://github.com/SUNET/nextcloud-jupyter/archive/refs/tags/v0.0.1.tar.gz -O /tmp/jupyter.tar.gz \
-  && cd /tmp && tar xfvz /tmp/jupyter.tar.gz && mv /tmp/nextcloud-jupyter-0.0.1 /var/www/html/custom_apps/jupyter
+RUN wget https://github.com/SUNET/nextcloud-jupyter/archive/refs/tags/v0.0.2.tar.gz -O /tmp/jupyter.tar.gz \
+  && cd /tmp && tar xfvz /tmp/jupyter.tar.gz && mv /tmp/nextcloud-jupyter-0.0.2 /var/www/html/custom_apps/jupyter
 COPY --chown=root:root ./nextcloud-rds.tar.gz /tmp
 RUN cd /tmp && tar xfv nextcloud-rds.tar.gz && mv rds/ /var/www/html/custom_apps
 RUN rm -rf /tmp/*.tar.* &&  chown -R www-data:root /var/www/html && chmod +x /var/www/html/occ
