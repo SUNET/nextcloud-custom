@@ -7,6 +7,7 @@ ARG nc_download_url=https://download.nextcloud.com/.customers/server/25.0.3-9a76
 ARG checksum_version=1.2.0
 ARG drive_email_template_version=1.0.0
 ARG gss_version=2.1.1
+ARG jupyter_version=0.0.1
 ARG loginpagebutton_version=1.0.0
 ARG richdocuments_version=7.1.0
 ARG theming_customcss_version=1.12.0
@@ -88,8 +89,8 @@ RUN wget https://github.com/westberliner/checksum/releases/download/v${checksum_
 RUN wget  https://github.com/pondersource/nc-sciencemesh/archive/refs/heads/main.zip -O /tmp/nc-sciencemesh.zip \
   && cd /tmp && unzip /tmp/nc-sciencemesh.zip
 RUN cd /tmp/nc-sciencemesh-main/ && make  && mv /tmp/nc-sciencemesh-main/ /var/www/html/custom_apps/sciencemesh
-RUN wget https://github.com/SUNET/nextcloud-jupyter/archive/refs/tags/v0.0.2.tar.gz -O /tmp/jupyter.tar.gz \
-  && cd /tmp && tar xfvz /tmp/jupyter.tar.gz && mv /tmp/nextcloud-jupyter-0.0.2 /var/www/html/custom_apps/jupyter
+RUN wget https://github.com/SUNET/nextcloud-jupyter/archive/refs/tags/v${jupyter_version}.tar.gz -O /tmp/jupyter.tar.gz \
+  && cd /tmp && tar xfvz /tmp/jupyter.tar.gz && mv /tmp/nextcloud-jupyter-${jupyter_version} /var/www/html/custom_apps/jupyter
 COPY --chown=root:root ./nextcloud-rds.tar.gz /tmp
 RUN cd /tmp && tar xfv nextcloud-rds.tar.gz && mv rds/ /var/www/html/custom_apps
 RUN rm -rf /tmp/*.tar.* &&  chown -R www-data:root /var/www/html && chmod +x /var/www/html/occ
