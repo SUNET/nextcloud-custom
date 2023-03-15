@@ -90,7 +90,7 @@ RUN wget  https://github.com/pondersource/nc-sciencemesh/archive/refs/heads/main
   && cd /tmp && unzip /tmp/nc-sciencemesh.zip
 RUN cd /tmp/nc-sciencemesh-main/ && make  && mv /tmp/nc-sciencemesh-main/ /var/www/html/custom_apps/sciencemesh
 RUN wget https://github.com/SUNET/nextcloud-jupyter/archive/refs/tags/v${jupyter_version}.tar.gz -O /tmp/jupyter.tar.gz \
-  && cd /tmp && tar xfvz /tmp/jupyter.tar.gz && mv /tmp/nextcloud-jupyter-${jupyter_version} /var/www/html/custom_apps/jupyter
+  && cd /tmp && tar xfvz /tmp/jupyter.tar.gz && mv /tmp/nextcloud-jupyter-${jupyter_version}/jupyter /var/www/html/custom_apps/
 COPY --chown=root:root ./nextcloud-rds.tar.gz /tmp
 RUN cd /tmp && tar xfv nextcloud-rds.tar.gz && mv rds/ /var/www/html/custom_apps
 RUN rm -rf /tmp/*.tar.* &&  chown -R www-data:root /var/www/html && chmod +x /var/www/html/occ
