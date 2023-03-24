@@ -1,7 +1,7 @@
 FROM debian:bullseye-slim
 
 # Set Nextcloud download url here
-ARG nc_download_url=https://download.nextcloud.com/.customers/server/25.0.3-9a76cc7a/nextcloud-25.0.3-enterprise.zip
+ARG nc_download_url=https://download.nextcloud.com/.customers/server/25.0.5-e065c72e/nextcloud-25.0.5-enterprise.zip
 
 # Set app versions here
 ARG checksum_version=1.2.0
@@ -63,9 +63,13 @@ RUN wget ${nc_download_url} -O /tmp/nextcloud.zip && cd /tmp && unzip /tmp/nextc
   &&  mkdir -p /var/www/html/data && touch /var/www/html/data/.ocdata && mkdir /var/www/html/config \
   && mkdir /var/www/html/custom_apps && cp -a /tmp/nextcloud/* /var/www/html && cp -a /tmp/nextcloud/.[^.]* /var/www/html \
   && rm -rf /tmp/nextcloud && rm -rf /var/www/html/apps/globalsiteselector
-RUN wget https://github.com/nextcloud/globalsiteselector/archive/refs/tags/v${gss_version}.tar.gz -O /tmp/globalsiteselector.tar.gz \
+COPY ./36883.diff /var/www/html
+RUN cd /var/www/html/ && patch -p1 < 36883.diff
+#RUN wget https://github.com/nextcloud/globalsiteselector/archive/refs/tags/v${gss_version}.tar.gz -O /tmp/globalsiteselector.tar.gz \
+COPY ./globalsiteselector-2.3.0.tar.gz /tmp
+RUN mv /tmp/globalsiteselector-2.3.0.tar.gz /tmp/globalsiteselector.tar.gz \
   && cd /tmp && tar xfvz /tmp/globalsiteselector.tar.gz \
-  && mv /tmp/globalsiteselector-* /var/www/html/apps/globalsiteselector
+  && mv /tmp/globalsiteselector /var/www/html/apps/globalsiteselector
 RUN wget https://github.com/nextcloud-releases/richdocuments/releases/download/v${richdocuments_version}/richdocuments-v${richdocuments_version}.tar.gz -O /tmp/richdocuments.tar.gz \
   && cd /tmp && tar xfvz /tmp/richdocuments.tar.gz && mv /tmp/richdocuments /var/www/html/custom_apps 
 RUN wget https://github.com/nextcloud-releases/twofactor_totp/releases/download/v${twofactor_totp_version}/twofactor_totp-v${twofactor_totp_version}.tar.gz -O /tmp/twofactor_totp.tar.gz \
@@ -74,7 +78,9 @@ RUN wget https://github.com/nextcloud-releases/twofactor_totp/releases/download/
 RUN wget https://github.com/nextcloud-releases/twofactor_webauthn/releases/download/v${twofactor_webauthn_version}/twofactor_webauthn-v${twofactor_webauthn_version}.tar.gz \
   -O /tmp/twofactor_webauthn.tar.gz \
   && cd /tmp && tar xfvz /tmp/twofactor_webauthn.tar.gz && mv /tmp/twofactor_webauthn /var/www/html/custom_apps
-RUN wget https://github.com/nextcloud-releases/user_saml/releases/download/v${user_saml_version}/user_saml-v${user_saml_version}.tar.gz -O /tmp/user_saml.tar.gz \
+#RUN wget https://github.com/nextcloud-releases/user_saml/releases/download/v${user_saml_version}/user_saml-v${user_saml_version}.tar.gz -O /tmp/user_saml.tar.gz \
+COPY ./user_saml-5.1.3-beta1.tar.gz /tmp
+RUN  mv /tmp/user_saml-5.1.3-beta1.tar.gz /tmp/user_saml.tar.gz && rm -rf /var/www/html/apps/user_saml \
   && cd /tmp && tar xfvz /tmp/user_saml.tar.gz && mv /tmp/user_saml /var/www/html/custom_apps 
 RUN wget https://github.com/SUNET/drive-email-template/archive/refs/tags/${drive_email_template_version}.tar.gz -O /tmp/drive-email-template.tar.gz \
   && cd /tmp && tar xfvz /tmp/drive-email-template.tar.gz && mv /tmp/drive-email-template-* /var/www/html/custom_apps/drive_email_template
