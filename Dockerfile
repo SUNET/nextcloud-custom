@@ -1,19 +1,17 @@
 FROM debian:bullseye-slim
 
 # Set Nextcloud download url here
-ARG nc_download_url=https://download.nextcloud.com/.customers/server/25.0.3-9a76cc7a/nextcloud-25.0.3-enterprise.zip
+ARG nc_download_url=https://download.nextcloud.com/.customers/server/25.0.5-e065c72e/nextcloud-25.0.5-enterprise.zip
 
 # Set app versions here
 ARG checksum_version=1.2.0
 ARG drive_email_template_version=1.0.0
-ARG gss_version=2.1.1
+ARG gss_version=2.3.1
 ARG loginpagebutton_version=1.0.0
-ARG richdocuments_version=7.1.0
-ARG theming_customcss_version=1.12.0
+ARG richdocuments_version=7.1.2
+ARG theming_customcss_version=1.13.0
 ARG twofactor_admin_version=4.1.9
-ARG twofactor_totp_version=6.4.1
-ARG twofactor_webauthn_version=1.0.0
-ARG user_saml_version=5.1.2
+ARG twofactor_webauthn_version=1.1.2
 
 # Should be no need to modify beyond this point, unless you need to patch something or add more apps
 ARG DEBIAN_FRONTEND=noninteractive
@@ -62,19 +60,15 @@ RUN wget ${nc_download_url} -O /tmp/nextcloud.zip && cd /tmp && unzip /tmp/nextc
   &&  mkdir -p /var/www/html/data && touch /var/www/html/data/.ocdata && mkdir /var/www/html/config \
   && mkdir /var/www/html/custom_apps && cp -a /tmp/nextcloud/* /var/www/html && cp -a /tmp/nextcloud/.[^.]* /var/www/html \
   && rm -rf /tmp/nextcloud && rm -rf /var/www/html/apps/globalsiteselector
-RUN wget https://github.com/nextcloud/globalsiteselector/archive/refs/tags/v${gss_version}.tar.gz -O /tmp/globalsiteselector.tar.gz \
-  && cd /tmp && tar xfvz /tmp/globalsiteselector.tar.gz \
-  && mv /tmp/globalsiteselector-* /var/www/html/apps/globalsiteselector
+COPY ./ignore_and_warn_on_non_numeric_version_timestamp.patch /var/www/html/
+RUN cd /var/www/html/ && patch -p1 < ignore_and_warn_on_non_numeric_version_timestamp.patch
+COPY ./globalsiteselector-${gss_version}.tar.gz /tmp/globalsiteselector.tar.gz
+RUN cd /tmp && tar xfvz /tmp/globalsiteselector.tar.gz && mv /tmp/globalsiteselector /var/www/html/apps/
 RUN wget https://github.com/nextcloud-releases/richdocuments/releases/download/v${richdocuments_version}/richdocuments-v${richdocuments_version}.tar.gz -O /tmp/richdocuments.tar.gz \
   && cd /tmp && tar xfvz /tmp/richdocuments.tar.gz && mv /tmp/richdocuments /var/www/html/custom_apps 
-RUN wget https://github.com/nextcloud-releases/twofactor_totp/releases/download/v${twofactor_totp_version}/twofactor_totp-v${twofactor_totp_version}.tar.gz -O /tmp/twofactor_totp.tar.gz \
-  && cd /tmp && tar xfvz /tmp/twofactor_totp.tar.gz && mv /tmp/twofactor_totp /var/www/html/custom_apps
-# https://github.com/nextcloud/twofactor_webauthn#migration-from-two-factor-u2f
 RUN wget https://github.com/nextcloud-releases/twofactor_webauthn/releases/download/v${twofactor_webauthn_version}/twofactor_webauthn-v${twofactor_webauthn_version}.tar.gz \
   -O /tmp/twofactor_webauthn.tar.gz \
   && cd /tmp && tar xfvz /tmp/twofactor_webauthn.tar.gz && mv /tmp/twofactor_webauthn /var/www/html/custom_apps
-RUN wget https://github.com/nextcloud-releases/user_saml/releases/download/v${user_saml_version}/user_saml-v${user_saml_version}.tar.gz -O /tmp/user_saml.tar.gz \
-  && cd /tmp && tar xfvz /tmp/user_saml.tar.gz && mv /tmp/user_saml /var/www/html/custom_apps 
 RUN wget https://github.com/SUNET/drive-email-template/archive/refs/tags/${drive_email_template_version}.tar.gz -O /tmp/drive-email-template.tar.gz \
   && cd /tmp && tar xfvz /tmp/drive-email-template.tar.gz && mv /tmp/drive-email-template-* /var/www/html/custom_apps/drive_email_template
 RUN wget https://github.com/SUNET/loginpagebutton/archive/refs/tags/v.${loginpagebutton_version}.tar.gz -O /tmp/loginpagebutton.tar.gz \

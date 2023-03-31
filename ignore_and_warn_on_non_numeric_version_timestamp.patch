@@ -1,0 +1,17 @@
+diff --git a/apps/files_versions/lib/Storage.php b/apps/files_versions/lib/Storage.php
+index e799502e78e..3fcb323393b 100644
+--- a/apps/files_versions/lib/Storage.php
++++ b/apps/files_versions/lib/Storage.php
+@@ -678,6 +678,12 @@ class Storage {
+ 		}
+ 
+ 		foreach ($versions as $key => $version) {
++			if (!is_int($version['version'])) {
++				\OC::$server->get(LoggerInterface::class)->error(
++					'Found a non-numeric timestamp version: '. json_encode($version),
++					['app' => 'files_versions']);
++				continue;
++			}
+ 			if ($expiration->isExpired($version['version'], $quotaExceeded) && !isset($toDelete[$key])) {
+ 				$size += $version['size'];
+ 				$toDelete[$key] = $version['path'] . '.v' . $version['version'];
