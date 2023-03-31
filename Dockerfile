@@ -61,7 +61,8 @@ RUN wget ${nc_download_url} -O /tmp/nextcloud.zip && cd /tmp && unzip /tmp/nextc
   && mkdir /var/www/html/custom_apps && cp -a /tmp/nextcloud/* /var/www/html && cp -a /tmp/nextcloud/.[^.]* /var/www/html \
   && rm -rf /tmp/nextcloud && rm -rf /var/www/html/apps/globalsiteselector
 COPY ./ignore_and_warn_on_non_numeric_version_timestamp.patch /var/www/html/
-RUN cd /var/www/html/ && patch -p1 < ignore_and_warn_on_non_numeric_version_timestamp.patch
+COPY ./36883.diff /var/www/html/
+RUN cd /var/www/html/ && patch -p1 < 36883.diff && patch -p1 < ignore_and_warn_on_non_numeric_version_timestamp.patch
 COPY ./globalsiteselector-${gss_version}.tar.gz /tmp/globalsiteselector.tar.gz
 RUN cd /tmp && tar xfvz /tmp/globalsiteselector.tar.gz && mv /tmp/globalsiteselector /var/www/html/apps/
 RUN wget https://github.com/nextcloud-releases/richdocuments/releases/download/v${richdocuments_version}/richdocuments-v${richdocuments_version}.tar.gz -O /tmp/richdocuments.tar.gz \
