@@ -95,6 +95,6 @@ RUN wget  https://github.com/pondersource/nc-sciencemesh/archive/refs/heads/main
 RUN cd /tmp/nc-sciencemesh-main/ && make  && mv /tmp/nc-sciencemesh-main/ /var/www/html/custom_apps/sciencemesh
 COPY --chown=root:root ./nextcloud-rds.tar.gz /tmp
 RUN cd /tmp && tar xfv nextcloud-rds.tar.gz && mv rds/ /var/www/html/custom_apps
-RUN rm -rf /tmp/*.tar.* 
+RUN rm -rf /tmp/*.tar.* && chown -R www-data:root /var/www/html 
 RUN usermod -a -G tty www-data
 RUN apt remove -y wget curl make npm patch && apt autoremove -y
