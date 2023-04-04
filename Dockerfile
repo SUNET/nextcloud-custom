@@ -56,12 +56,22 @@ RUN mkdir -p /etc/apache2/mods-enabled/ \
   && ln -s /etc/apache2/mods-available/ssl.load /etc/apache2/mods-enabled/
 COPY --chown=root:root ./000-default.conf /etc/apache2/sites-available/
 COPY --chown=root:root ./cron.sh /cron.sh
+
+## DONT ADD STUFF BETWEEN HERE
 RUN wget ${nc_download_url} -O /tmp/nextcloud.zip && cd /tmp && unzip /tmp/nextcloud.zip && cd /tmp/nextcloud \
   &&  mkdir -p /var/www/html/data && touch /var/www/html/data/.ocdata && mkdir /var/www/html/config \
-  && mkdir /var/www/html/custom_apps && cp -a /tmp/nextcloud/* /var/www/html && cp -a /tmp/nextcloud/.[^.]* /var/www/html \
-  && rm -rf /tmp/nextcloud && rm -rf /var/www/html/apps/globalsiteselector
+   && cp -a /tmp/nextcloud/* /var/www/html && cp -a /tmp/nextcloud/.[^.]* /var/www/html \
+  &&  chown -R www-data:root /var/www/html && chmod +x /var/www/html/occ &&rm -rf /tmp/nextcloud
+RUN php /var/www/html/occ integrity:check-core
+## AND HERE, OR CODE INTEGRITY CHECK MIGHT FAIL, AND IMAGE WILL NOT BUILD
+
+## VARIOUS PATCHES COMES HERE IF NEEDED
 COPY ./ignore_and_warn_on_non_numeric_version_timestamp.patch /var/www/html/
 RUN cd /var/www/html/ && patch -p1 < ignore_and_warn_on_non_numeric_version_timestamp.patch
+
+## INSTALL APPS
+RUN mkdir /var/www/html/custom_apps
+RUN rm -rf /var/www/html/apps/globalsiteselector
 RUN wget https://github.com/nextcloud/globalsiteselector/archive/refs/tags/v${gss_version}.tar.gz -O /tmp/globalsiteselector.tar.gz \
    && cd /tmp && tar xfvz /tmp/globalsiteselector.tar.gz \
   && mv /tmp/globalsiteselector-* /var/www/html/apps/globalsiteselector
@@ -85,6 +95,6 @@ RUN wget  https://github.com/pondersource/nc-sciencemesh/archive/refs/heads/main
 RUN cd /tmp/nc-sciencemesh-main/ && make  && mv /tmp/nc-sciencemesh-main/ /var/www/html/custom_apps/sciencemesh
 COPY --chown=root:root ./nextcloud-rds.tar.gz /tmp
 RUN cd /tmp && tar xfv nextcloud-rds.tar.gz && mv rds/ /var/www/html/custom_apps
-RUN rm -rf /tmp/*.tar.* &&  chown -R www-data:root /var/www/html && chmod +x /var/www/html/occ
+RUN rm -rf /tmp/*.tar.* 
 RUN usermod -a -G tty www-data
 RUN apt remove -y wget curl make npm patch && apt autoremove -y
