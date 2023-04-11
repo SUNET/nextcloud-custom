@@ -70,8 +70,10 @@ RUN php /var/www/html/occ integrity:check-core
 ## VARIOUS PATCHES COMES HERE IF NEEDED
 COPY ./ignore_and_warn_on_non_numeric_version_timestamp.patch /var/www/html/
 COPY ./gss_fix_missing_event_user_login.patch /var/www/html/
+COPY ./log_locks.patch /var/www/html/
 RUN cd /var/www/html/ && patch -p1 < ignore_and_warn_on_non_numeric_version_timestamp.patch \
-  && patch -p1 < gss_fix_missing_event_user_login.patch
+  && patch -p1 < gss_fix_missing_event_user_login.patch \
+  && patch -p1 < log_locks.patch
 
 ## Install apps from local sources
 RUN rm -rf /var/www/html/apps/globalsiteselector && rm -rf /var/www/html/apps/user_saml
