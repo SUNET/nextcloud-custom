@@ -2,17 +2,49 @@ diff --git a/lib/Controller/SlaveController.php b/lib/Controller/SlaveController
 index 97d23e9..a1190d8 100644
 --- a/lib/Controller/SlaveController.php
 +++ b/lib/Controller/SlaveController.php
-@@ -173,9 +173,10 @@ public function autoLogin(string $jwt): RedirectResponse {
+@@ -37,6 +37,7 @@
+ use OCP\AppFramework\Http\DataResponse;
+ use OCP\AppFramework\Http\RedirectResponse;
+ use OCP\AppFramework\OCSController;
++use OCP\IConfig;
+ use OCP\IRequest;
+ use OCP\ISession;
+ use OCP\IURLGenerator;
+@@ -62,6 +63,7 @@
+ 	private IUserManager $userManager;
+ 	private UserBackend $userBackend;
+ 	private ISession $session;
++	private IConfig $config;
+ 	private Manager $twoFactorManager;
+ 	private SlaveService $slaveService;
+ 	private LoggerInterface $logger;
+@@ -72,6 +74,7 @@
+ 		GlobalSiteSelector $gss,
+ 		IUserSession $userSession,
+ 		ISession $session,
++		IConfig $config,
+ 		Manager $twoFactorManager,
+ 		IURLGenerator $urlGenerator,
+ 		ICrypto $crypto,
+@@ -91,6 +94,7 @@
+ 		$this->userManager = $userManager;
+ 		$this->userBackend = $userBackend;
+ 		$this->session = $session;
++		$this->config = $config;
+ 		$this->slaveService = $slaveService;
+ 		$this->logger = $logger;
+ 	}
+@@ -160,10 +164,10 @@
+ 
  		$this->logger->debug('all good. creating session');
  		$this->userSession->createSessionToken($this->request, $uid, $uid, null, IToken::REMEMBER);
- 
+-
 -//		$user = $this->userManager->get($uid);
 -//		$this->twoFactorManager->prepareTwoFactorLogin($user, false);
 -
-+		if (filter_var($this->config->getAppValue('globalsiteselector', 'enable_mfa'), FILTER_VALIDATE_BOOLEAN)) {
++		if(filter_var($this->config->getAppValue('globalsiteselector', 'enable_mfa'), FILTER_VALIDATE_BOOLEAN)) {
 +			$user = $this->userManager->get($uid);
 +			$this->twoFactorManager->prepareTwoFactorLogin($user, false);
 + 		}
  		$this->slaveService->updateUserById($uid);
- 		$this->logger->debug('userdata updated on lus');
- 
+ 		$this->logger->debug('userdata updated on lus'); 
