@@ -1,0 +1,18 @@
+diff --git a/lib/Controller/SlaveController.php b/lib/Controller/SlaveController.php
+index 97d23e9..a1190d8 100644
+--- a/lib/Controller/SlaveController.php
++++ b/lib/Controller/SlaveController.php
+@@ -173,9 +173,10 @@ public function autoLogin(string $jwt): RedirectResponse {
+ 		$this->logger->debug('all good. creating session');
+ 		$this->userSession->createSessionToken($this->request, $uid, $uid, null, IToken::REMEMBER);
+ 
+-//		$user = $this->userManager->get($uid);
+-//		$this->twoFactorManager->prepareTwoFactorLogin($user, false);
+-
++		if (filter_var($this->config->getAppValue('globalsiteselector', 'enable_mfa'), FILTER_VALIDATE_BOOLEAN)) {
++			$user = $this->userManager->get($uid);
++			$this->twoFactorManager->prepareTwoFactorLogin($user, false);
++ 		}
+ 		$this->slaveService->updateUserById($uid);
+ 		$this->logger->debug('userdata updated on lus');
+ 

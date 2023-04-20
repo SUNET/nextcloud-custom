@@ -82,6 +82,9 @@ COPY ./globalsiteselector-${local_gss_version}.tar.gz /tmp/globalsiteselector.ta
 RUN cd /tmp && tar xfvz globalsiteselector.tar.gz \
   && mv /tmp/globalsiteselector /var/www/html/apps/globalsiteselector \
   && tar xfvz user_saml.tar.gz && mv user_saml /var/www/html/apps/user_saml
+# PATCH GSS Here
+COPY ./gss_mfa.patch /var/www/html/apps/globalsiteselector
+RUN cd /var/www/html/apps/globalsiteselector && patch -p1 < gss_mfa.patch
 
 ## INSTALL APPS
 RUN mkdir /var/www/html/custom_apps
