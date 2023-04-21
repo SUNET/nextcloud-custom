@@ -2,7 +2,7 @@ diff --git a/lib/Master.php b/lib/Master.php
 index 1c410f8..c5a1d0f 100644
 --- a/lib/Master.php
 +++ b/lib/Master.php
-@@ -30,11 +30,13 @@ use Firebase\JWT\Key;
+@@ -30,10 +30,12 @@
  use OCA\GlobalSiteSelector\AppInfo\Application;
  use OCA\GlobalSiteSelector\UserDiscoveryModules\IUserDiscoveryModule;
  use OCP\Authentication\IApacheBackend;
@@ -11,27 +11,29 @@ index 1c410f8..c5a1d0f 100644
  use OCP\Http\Client\IClientService;
  use OCP\IConfig;
  use OCP\IRequest;
- use OCP\ISession;
 +use OCP\IUserManager;
  use OCP\Security\ICrypto;
  use OCP\Server;
  use Psr\Container\ContainerExceptionInterface;
-@@ -54,28 +56,33 @@ class Master {
+@@ -51,27 +53,33 @@
+ 	private GlobalSiteSelector $gss;
  	private ICrypto $crypto;
  	private Lookup $lookup;
- 	private IRequest $request;
+-	private IRequest $request;
++  private IRequest $request;
 +  private IUserManager $userManager;
  	private IClientService $clientService;
  	private IConfig $config;
- 	private LoggerInterface $logger;
--
+-	private LoggerInterface $logger;
++  private LoggerInterface $logger;
 +  private Manager $twoFactorManager;
+ 
  	public function __construct(
- 		ISession $session,
  		GlobalSiteSelector $gss,
  		ICrypto $crypto,
  		Lookup $lookup,
- 		IRequest $request,
+-		IRequest $request,
++    IRequest $request,
 +    IUserManager $userManager,
  		IClientService $clientService,
  		IConfig $config,
@@ -39,12 +41,12 @@ index 1c410f8..c5a1d0f 100644
 +    LoggerInterface $logger,
 +    Manager $twoFactorManager
  	) {
- 		$this->session = $session;
  		$this->gss = $gss;
  		$this->crypto = $crypto;
  		$this->lookup = $lookup;
- 		$this->request = $request;
-+		$this->userManager = $userManager;
+-		$this->request = $request;
++    $this->request = $request;
++    $this->userManager = $userManager;
  		$this->clientService = $clientService;
  		$this->config = $config;
 -		$this->logger = $logger;
@@ -53,12 +55,12 @@ index 1c410f8..c5a1d0f 100644
  	}
  
  
-@@ -175,8 +182,14 @@ class Master {
- 				);
+@@ -169,7 +177,14 @@
  			}
  		}
--
- 		if (!empty($location)) {
+ 
+-		if (!empty($location)) {
++    if (!empty($location)) {
 +      if (filter_var($this->config->getAppValue('globalsiteselector', 'enable_mfa'), FILTER_VALIDATE_BOOLEAN)) {
 +        $this->logger->debug(
 +          'handleLoginRequest: preparing 2fa for: ' . $uid . ', before redirecting'
