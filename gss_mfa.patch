@@ -1,50 +1,71 @@
-diff --git a/lib/Controller/SlaveController.php b/lib/Controller/SlaveController.php
-index 97d23e9..a1190d8 100644
---- a/lib/Controller/SlaveController.php
-+++ b/lib/Controller/SlaveController.php
-@@ -37,6 +37,7 @@
- use OCP\AppFramework\Http\DataResponse;
- use OCP\AppFramework\Http\RedirectResponse;
- use OCP\AppFramework\OCSController;
-+use OCP\IConfig;
+diff --git a/lib/Master.php b/lib/Master.php
+index 1c410f8..c5a1d0f 100644
+--- a/lib/Master.php
++++ b/lib/Master.php
+@@ -30,11 +30,13 @@ use Firebase\JWT\Key;
+ use OCA\GlobalSiteSelector\AppInfo\Application;
+ use OCA\GlobalSiteSelector\UserDiscoveryModules\IUserDiscoveryModule;
+ use OCP\Authentication\IApacheBackend;
++use OC\Authentication\TwoFactorAuth\Manager;
+ use OCP\HintException;
+ use OCP\Http\Client\IClientService;
+ use OCP\IConfig;
  use OCP\IRequest;
  use OCP\ISession;
- use OCP\IURLGenerator;
-@@ -62,6 +63,7 @@
- 	private IUserManager $userManager;
- 	private UserBackend $userBackend;
- 	private ISession $session;
-+	private IConfig $config;
- 	private Manager $twoFactorManager;
- 	private SlaveService $slaveService;
++use OCP\IUserManager;
+ use OCP\Security\ICrypto;
+ use OCP\Server;
+ use Psr\Container\ContainerExceptionInterface;
+@@ -54,28 +56,33 @@ class Master {
+ 	private ICrypto $crypto;
+ 	private Lookup $lookup;
+ 	private IRequest $request;
++  private IUserManager $userManager;
+ 	private IClientService $clientService;
+ 	private IConfig $config;
  	private LoggerInterface $logger;
-@@ -72,6 +74,7 @@
- 		GlobalSiteSelector $gss,
- 		IUserSession $userSession,
+-
++  private Manager $twoFactorManager;
+ 	public function __construct(
  		ISession $session,
-+		IConfig $config,
- 		Manager $twoFactorManager,
- 		IURLGenerator $urlGenerator,
+ 		GlobalSiteSelector $gss,
  		ICrypto $crypto,
-@@ -91,6 +94,7 @@
- 		$this->userManager = $userManager;
- 		$this->userBackend = $userBackend;
+ 		Lookup $lookup,
+ 		IRequest $request,
++    IUserManager $userManager,
+ 		IClientService $clientService,
+ 		IConfig $config,
+-		LoggerInterface $logger
++    LoggerInterface $logger,
++    Manager $twoFactorManager
+ 	) {
  		$this->session = $session;
-+		$this->config = $config;
- 		$this->slaveService = $slaveService;
- 		$this->logger = $logger;
+ 		$this->gss = $gss;
+ 		$this->crypto = $crypto;
+ 		$this->lookup = $lookup;
+ 		$this->request = $request;
++		$this->userManager = $userManager;
+ 		$this->clientService = $clientService;
+ 		$this->config = $config;
+-		$this->logger = $logger;
++    $this->logger = $logger;
++    $this->twoFactorManager = $twoFactorManager;
  	}
-@@ -160,10 +164,10 @@
  
- 		$this->logger->debug('all good. creating session');
- 		$this->userSession->createSessionToken($this->request, $uid, $uid, null, IToken::REMEMBER);
+ 
+@@ -175,8 +182,14 @@ class Master {
+ 				);
+ 			}
+ 		}
 -
--//		$user = $this->userManager->get($uid);
--//		$this->twoFactorManager->prepareTwoFactorLogin($user, false);
--
-+		if(filter_var($this->config->getAppValue('globalsiteselector', 'enable_mfa'), FILTER_VALIDATE_BOOLEAN)) {
-+			$user = $this->userManager->get($uid);
-+			$this->twoFactorManager->prepareTwoFactorLogin($user, false);
-+ 		}
- 		$this->slaveService->updateUserById($uid);
- 		$this->logger->debug('userdata updated on lus'); 
+ 		if (!empty($location)) {
++      if (filter_var($this->config->getAppValue('globalsiteselector', 'enable_mfa'), FILTER_VALIDATE_BOOLEAN)) {
++        $this->logger->debug(
++          'handleLoginRequest: preparing 2fa for: ' . $uid . ', before redirecting'
++        );
++        $user = $this->userManager->get($uid);
++        $this->twoFactorManager->prepareTwoFactorLogin($user, false);
++      }
+ 			$this->logger->debug(
+ 				'handleLoginRequest: redirecting user: ' . $uid . ' to ' . $this->normalizeLocation($location)
+ 			);
