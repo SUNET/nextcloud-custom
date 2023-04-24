@@ -7,8 +7,6 @@ ARG nc_download_url=https://download.nextcloud.com/.customers/server/25.0.5-e065
 ARG checksum_version=1.2.0
 ARG drive_email_template_version=1.0.0
 ARG gss_version=2.1.1
-ARG local_gss_version=2.3.1
-ARG local_user_saml_version=5.1.3-beta1
 ARG loginpagebutton_version=1.0.0
 ARG richdocuments_version=7.1.2
 ARG theming_customcss_version=1.13.0
@@ -69,25 +67,14 @@ RUN php /var/www/html/occ integrity:check-core
 
 ## VARIOUS PATCHES COMES HERE IF NEEDED
 COPY ./ignore_and_warn_on_non_numeric_version_timestamp.patch /var/www/html/
-COPY ./gss_fix_missing_event_user_login.patch /var/www/html/
-COPY ./log_locks.patch /var/www/html/
-RUN cd /var/www/html/ && patch -p1 < ignore_and_warn_on_non_numeric_version_timestamp.patch \
-  && patch -p1 < gss_fix_missing_event_user_login.patch \
-  && patch -p1 < log_locks.patch
-
-## Install apps from local sources
-RUN rm -rf /var/www/html/apps/globalsiteselector && rm -rf /var/www/html/apps/user_saml
-COPY ./user_saml-${local_user_saml_version}.tar.gz /tmp/user_saml.tar.gz
-COPY ./globalsiteselector-${local_gss_version}.tar.gz /tmp/globalsiteselector.tar.gz
-RUN cd /tmp && tar xfvz globalsiteselector.tar.gz \
-  && mv /tmp/globalsiteselector /var/www/html/apps/globalsiteselector \
-  && tar xfvz user_saml.tar.gz && mv user_saml /var/www/html/apps/user_saml
-# PATCH GSS Here
-COPY ./gss_mfa.patch /var/www/html/apps/globalsiteselector
-RUN cd /var/www/html/apps/globalsiteselector && patch -p1 < gss_mfa.patch
+RUN cd /var/www/html/ && patch -p1 < ignore_and_warn_on_non_numeric_version_timestamp.patch
 
 ## INSTALL APPS
 RUN mkdir /var/www/html/custom_apps
+RUN rm -rf /var/www/html/apps/globalsiteselector
+RUN wget https://github.com/nextcloud/globalsiteselector/archive/refs/tags/v${gss_version}.tar.gz -O /tmp/globalsiteselector.tar.gz \
+   && cd /tmp && tar xfvz /tmp/globalsiteselector.tar.gz \
+  && mv /tmp/globalsiteselector-* /var/www/html/apps/globalsiteselector
 RUN wget https://github.com/nextcloud-releases/richdocuments/releases/download/v${richdocuments_version}/richdocuments-v${richdocuments_version}.tar.gz -O /tmp/richdocuments.tar.gz \
   && cd /tmp && tar xfvz /tmp/richdocuments.tar.gz && mv /tmp/richdocuments /var/www/html/custom_apps 
 RUN wget https://github.com/nextcloud-releases/twofactor_webauthn/releases/download/v${twofactor_webauthn_version}/twofactor_webauthn-v${twofactor_webauthn_version}.tar.gz \
