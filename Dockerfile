@@ -1,16 +1,14 @@
 FROM debian:bullseye-slim
 
 # Set Nextcloud download url here
-ARG nc_download_url=https://download.nextcloud.com/.customers/server/25.0.5-e065c72e/nextcloud-25.0.5-enterprise.zip
+ARG nc_download_url=https://download.nextcloud.com/.customers/server/26.0.1-21154162/nextcloud-26.0.1-enterprise.zip
 
 # Set app versions here
-ARG checksum_version=1.2.0
+ARG checksum_version=1.2.1
 ARG drive_email_template_version=1.0.0
-ARG gss_version=2.1.1
-ARG local_gss_version=2.3.1
-ARG local_user_saml_version=5.1.3-beta1
+ARG local_user_saml_version=5.1.3-beta2
 ARG loginpagebutton_version=1.0.0
-ARG richdocuments_version=7.1.2
+ARG richdocuments_version=8.0.1
 ARG theming_customcss_version=1.13.0
 ARG twofactor_admin_version=4.1.9
 ARG twofactor_webauthn_version=1.1.2
@@ -20,7 +18,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Etc/UTC
 RUN apt-get update && apt-get upgrade -y && apt-get install -y wget gnupg2
 RUN bash -c 'echo "deb https://packages.sury.org/php/ bullseye main" > /etc/apt/sources.list.d/sury-php.list'
-RUN bash -c 'wget -qO - https://packages.sury.org/php/apt.gpg | apt-key add -'
+RUN bash -c 'wget -q -O /etc/apt/trusted.gpg.d/sury.gpg https://packages.sury.org/php/apt.gpg'
 RUN apt-get update && apt-get install -y  \
   apache2 \
   busybox \
@@ -69,19 +67,14 @@ RUN php /var/www/html/occ integrity:check-core
 
 ## VARIOUS PATCHES COMES HERE IF NEEDED
 COPY ./ignore_and_warn_on_non_numeric_version_timestamp.patch /var/www/html/
-COPY ./gss_fix_missing_event_user_login.patch /var/www/html/
-COPY ./log_locks.patch /var/www/html/
+COPY ./federated_share_displayname.patch /var/www/html/
 RUN cd /var/www/html/ && patch -p1 < ignore_and_warn_on_non_numeric_version_timestamp.patch \
-  && patch -p1 < gss_fix_missing_event_user_login.patch \
-  && patch -p1 < log_locks.patch
+  && patch -p1 < federated_share_displayname.patch
 
-## Install apps from local sources
-RUN rm -rf /var/www/html/apps/globalsiteselector && rm -rf /var/www/html/apps/user_saml
+## Install apps from local sources inplace of bundled apps
+RUN rm -rf /var/www/html/apps/user_saml
 COPY ./user_saml-${local_user_saml_version}.tar.gz /tmp/user_saml.tar.gz
-COPY ./globalsiteselector-${local_gss_version}.tar.gz /tmp/globalsiteselector.tar.gz
-RUN cd /tmp && tar xfvz globalsiteselector.tar.gz \
-  && mv /tmp/globalsiteselector /var/www/html/apps/globalsiteselector \
-  && tar xfvz user_saml.tar.gz && mv user_saml /var/www/html/apps/user_saml
+RUN cd /tmp && tar xfvz user_saml.tar.gz && mv user_saml /var/www/html/apps/user_saml
 
 ## INSTALL APPS
 RUN mkdir /var/www/html/custom_apps
