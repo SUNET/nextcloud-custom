@@ -68,8 +68,10 @@ RUN php /var/www/html/occ integrity:check-core
 ## VARIOUS PATCHES COMES HERE IF NEEDED
 COPY ./ignore_and_warn_on_non_numeric_version_timestamp.patch /var/www/html/
 COPY ./federated_share_displayname.patch /var/www/html/
+COPY ./locks_log.patch /var/www/html/
 RUN cd /var/www/html/ && patch -p1 < ignore_and_warn_on_non_numeric_version_timestamp.patch \
-  && patch -p1 < federated_share_displayname.patch
+  && patch -p1 < federated_share_displayname.patch \
+  && patch -p1 < locks_log.patch
 
 ## Install apps from local sources inplace of bundled apps
 RUN rm -rf /var/www/html/apps/user_saml
