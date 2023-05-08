@@ -7,6 +7,7 @@ ARG nc_download_url=https://download.nextcloud.com/.customers/server/26.0.1-2115
 ARG checksum_version=1.2.1
 ARG drive_email_template_version=1.0.0
 ARG local_user_saml_version=5.1.3-beta2
+ARG local_gss_version=2.1.1
 ARG loginpagebutton_version=1.0.0
 ARG richdocuments_version=8.0.1
 ARG theming_customcss_version=1.13.0
@@ -69,14 +70,21 @@ RUN php /var/www/html/occ integrity:check-core
 COPY ./ignore_and_warn_on_non_numeric_version_timestamp.patch /var/www/html/
 COPY ./federated_share_displayname.patch /var/www/html/
 COPY ./locks_log.patch /var/www/html/
+COPY ./deadlock.patch /var/www/html/
 RUN cd /var/www/html/ && patch -p1 < ignore_and_warn_on_non_numeric_version_timestamp.patch \
   && patch -p1 < federated_share_displayname.patch \
+  && patch -p1 < deadlock.patch \
   && patch -p1 < locks_log.patch
 
 ## Install apps from local sources inplace of bundled apps
+# usersaml
 RUN rm -rf /var/www/html/apps/user_saml
 COPY ./user_saml-${local_user_saml_version}.tar.gz /tmp/user_saml.tar.gz
 RUN cd /tmp && tar xfvz user_saml.tar.gz && mv user_saml /var/www/html/apps/user_saml
+#gss
+#RUN rm -rf /var/www/html/apps/globalsiteselector
+#COPY ./globalsiteselector-${local_gss_version}.tar.gz /tmp/globalsiteselector.tar.gz
+#RUN cd /tmp && tar xfvz globalsiteselector.tar.gz && mv globalsiteselector-${local_gss_version} /var/www/html/apps/globalsiteselector
 
 ## INSTALL APPS
 RUN mkdir /var/www/html/custom_apps
