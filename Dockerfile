@@ -80,13 +80,13 @@ RUN cd /var/www/html/ && patch -p1 < ignore_and_warn_on_non_numeric_version_time
 
 ## Install apps from local sources inplace of bundled apps
 # usersaml
-#RUN rm -rf /var/www/html/apps/user_saml
-#COPY ./user_saml-${local_user_saml_version}.tar.gz /tmp/user_saml.tar.gz
-#RUN cd /tmp && tar xfvz user_saml.tar.gz && mv user_saml /var/www/html/apps/user_saml
+RUN rm -rf /var/www/html/apps/user_saml
+COPY ./user_saml-${local_user_saml_version}.tar.gz /tmp/user_saml.tar.gz
+RUN cd /tmp && tar xfvz user_saml.tar.gz && mv user_saml /var/www/html/apps/user_saml
 #gss
-RUN rm -rf /var/www/html/apps/globalsiteselector
-COPY ./globalsiteselector-${local_gss_version}.tar.gz /tmp/globalsiteselector.tar.gz
-RUN cd /tmp && tar xfvz globalsiteselector.tar.gz && mv globalsiteselector-${local_gss_version} /var/www/html/apps/globalsiteselector
+# RUN rm -rf /var/www/html/apps/globalsiteselector
+# COPY ./globalsiteselector-${local_gss_version}.tar.gz /tmp/globalsiteselector.tar.gz
+# RUN cd /tmp && tar xfvz globalsiteselector.tar.gz && mv globalsiteselector-${local_gss_version} /var/www/html/apps/globalsiteselector
 
 ## INSTALL APPS
 RUN mkdir /var/www/html/custom_apps
