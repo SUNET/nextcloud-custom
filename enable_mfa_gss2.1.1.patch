@@ -1,5 +1,5 @@
---- lib/Controller/SlaveController.php.bak	2023-05-15 12:09:59.781413663 +0200
-+++ lib/Controller/SlaveController.php	2023-05-15 12:21:22.377966117 +0200
+--- a/lib/Controller/SlaveController.php	2023-05-15 12:09:59.781413663 +0200
++++ b/lib/Controller/SlaveController.php	2023-05-15 12:21:22.377966117 +0200
 @@ -26,6 +26,7 @@
  use Firebase\JWT\ExpiredException;
  use Firebase\JWT\JWT;
