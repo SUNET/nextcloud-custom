@@ -100,7 +100,7 @@ ARG files_accesscontrol_version=1.16.0
 RUN mkdir -p /var/www/html/custom_apps
 RUN wget https://github.com/nextcloud-releases/files_accesscontrol/releases/download/v${files_accesscontrol_version}/files_accesscontrol-v${files_accesscontrol_version}.tar.gz \
     -O /tmp/files_accesscontrol.tar.gz && cd /tmp && tar xfvz files_accesscontrol.tar.gz \
-    && mv /tmp/files_accesscontrol /var/www/html/custom_apps
+    && mv /tmp/files_accesscontrol /var/www/html/apps
 RUN wget https://github.com/pondersource/mfazones/blob/main/release/mfazones.tar.gz?raw=true -O /tmp/mfazones.tar.gz \
     && cd /tmp/ && tar xfvz mfazones.tar.gz && mv /tmp/mfazones /var/www/html/custom_apps
 ######## MFA BLOCK ##########
