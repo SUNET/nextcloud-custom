@@ -1,0 +1,66 @@
+--- a/lib/Controller/SlaveController.php	2023-05-15 12:09:59.781413663 +0200
++++ b/lib/Controller/SlaveController.php	2023-05-15 12:21:22.377966117 +0200
+@@ -26,6 +26,7 @@
+ use Firebase\JWT\ExpiredException;
+ use Firebase\JWT\JWT;
+ use OC\Authentication\Token\IToken;
++use OC\Authentication\TwoFactorAuth\Manager;
+ use OCA\GlobalSiteSelector\GlobalSiteSelector;
+ use OCA\GlobalSiteSelector\TokenHandler;
+ use OCA\GlobalSiteSelector\UserBackend;
+@@ -33,6 +34,7 @@
+ use OCP\AppFramework\Http\DataResponse;
+ use OCP\AppFramework\Http\RedirectResponse;
+ use OCP\AppFramework\OCSController;
++use OCP\IConfig;
+ use OCP\ILogger;
+ use OCP\IRequest;
+ use OCP\ISession;
+@@ -63,12 +65,16 @@
+ 	/** @var IURLGenerator */
+ 	private $urlGenerator;
+ 
++ 	private IConfig $config;
++
+ 	/** @var ICrypto */
+ 	private $crypto;
+ 
+ 	/** @var TokenHandler */
+ 	private $tokenHandler;
+ 
++ 	private Manager $twoFactorManager;
++
+ 	/** @var IUserManager */
+ 	private $userManager;
+ 
+@@ -100,7 +106,9 @@
+ 								IUserSession $userSession,
+ 								ISession $session,
+ 								IURLGenerator $urlGenerator,
++								IConfig $config,
+ 								ICrypto $crypto,
++								Manager $twoFactorManager,
+ 								TokenHandler $tokenHandler,
+ 								IUserManager $userManager,
+ 								UserBackend $userBackend
+@@ -110,7 +118,9 @@
+ 		$this->logger = $logger;
+ 		$this->userSession = $userSession;
+ 		$this->urlGenerator = $urlGenerator;
++		$this->config = $config;
+ 		$this->crypto = $crypto;
++		$this->twoFactorManager = $twoFactorManager;
+ 		$this->tokenHandler = $tokenHandler;
+ 		$this->userManager = $userManager;
+ 		$this->userBackend = $userBackend;
+@@ -173,6 +183,10 @@
+ 		}
+ 
+ 		$this->userSession->createSessionToken($this->request, $uid, $uid, null, IToken::REMEMBER);
++
++ 		$user = $this->userManager->get($uid);
++		$this->twoFactorManager->prepareTwoFactorLogin($user, false);
++
+ 		$home = $this->urlGenerator->getAbsoluteURL($target);
+ 		return new RedirectResponse($home);
+ 
