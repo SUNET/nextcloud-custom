@@ -71,44 +71,27 @@ COPY ./ignore_and_warn_on_non_numeric_version_timestamp.patch /var/www/html/
 COPY ./federated_share_displayname.patch /var/www/html/
 COPY ./deadlock.patch /var/www/html/
 COPY ./files_external.patch /var/www/html/
+COPY ./redis-atomic-stable26.patch /var/www/html/
 COPY ./security-may-2023-26.patch /var/www/html/
 RUN cd /var/www/html/ && patch -p1 < ignore_and_warn_on_non_numeric_version_timestamp.patch \
   && patch -p1 < federated_share_displayname.patch \
   && patch -p1 < deadlock.patch \
   && patch -p1 < files_external.patch \
+  && patch -p1 < redis-atomic-stable26.patch \
   && patch -p1 < security-may-2023-26.patch
 
 ## Install apps from local sources inplace of bundled apps
 # usersaml
-RUN rm -rf /var/www/html/apps/user_saml
-COPY ./user_saml-${local_user_saml_version}.tar.gz /tmp/user_saml.tar.gz
-RUN cd /tmp && tar xfvz user_saml.tar.gz && mv user_saml /var/www/html/apps/user_saml
+# RUN rm -rf /var/www/html/apps/user_saml
+# COPY ./user_saml-${local_user_saml_version}.tar.gz /tmp/user_saml.tar.gz
+# RUN cd /tmp && tar xfvz user_saml.tar.gz && mv user_saml /var/www/html/apps/user_saml
 #gss
-#RUN rm -rf /var/www/html/apps/globalsiteselector
-#COPY ./globalsiteselector-${local_gss_version}.tar.gz /tmp/globalsiteselector.tar.gz
-#RUN cd /tmp && tar xfvz globalsiteselector.tar.gz && mv globalsiteselector-${local_gss_version} /var/www/html/apps/globalsiteselector
-
-
-######## MFA BLOCK ##########
-# Enable local mfa in gss slave
-COPY ./enable_mfa_gss.patch /var/www/html/apps/globalsiteselector
-RUN cd /var/www/html/apps/globalsiteselector && patch -p1 < enable_mfa_gss.patch
-# Add mfa core patch
-COPY ./mfa_verified.patch /var/www/html/
-RUN cd /var/www/html/ && patch -p1 < mfa_verified.patch
-
-# Apps needed for mfa
-ARG files_accesscontrol_version=1.16.0
-RUN mkdir -p /var/www/html/custom_apps
-RUN wget https://github.com/nextcloud-releases/files_accesscontrol/releases/download/v${files_accesscontrol_version}/files_accesscontrol-v${files_accesscontrol_version}.tar.gz \
-    -O /tmp/files_accesscontrol.tar.gz && cd /tmp && tar xfvz files_accesscontrol.tar.gz \
-    && mv /tmp/files_accesscontrol /var/www/html/apps
-RUN wget https://github.com/pondersource/mfazones/blob/main/release/mfazones.tar.gz?raw=true -O /tmp/mfazones.tar.gz \
-    && cd /tmp/ && tar xfvz mfazones.tar.gz && mv /tmp/mfazones /var/www/html/custom_apps
-######## MFA BLOCK ##########
+RUN rm -rf /var/www/html/apps/globalsiteselector
+COPY ./globalsiteselector-${local_gss_version}.tar.gz /tmp/globalsiteselector.tar.gz
+RUN cd /tmp && tar xfvz globalsiteselector.tar.gz && mv globalsiteselector-${local_gss_version} /var/www/html/apps/globalsiteselector
 
 ## INSTALL APPS
-RUN mkdir -p /var/www/html/custom_apps
+RUN mkdir /var/www/html/custom_apps
 RUN wget https://github.com/nextcloud-releases/richdocuments/releases/download/v${richdocuments_version}/richdocuments-v${richdocuments_version}.tar.gz -O /tmp/richdocuments.tar.gz \
   && cd /tmp && tar xfvz /tmp/richdocuments.tar.gz && mv /tmp/richdocuments /var/www/html/custom_apps 
 RUN wget https://github.com/nextcloud-releases/twofactor_webauthn/releases/download/v${twofactor_webauthn_version}/twofactor_webauthn-v${twofactor_webauthn_version}.tar.gz \
