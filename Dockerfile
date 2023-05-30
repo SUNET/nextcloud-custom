@@ -1,7 +1,16 @@
-FROM debian:bullseye-slim
+FROM php:8.1-rc-apache-bullseye
+
+# Set environment variables
+ENV APACHE_RUN_USER www-data
+ENV APACHE_RUN_GROUP www-data
+ENV APACHE_DOCUMENT_ROOT /var/www/html
+ENV APACHE_LOG_DIR /var/log/apache2
+ENV APACHE_PID_FILE /var/run/apache2/apache2.pid
+ENV APACHE_RUN_DIR /var/run/apache2
+ENV APACHE_LOCK_DIR /var/lock/apache2
 
 # Set Nextcloud download url here
-ARG nc_download_url=https://download.nextcloud.com/.customers/server/26.0.1-21154162/nextcloud-26.0.1-enterprise.zip
+ARG nc_download_url=https://download.nextcloud.com/.customers/server/26.0.2-8dbf9b02/nextcloud-26.0.2-enterprise.zip
 
 # Set app versions here
 ARG checksum_version=1.2.1
@@ -14,71 +23,117 @@ ARG theming_customcss_version=1.13.0
 ARG twofactor_admin_version=4.1.9
 ARG twofactor_webauthn_version=1.1.2
 
-# Should be no need to modify beyond this point, unless you need to patch something or add more apps
-ARG DEBIAN_FRONTEND=noninteractive
-ENV TZ=Etc/UTC
-RUN apt-get update && apt-get upgrade -y && apt-get install -y wget gnupg2
-RUN bash -c 'echo "deb https://packages.sury.org/php/ bullseye main" > /etc/apt/sources.list.d/sury-php.list'
-RUN bash -c 'wget -q -O /etc/apt/trusted.gpg.d/sury.gpg https://packages.sury.org/php/apt.gpg'
-RUN apt-get update && apt-get install -y  \
-  apache2 \
-  busybox \
-  bzip2 \
+# Pre-requisites for the extensions
+RUN set -ex; \
+  apt-get update && apt-get install -y \
+  freetype* \
+  libgmp* \
+  libicu* \
+  libldap* \
+  libmagickwand* \
+  libmemcached* \
+  libpng* \
+  libpq* \
+  libweb* \
+  libzip* \
+  zlib* \
   curl \
-  libapache2-mod-php8.0 \
-  libmagickcore-6.q16-6-extra \
+  gnupg2 \
   make \
   mariadb-client \
   npm \
   patch \
-  php8.0-apcu \
-  php8.0-imagick \
-  php8.0-redis \
-  php8.0-bcmath \
-  php8.0-curl \
-  php8.0-gd \
-  php8.0-gmp \
-  php8.0-intl \
-  php8.0-mbstring \
-  php8.0-mysql \
-  php8.0-xml \
-  php8.0-zip \
   redis-tools \
   ssl-cert \
   unzip \
-  vim
+  vim \
+  wget
+
+# PECL Modules
+RUN pecl install apcu \
+  pecl install memcached \
+  pecl install redis \
+  pecl install imagick
+
+# Adjusting freetype message error
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp
+
+# PHP Extensions needed
+RUN docker-php-ext-install -j "$(nproc)" \
+  pdo_mysql \
+  bcmath \
+  exif \
+  gd \
+  gmp \
+  intl \
+  ldap \
+  opcache \
+  pcntl \
+  pdo_pgsql \
+  zip
+
+# More extensions
+RUN docker-php-ext-enable \
+  imagick \
+  apcu \
+  memcached \
+  redis
+
+# Enabling Modules
+RUN a2enmod dir env headers mime rewrite setenvif deflate
+
+# Adjusting PHP settings
+RUN { \
+  echo 'opcache.interned_strings_buffer=32'; \
+  echo 'opcache.save_comments=1'; \
+  echo 'opcache.revalidate_freq=60'; \
+  } > /usr/local/etc/php/conf.d/opcache-recommended.ini; \
+  \
+  echo 'extension=apcu.so'; \
+  echo 'apc.enable_cli=1' >> /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini; \
+  \
+  { \
+  echo 'memory_limit=512M'; \
+  echo 'upload_max_filesize=10G'; \
+  echo 'post_max_size=10G'; \
+  echo 'max_execution_time=3600'; \
+  echo 'max_input_time=3600'; \
+  echo 'session.save_handler = redis'; \
+  echo 'session.save_path = "tcp://${REDIS_HOST}:6379"'; \
+  } > /usr/local/etc/php/conf.d/nce.ini
+
+# Update apache configuration for ServerName
+RUN echo "ServerName localhost" | tee /etc/apache2/conf-available/servername.conf \
+  && a2enconf servername
+
+# Set permissions to allow non-root user to access necessary folders
+RUN chmod -R 777 ${APACHE_RUN_DIR} ${APACHE_LOCK_DIR} ${APACHE_LOG_DIR} ${APACHE_DOCUMENT_ROOT}
+
+# Should be no need to modify beyond this point, unless you need to patch something or add more apps
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=Etc/UTC
 RUN wget https://downloads.rclone.org/rclone-current-linux-amd64.deb \
   && dpkg -i ./rclone-current-linux-amd64.deb \
   && rm ./rclone-current-linux-amd64.deb && rm -rf /var/lib/apt/lists/*
-RUN mkdir -p /etc/apache2/mods-enabled/ \
-  && ln -s /etc/apache2/mods-available/rewrite.load  /etc/apache2/mods-enabled/ \
-  && ln -s /etc/apache2/mods-available/socache_shmcb.load /etc/apache2/mods-enabled/ \
-  && ln -s /etc/apache2/mods-available/ssl.conf /etc/apache2/mods-enabled/ \
-  && ln -s /etc/apache2/mods-available/ssl.load /etc/apache2/mods-enabled/
 COPY --chown=root:root ./000-default.conf /etc/apache2/sites-available/
 COPY --chown=root:root ./cron.sh /cron.sh
 
 ## DONT ADD STUFF BETWEEN HERE
 RUN wget ${nc_download_url} -O /tmp/nextcloud.zip && cd /tmp && unzip /tmp/nextcloud.zip && cd /tmp/nextcloud \
-  &&  mkdir -p /var/www/html/data && touch /var/www/html/data/.ocdata && mkdir /var/www/html/config \
-   && cp -a /tmp/nextcloud/* /var/www/html && cp -a /tmp/nextcloud/.[^.]* /var/www/html \
-  &&  chown -R www-data:root /var/www/html && chmod +x /var/www/html/occ &&rm -rf /tmp/nextcloud
+  && mkdir -p /var/www/html/data && touch /var/www/html/data/.ocdata && mkdir /var/www/html/config \
+  && cp -a /tmp/nextcloud/* /var/www/html && cp -a /tmp/nextcloud/.[^.]* /var/www/html \
+  && chown -R www-data:root /var/www/html && chmod +x /var/www/html/occ &&rm -rf /tmp/nextcloud
 RUN php /var/www/html/occ integrity:check-core
 ## AND HERE, OR CODE INTEGRITY CHECK MIGHT FAIL, AND IMAGE WILL NOT BUILD
 
 ## VARIOUS PATCHES COMES HERE IF NEEDED
-COPY ./ignore_and_warn_on_non_numeric_version_timestamp.patch /var/www/html/
 COPY ./federated_share_displayname.patch /var/www/html/
-COPY ./deadlock.patch /var/www/html/
-COPY ./files_external.patch /var/www/html/
+COPY ./ignore_and_warn_on_non_numeric_version_timestamp.patch /var/www/html/
 COPY ./redis-atomic-stable26.patch /var/www/html/
-COPY ./security-may-2023-26.patch /var/www/html/
-RUN cd /var/www/html/ && patch -p1 < ignore_and_warn_on_non_numeric_version_timestamp.patch \
+RUN cd /var/www/html/ \
   && patch -p1 < federated_share_displayname.patch \
-  && patch -p1 < deadlock.patch \
-  && patch -p1 < files_external.patch \
-  && patch -p1 < redis-atomic-stable26.patch \
-  && patch -p1 < security-may-2023-26.patch
+  && patch -p1 < ignore_and_warn_on_non_numeric_version_timestamp.patch \
+  && patch -p1 < redis-atomic-stable26.patch 
 
 ## Install apps from local sources inplace of bundled apps
 # usersaml
