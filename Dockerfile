@@ -51,9 +51,10 @@ RUN set -ex; \
 
 # PECL Modules
 RUN pecl install apcu \
+  pecl install imagick \
   pecl install memcached \
   pecl install redis \
-  pecl install imagick
+  pecl install sysvsem
 
 # Adjusting freetype message error
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp
