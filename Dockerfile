@@ -127,11 +127,9 @@ RUN php /var/www/html/occ integrity:check-core
 ## AND HERE, OR CODE INTEGRITY CHECK MIGHT FAIL, AND IMAGE WILL NOT BUILD
 
 ## VARIOUS PATCHES COMES HERE IF NEEDED
-COPY ./federated_share_displayname.patch /var/www/html/
 COPY ./ignore_and_warn_on_non_numeric_version_timestamp.patch /var/www/html/
 COPY ./redis-atomic-stable26.patch /var/www/html/
 RUN cd /var/www/html/ \
-  && patch -p1 < federated_share_displayname.patch \
   && patch -p1 < ignore_and_warn_on_non_numeric_version_timestamp.patch \
   && patch -p1 < redis-atomic-stable26.patch 
 
