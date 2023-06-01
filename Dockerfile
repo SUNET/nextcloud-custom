@@ -90,17 +90,7 @@ RUN { \
   } > /usr/local/etc/php/conf.d/opcache-recommended.ini; \
   \
   echo 'extension=apcu.so'; \
-  echo 'apc.enable_cli=1' >> /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini; \
-  \
-  { \
-  echo 'memory_limit=512M'; \
-  echo 'upload_max_filesize=10G'; \
-  echo 'post_max_size=10G'; \
-  echo 'max_execution_time=3600'; \
-  echo 'max_input_time=3600'; \
-  echo 'session.save_handler = redis'; \
-  echo 'session.save_path = "tcp://${REDIS_HOST}:6379"'; \
-  } > /usr/local/etc/php/conf.d/nce.ini
+  echo 'apc.enable_cli=1' >> /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini;
 
 # Update apache configuration for ServerName
 RUN echo "ServerName localhost" | tee /etc/apache2/conf-available/servername.conf \
