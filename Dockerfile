@@ -80,7 +80,7 @@ RUN docker-php-ext-enable \
   redis
 
 # Enabling Modules
-RUN a2enmod dir env headers mime rewrite setenvif deflate
+RUN a2enmod dir env headers mime rewrite setenvif deflate ssl
 
 # Adjusting PHP settings
 RUN { \
