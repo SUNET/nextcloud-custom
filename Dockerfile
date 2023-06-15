@@ -71,13 +71,11 @@ COPY ./ignore_and_warn_on_non_numeric_version_timestamp.patch /var/www/html/
 COPY ./federated_share_displayname.patch /var/www/html/
 COPY ./deadlock.patch /var/www/html/
 COPY ./files_external.patch /var/www/html/
-COPY ./redis-atomic-stable26.patch /var/www/html/
 COPY ./security-may-2023-26.patch /var/www/html/
 RUN cd /var/www/html/ && patch -p1 < ignore_and_warn_on_non_numeric_version_timestamp.patch \
   && patch -p1 < federated_share_displayname.patch \
   && patch -p1 < deadlock.patch \
   && patch -p1 < files_external.patch \
-  && patch -p1 < redis-atomic-stable26.patch \
   && patch -p1 < security-may-2023-26.patch
 
 ## Install apps from local sources inplace of bundled apps
