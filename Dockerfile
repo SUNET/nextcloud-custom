@@ -131,6 +131,10 @@ RUN cd /var/www/html/ \
   && patch -p1 < ignore_and_warn_on_non_numeric_version_timestamp.patch \
   && patch -p1 < redis-atomic-stable26.patch 
 
+COPY ./stay_on_client.patch /var/www/html/apps/globalsiteselector/
+RUN cd /var/www/html/apps/globalsiteselector \
+  && patch -p1 < stay_on_client.patch 
+
 
 ## INSTALL APPS
 RUN mkdir /var/www/html/custom_apps
