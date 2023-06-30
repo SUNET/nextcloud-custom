@@ -1,4 +1,4 @@
-FROM php:8.1-rc-apache-bookworm
+FROM php:8.1-rc-apache-bullseye
 
 # Set environment variables
 ENV APACHE_RUN_USER www-data
@@ -126,7 +126,7 @@ RUN wget -q ${nc_download_url} -O /tmp/nextcloud.zip && cd /tmp && unzip -qq /tm
   && mkdir -p /var/www/html/data && touch /var/www/html/data/.ocdata && mkdir /var/www/html/config \
   && cp -a /tmp/nextcloud/* /var/www/html && cp -a /tmp/nextcloud/.[^.]* /var/www/html \
   && chown -R www-data:root /var/www/html && chmod +x /var/www/html/occ && rm -rf /tmp/nextcloud
-#RUN php /var/www/html/occ integrity:check-core
+RUN php /var/www/html/occ integrity:check-core
 ## AND HERE, OR CODE INTEGRITY CHECK MIGHT FAIL, AND IMAGE WILL NOT BUILD
 
 ## VARIOUS PATCHES COMES HERE IF NEEDED
