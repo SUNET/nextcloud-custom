@@ -2,7 +2,7 @@ diff --git a/apps/files_versions/lib/Storage.php b/apps/files_versions/lib/Stora
 index 75ca7e4bceef..fb43e24b1472 100644
 --- a/apps/files_versions/lib/Storage.php
 +++ b/apps/files_versions/lib/Storage.php
-@@ -716,7 +716,13 @@
+@@ -721,7 +721,13 @@
  		}
  
  		foreach ($versions as $key => $version) {

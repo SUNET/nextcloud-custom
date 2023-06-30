@@ -10,16 +10,19 @@ ENV APACHE_RUN_DIR /var/run/apache2
 ENV APACHE_LOCK_DIR /var/lock/apache2
 
 # Set Nextcloud download url here
-ARG nc_download_url=https://download.nextcloud.com/.customers/server/26.0.2-8dbf9b02/nextcloud-26.0.2-enterprise.zip
+ARG nc_download_url=https://download.nextcloud.com/.customers/server/26.0.3-336cf930/nextcloud-26.0.3-enterprise.zip
 
 # Set app versions here
-ARG checksum_version=1.2.1
+ARG announcementcenter_version=6.6.1
+ARG checksum_version=1.2.2
 ARG drive_email_template_version=1.0.0
+ARG globalsiteselector_version=2.4.2
+ARG login_notes_version=1.2.0
 ARG loginpagebutton_version=1.0.0
-ARG richdocuments_version=8.0.1
-ARG theming_customcss_version=1.13.0
-ARG twofactor_admin_version=4.1.9
-ARG twofactor_webauthn_version=1.1.2
+ARG richdocuments_version=8.0.2
+ARG theming_customcss_version=1.14.0
+ARG twofactor_admin_version=4.2.0
+ARG twofactor_webauthn_version=1.2.0
 
 # Pre-requisites for the extensions
 RUN set -ex; \
@@ -51,8 +54,7 @@ RUN set -ex; \
 RUN pecl install apcu \
   pecl install imagick \
   pecl install memcached \
-  pecl install redis \
-  pecl install sysvsem
+  pecl install redis
 
 # Adjusting freetype message error
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp
@@ -69,6 +71,7 @@ RUN docker-php-ext-install -j "$(nproc)" \
   opcache \
   pcntl \
   pdo_pgsql \
+  sysvsem \
   zip
 
 # More extensions
@@ -76,7 +79,8 @@ RUN docker-php-ext-enable \
   imagick \
   apcu \
   memcached \
-  redis
+  redis \
+  sysvsem
 
 # Enabling Modules
 RUN a2enmod dir env headers mime rewrite setenvif deflate ssl
@@ -126,38 +130,46 @@ RUN php /var/www/html/occ integrity:check-core
 
 ## VARIOUS PATCHES COMES HERE IF NEEDED
 COPY ./ignore_and_warn_on_non_numeric_version_timestamp.patch /var/www/html/
-COPY ./redis-atomic-stable26.patch /var/www/html/
 RUN cd /var/www/html/ \
-  && patch -p1 < ignore_and_warn_on_non_numeric_version_timestamp.patch \
-  && patch -p1 < redis-atomic-stable26.patch 
+  && patch -p1 < ignore_and_warn_on_non_numeric_version_timestamp.patch
 
-COPY ./stay_on_client.patch /var/www/html/apps/globalsiteselector/
-RUN cd /var/www/html/apps/globalsiteselector \
-  && patch -p1 < stay_on_client.patch 
-
+## USE LOCAL GSS FOR NOW
+RUN rm -rf /var/www/html/apps/globalsiteselector 
+COPY ./globalsiteselector-${globalsiteselector_version}.tar.gz /tmp/globalsiteselector.tar.gz
+RUN cd /tmp && tar xfv globalsiteselector.tar.gz && mv globalsiteselector /var/www/html/apps
 
 ## INSTALL APPS
 RUN mkdir /var/www/html/custom_apps
+RUN wget https://github.com/nextcloud-releases/announcementcenter/releases/download/v${announcementcenter_version}/announcementcenter-v${announcementcenter_version}.tar.gz  -O /tmp/announcementcenter.tar.gz \
+  && cd /tmp && tar xfvz /tmp/announcementcenter.tar.gz && mv /tmp/announcementcenter /var/www/html/custom_apps/
+RUN wget https://github.com/westberliner/checksum/releases/download/v${checksum_version}/checksum.tar.gz -O /tmp/checksum.tar.gz \
+  && cd /tmp && tar xfvz /tmp/checksum.tar.gz && mv /tmp/checksum /var/www/html/custom_apps/
+RUN wget https://github.com/SUNET/drive-email-template/archive/refs/tags/${drive_email_template_version}.tar.gz -O /tmp/drive-email-template.tar.gz \
+  && cd /tmp && tar xfvz /tmp/drive-email-template.tar.gz && mv /tmp/drive-email-template-* /var/www/html/custom_apps/drive_email_template
+RUN wget https://packages.framasoft.org/projects/nextcloud-apps/login-notes/login_notes-${login_notes_version}.tar.gz -O /tmp/login_notes.tar.gz \
+  && cd /tmp && tar xfvz /tmp/login_notes.tar.gz && mv /tmp/login_notes /var/www/html/custom_apps/
+RUN wget https://github.com/SUNET/loginpagebutton/archive/refs/tags/v.${loginpagebutton_version}.tar.gz -O /tmp/loginpagebutton.tar.gz \
+  && cd /tmp && tar xfvz /tmp/loginpagebutton.tar.gz && mv /tmp/loginpagebutton-* /var/www/html/custom_apps/loginpagebutton
 RUN wget https://github.com/nextcloud-releases/richdocuments/releases/download/v${richdocuments_version}/richdocuments-v${richdocuments_version}.tar.gz -O /tmp/richdocuments.tar.gz \
   && cd /tmp && tar xfvz /tmp/richdocuments.tar.gz && mv /tmp/richdocuments /var/www/html/custom_apps 
+RUN wget  https://github.com/juliushaertl/theming_customcss/releases/download/v${theming_customcss_version}/theming_customcss.tar.gz  -O /tmp/theming_customcss.tar.gz \
+  && cd /tmp && tar xfvz /tmp/theming_customcss.tar.gz && mv /tmp/theming_customcss /var/www/html/custom_apps/theming_customcss
 RUN wget https://github.com/nextcloud-releases/twofactor_webauthn/releases/download/v${twofactor_webauthn_version}/twofactor_webauthn-v${twofactor_webauthn_version}.tar.gz \
   -O /tmp/twofactor_webauthn.tar.gz \
   && cd /tmp && tar xfvz /tmp/twofactor_webauthn.tar.gz && mv /tmp/twofactor_webauthn /var/www/html/custom_apps
-RUN wget https://github.com/SUNET/drive-email-template/archive/refs/tags/${drive_email_template_version}.tar.gz -O /tmp/drive-email-template.tar.gz \
-  && cd /tmp && tar xfvz /tmp/drive-email-template.tar.gz && mv /tmp/drive-email-template-* /var/www/html/custom_apps/drive_email_template
-RUN wget https://github.com/SUNET/loginpagebutton/archive/refs/tags/v.${loginpagebutton_version}.tar.gz -O /tmp/loginpagebutton.tar.gz \
-  && cd /tmp && tar xfvz /tmp/loginpagebutton.tar.gz && mv /tmp/loginpagebutton-* /var/www/html/custom_apps/loginpagebutton
 RUN wget https://github.com/nextcloud-releases/twofactor_admin/releases/download/v${twofactor_admin_version}/twofactor_admin.tar.gz -O /tmp/twofactor_admin.tar.gz \
   && cd /tmp && tar xfvz /tmp/twofactor_admin.tar.gz && mv /tmp/twofactor_admin /var/www/html/custom_apps/
-RUN wget  https://github.com/juliushaertl/theming_customcss/releases/download/v${theming_customcss_version}/theming_customcss.tar.gz  -O /tmp/theming_customcss.tar.gz \
-  && cd /tmp && tar xfvz /tmp/theming_customcss.tar.gz && mv /tmp/theming_customcss /var/www/html/custom_apps/theming_customcss
-RUN wget https://github.com/westberliner/checksum/releases/download/v${checksum_version}/checksum.tar.gz -O /tmp/checksum.tar.gz \
-  && cd /tmp && tar xfvz /tmp/checksum.tar.gz && mv /tmp/checksum /var/www/html/custom_apps/
-RUN wget  https://github.com/pondersource/nc-sciencemesh/archive/refs/heads/main.zip -O /tmp/nc-sciencemesh.zip \
+
+## INSTALL OUR APPS
+RUN wget https://github.com/pondersource/nc-sciencemesh/archive/refs/heads/main.zip -O /tmp/nc-sciencemesh.zip \
   && cd /tmp && unzip /tmp/nc-sciencemesh.zip
 RUN cd /tmp/nc-sciencemesh-main/ && make  && mv /tmp/nc-sciencemesh-main/ /var/www/html/custom_apps/sciencemesh
 COPY --chown=root:root ./nextcloud-rds.tar.gz /tmp
 RUN cd /tmp && tar xfv nextcloud-rds.tar.gz && mv rds/ /var/www/html/custom_apps
-RUN rm -rf /tmp/*.tar.* && chown -R www-data:root /var/www/html
+
+## ADD www-data to tty group
 RUN usermod -a -G tty www-data
+
+# CLEAN UP
 RUN apt remove -y wget curl make npm patch && apt autoremove -y
+RUN rm -rf /tmp/*.tar.* && chown -R www-data:root /var/www/html
