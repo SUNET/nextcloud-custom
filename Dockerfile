@@ -22,6 +22,7 @@ ARG globalsiteselector_version=2.4.3
 ARG login_notes_version=1.2.0
 ARG loginpagebutton_version=1.0.0
 ARG richdocuments_version=8.0.2
+ARG user_saml_version=5.2.1
 ARG theming_customcss_version=1.14.0
 ARG twofactor_admin_version=4.2.0
 ARG twofactor_webauthn_version=1.2.0
@@ -133,13 +134,18 @@ RUN php /var/www/html/occ integrity:check-core
 COPY ./security-July-2023-26.patch /var/www/html/
 COPY ./ignore_and_warn_on_non_numeric_version_timestamp.patch /var/www/html/
 RUN cd /var/www/html/ \
+  && patch -p1 < security-July-2023-26.patch \
   && patch -p1 < ignore_and_warn_on_non_numeric_version_timestamp.patch
-  # && patch -p1 < security-July-2023-26.patch \
 
 ## USE LOCAL GSS FOR NOW
-# RUN rm -rf /var/www/html/apps/globalsiteselector
-# COPY ./globalsiteselector-${globalsiteselector_version}.tar.gz /tmp/globalsiteselector.tar.gz
-# RUN cd /tmp && tar xf globalsiteselector.tar.gz && mv globalsiteselector /var/www/html/apps
+COPY ./globalsiteselector-${globalsiteselector_version}.tar.gz /tmp/globalsiteselector.tar.gz
+RUN rm -rf /var/www/html/apps/globalsiteselector && \
+    cd /tmp && tar xf globalsiteselector.tar.gz && mv globalsiteselector /var/www/html/apps
+
+## USE CUSTOM USERSAML FOR NOW
+RUN rm -rf /var/www/html/apps/user_saml && \
+    wget -q https://github.com/nextcloud-releases/user_saml/releases/download/v${user_saml_version}/user_saml-v${user_saml_version}.tar.gz \
+    -O /tmp/user_saml.tar.gz && cd /tmp && tar xf /tmp/user_saml.tar.gz && mv /tmp/user_saml /var/www/html/apps
 
 ## INSTALL APPS
 RUN mkdir /var/www/html/custom_apps
