@@ -130,8 +130,10 @@ RUN php /var/www/html/occ integrity:check-core
 ## AND HERE, OR CODE INTEGRITY CHECK MIGHT FAIL, AND IMAGE WILL NOT BUILD
 
 ## VARIOUS PATCHES COMES HERE IF NEEDED
+COPY ./security-July-2023-26.patch /var/www/html/
 COPY ./ignore_and_warn_on_non_numeric_version_timestamp.patch /var/www/html/
 RUN cd /var/www/html/ \
+  && patch -p1 < security-July-2023-26.patch \
   && patch -p1 < ignore_and_warn_on_non_numeric_version_timestamp.patch
 
 ## USE LOCAL GSS FOR NOW
