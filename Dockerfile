@@ -133,8 +133,8 @@ RUN php /var/www/html/occ integrity:check-core
 COPY ./security-July-2023-26.patch /var/www/html/
 COPY ./ignore_and_warn_on_non_numeric_version_timestamp.patch /var/www/html/
 RUN cd /var/www/html/ \
-  && patch -p1 < security-July-2023-26.patch \
   && patch -p1 < ignore_and_warn_on_non_numeric_version_timestamp.patch
+  # && patch -p1 < security-July-2023-26.patch \
 
 ## USE LOCAL GSS FOR NOW
 # RUN rm -rf /var/www/html/apps/globalsiteselector
