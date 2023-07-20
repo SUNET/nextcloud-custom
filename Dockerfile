@@ -137,9 +137,9 @@ RUN cd /var/www/html/ \
   && patch -p1 < ignore_and_warn_on_non_numeric_version_timestamp.patch
 
 ## USE LOCAL GSS FOR NOW
-RUN rm -rf /var/www/html/apps/globalsiteselector
-COPY ./globalsiteselector-${globalsiteselector_version}.tar.gz /tmp/globalsiteselector.tar.gz
-RUN cd /tmp && tar xf globalsiteselector.tar.gz && mv globalsiteselector /var/www/html/apps
+# RUN rm -rf /var/www/html/apps/globalsiteselector
+# COPY ./globalsiteselector-${globalsiteselector_version}.tar.gz /tmp/globalsiteselector.tar.gz
+# RUN cd /tmp && tar xf globalsiteselector.tar.gz && mv globalsiteselector /var/www/html/apps
 
 ## INSTALL APPS
 RUN mkdir /var/www/html/custom_apps
