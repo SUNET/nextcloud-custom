@@ -22,7 +22,7 @@ ARG globalsiteselector_version=2.4.3
 ARG login_notes_version=1.2.0
 ARG loginpagebutton_version=1.0.0
 ARG richdocuments_version=8.0.2
-ARG user_saml_version=5.2.1
+ARG user_saml_version=5.2.2
 ARG theming_customcss_version=1.14.0
 ARG twofactor_admin_version=4.2.0
 ARG twofactor_webauthn_version=1.2.0
@@ -134,9 +134,9 @@ RUN php /var/www/html/occ integrity:check-core
 COPY ./ignore_and_warn_on_non_numeric_version_timestamp.patch /var/www/html/
 RUN cd /var/www/html/ \
   && patch -p1 < ignore_and_warn_on_non_numeric_version_timestamp.patch
-# COPY ./security-July-2023-26.patch /var/www/html/
-# RUN cd /var/www/html/ \
-  # && patch -p1 < security-July-2023-26.patch
+COPY ./security-July-2023-26.patch /var/www/html/
+RUN cd /var/www/html/ \
+  && patch -p1 < security-July-2023-26.patch
 
 ## USE LOCAL GSS FOR NOW
 COPY ./globalsiteselector-${globalsiteselector_version}.tar.gz /tmp/globalsiteselector.tar.gz
