@@ -10,7 +10,7 @@ ENV APACHE_RUN_DIR /var/run/apache2
 ENV APACHE_LOCK_DIR /var/lock/apache2
 
 # Set Nextcloud download url here
-ARG nc_download_url=https://download.nextcloud.com/.customers/server/26.0.3-336cf930/nextcloud-26.0.3-enterprise.zip
+ARG nc_download_url=https://download.nextcloud.com/.customers/server/26.0.4-2cf2c6d4/nextcloud-26.0.4-enterprise.zip
 
 # Set app versions here
 ARG announcementcenter_version=6.6.1
@@ -18,7 +18,6 @@ ARG checksum_version=1.2.2
 ARG drive_email_template_version=1.0.0
 ARG files_accesscontrol_version=1.16.0
 ARG files_automatedtagging_version=1.16.1
-ARG globalsiteselector_version=2.4.3
 ARG login_notes_version=1.2.0
 ARG loginpagebutton_version=1.0.0
 ARG richdocuments_version=8.0.2
@@ -131,17 +130,7 @@ RUN php /var/www/html/occ integrity:check-core
 ## AND HERE, OR CODE INTEGRITY CHECK MIGHT FAIL, AND IMAGE WILL NOT BUILD
 
 ## VARIOUS PATCHES COMES HERE IF NEEDED
-COPY ./ignore_and_warn_on_non_numeric_version_timestamp.patch /var/www/html/
-RUN cd /var/www/html/ \
-  && patch -p1 < ignore_and_warn_on_non_numeric_version_timestamp.patch
-COPY ./security-July-2023-26.patch /var/www/html/
-RUN cd /var/www/html/ \
-  && patch -p1 < security-July-2023-26.patch
-
-## USE LOCAL GSS FOR NOW
-COPY ./globalsiteselector-${globalsiteselector_version}.tar.gz /tmp/globalsiteselector.tar.gz
-RUN rm -rf /var/www/html/apps/globalsiteselector && \
-    cd /tmp && tar xf globalsiteselector.tar.gz && mv globalsiteselector /var/www/html/apps
+# Patch free since 2023-07-25
 
 ## USE CUSTOM USERSAML FOR NOW
 RUN rm -rf /var/www/html/apps/user_saml && \
