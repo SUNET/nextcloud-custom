@@ -15,6 +15,8 @@ ARG nc_download_url=https://download.nextcloud.com/.customers/server/26.0.4-2cf2
 # Set app versions here
 ARG announcementcenter_version=6.6.1
 ARG checksum_version=1.2.2
+ARG collectives_version=2.7.0
+ARG contacts_version=5.3.2
 ARG drive_email_template_version=1.0.0
 ARG files_accesscontrol_version=1.16.0
 ARG files_automatedtagging_version=1.16.1
@@ -143,8 +145,10 @@ RUN wget -q https://github.com/nextcloud-releases/announcementcenter/releases/do
   && cd /tmp && tar xf /tmp/announcementcenter.tar.gz && mv /tmp/announcementcenter /var/www/html/custom_apps/
 RUN wget -q https://github.com/westberliner/checksum/releases/download/v${checksum_version}/checksum.tar.gz -O /tmp/checksum.tar.gz \
   && cd /tmp && tar xf /tmp/checksum.tar.gz && mv /tmp/checksum /var/www/html/custom_apps/
-RUN wget -q https://github.com/SUNET/drive-email-template/archive/refs/tags/${drive_email_template_version}.tar.gz -O /tmp/drive-email-template.tar.gz \
-  && cd /tmp && tar xf /tmp/drive-email-template.tar.gz && mv /tmp/drive-email-template-* /var/www/html/custom_apps/drive_email_template
+RUN wget -q https://github.com/nextcloud/collectives/releases/download/v${collectives_version}/collectives-${collectives_version}.tar.gz -O /tmp/collectives.tar.gz \
+  && cd /tmp && tar xf /tmp/collectives.tar.gz && mv /tmp/collectives /var/www/html/custom_apps/
+RUN wget -q https://github.com/nextcloud-releases/contacts/releases/download/v${contacts_version}/contacts-v${contacts_version}.tar.gz -O /tmp/contacts.tar.gz \
+  && cd /tmp && tar xf /tmp/contacts.tar.gz && mv /tmp/contacts /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/files_accesscontrol/releases/download/v${files_accesscontrol_version}/files_accesscontrol-v${files_accesscontrol_version}.tar.gz -O /tmp/files_accesscontrol.tar.gz \
   && cd /tmp && tar xf /tmp/files_accesscontrol.tar.gz && mv /tmp/files_accesscontrol /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/files_automatedtagging/releases/download/v${files_automatedtagging_version}/files_automatedtagging-v${files_automatedtagging_version}.tar.gz -O /tmp/files_automatedtagging.tar.gz \
@@ -164,6 +168,8 @@ RUN wget -q https://github.com/nextcloud-releases/twofactor_admin/releases/downl
   && cd /tmp && tar xf /tmp/twofactor_admin.tar.gz && mv /tmp/twofactor_admin /var/www/html/custom_apps/
 
 ## INSTALL OUR APPS
+RUN wget -q https://github.com/SUNET/drive-email-template/archive/refs/tags/${drive_email_template_version}.tar.gz -O /tmp/drive-email-template.tar.gz \
+  && cd /tmp && tar xf /tmp/drive-email-template.tar.gz && mv /tmp/drive-email-template-* /var/www/html/custom_apps/drive_email_template
 RUN wget -q https://github.com/pondersource/nc-sciencemesh/archive/refs/heads/main.zip -O /tmp/nc-sciencemesh.zip \
   && cd /tmp && unzip /tmp/nc-sciencemesh.zip
 RUN cd /tmp/nc-sciencemesh-main/ && make  && mv /tmp/nc-sciencemesh-main/ /var/www/html/custom_apps/sciencemesh
