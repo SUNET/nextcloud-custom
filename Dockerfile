@@ -22,6 +22,7 @@ ARG drive_email_template_version=1.0.0
 ARG files_accesscontrol_version=1.16.0
 ARG files_automatedtagging_version=1.16.1
 ARG forms_version=3.3.1
+ARG integration_excalidraw_version=2.0.3
 ARG login_notes_version=1.2.0
 ARG loginpagebutton_version=1.0.0
 ARG maps_version=1.1.0
@@ -162,6 +163,8 @@ RUN wget -q https://github.com/nextcloud-releases/files_automatedtagging/release
   && cd /tmp && tar xf /tmp/files_automatedtagging.tar.gz && mv /tmp/files_automatedtagging /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/forms/releases/download/v${forms_version}/forms-v${forms_version}.tar.gz -O /tmp/forms.tar.gz \
   && cd /tmp && tar xf /tmp/forms.tar.gz && mv /tmp/forms /var/www/html/custom_apps/
+RUN wget -q https://github.com/nextcloud-releases/integration_excalidraw/releases/download/v${integration_excalidraw_version}/integration_excalidraw-v${integration_excalidraw_version}.tar.gz -O /tmp/integration_excalidraw.tar.gz \
+  && cd /tmp && tar xf /tmp/integration_excalidraw.tar.gz && mv /tmp/integration_excalidraw /var/www/html/custom_apps/
 RUN wget -q https://packages.framasoft.org/projects/nextcloud-apps/login-notes/login_notes-${login_notes_version}.tar.gz -O /tmp/login_notes.tar.gz \
   && cd /tmp && tar xf /tmp/login_notes.tar.gz && mv /tmp/login_notes /var/www/html/custom_apps/
 RUN wget -q https://github.com/SUNET/loginpagebutton/archive/refs/tags/v.${loginpagebutton_version}.tar.gz -O /tmp/loginpagebutton.tar.gz \
