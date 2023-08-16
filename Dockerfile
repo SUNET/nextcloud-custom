@@ -17,13 +17,18 @@ ARG announcementcenter_version=6.6.1
 ARG checksum_version=1.2.2
 ARG collectives_version=2.7.0
 ARG contacts_version=5.3.2
+ARG drawio_version=2.1.2
 ARG drive_email_template_version=1.0.0
 ARG files_accesscontrol_version=1.16.0
 ARG files_automatedtagging_version=1.16.1
+ARG forms_version=3.3.1
 ARG login_notes_version=1.2.0
 ARG loginpagebutton_version=1.0.0
+ARG maps_version=1.1.0
+ARG polls_version=5.2.0
 ARG richdocuments_version=8.0.2
 ARG user_saml_version=5.2.2
+ARG tasks_version=0.15.0
 ARG theming_customcss_version=1.14.0
 ARG twofactor_admin_version=4.2.0
 ARG twofactor_webauthn_version=1.2.0
@@ -149,16 +154,26 @@ RUN wget -q https://github.com/nextcloud/collectives/releases/download/v${collec
   && cd /tmp && tar xf /tmp/collectives.tar.gz && mv /tmp/collectives /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/contacts/releases/download/v${contacts_version}/contacts-v${contacts_version}.tar.gz -O /tmp/contacts.tar.gz \
   && cd /tmp && tar xf /tmp/contacts.tar.gz && mv /tmp/contacts /var/www/html/custom_apps/
+RUN wget -q  https://github.com/jgraph/drawio-nextcloud/releases/download/v${drawio_version}/drawio-v${drawio_version}.tar.gz -O /tmp/drawio.tar.gz \
+  && cd /tmp && tar xf /tmp/drawio.tar.gz && mv /tmp/drawio /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/files_accesscontrol/releases/download/v${files_accesscontrol_version}/files_accesscontrol-v${files_accesscontrol_version}.tar.gz -O /tmp/files_accesscontrol.tar.gz \
   && cd /tmp && tar xf /tmp/files_accesscontrol.tar.gz && mv /tmp/files_accesscontrol /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/files_automatedtagging/releases/download/v${files_automatedtagging_version}/files_automatedtagging-v${files_automatedtagging_version}.tar.gz -O /tmp/files_automatedtagging.tar.gz \
   && cd /tmp && tar xf /tmp/files_automatedtagging.tar.gz && mv /tmp/files_automatedtagging /var/www/html/custom_apps/
+RUN wget -q https://github.com/nextcloud-releases/forms/releases/download/v${forms_version}/forms-v${forms_version}.tar.gz -O /tmp/forms.tar.gz \
+  && cd /tmp && tar xf /tmp/forms.tar.gz && mv /tmp/forms /var/www/html/custom_apps/
 RUN wget -q https://packages.framasoft.org/projects/nextcloud-apps/login-notes/login_notes-${login_notes_version}.tar.gz -O /tmp/login_notes.tar.gz \
   && cd /tmp && tar xf /tmp/login_notes.tar.gz && mv /tmp/login_notes /var/www/html/custom_apps/
 RUN wget -q https://github.com/SUNET/loginpagebutton/archive/refs/tags/v.${loginpagebutton_version}.tar.gz -O /tmp/loginpagebutton.tar.gz \
   && cd /tmp && tar xf /tmp/loginpagebutton.tar.gz && mv /tmp/loginpagebutton-* /var/www/html/custom_apps/loginpagebutton
+RUN wget -q https://github.com/nextcloud/maps/releases/download/v${maps_version}/maps-${maps_version}.tar.gz -O /tmp/maps.tar.gz \
+  && cd /tmp && tar xf /tmp/maps.tar.gz && mv /tmp/maps /var/www/html/custom_apps/
+RUN wget -q https://github.com/nextcloud/polls/releases/download/v5.2.0/polls.tar.gz -O /tmp/polls.tar.gz \
+  && cd /tmp && tar xf /tmp/polls.tar.gz && mv /tmp/polls /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/richdocuments/releases/download/v${richdocuments_version}/richdocuments-v${richdocuments_version}.tar.gz -O /tmp/richdocuments.tar.gz \
   && cd /tmp && tar xf /tmp/richdocuments.tar.gz && mv /tmp/richdocuments /var/www/html/custom_apps
+RUN wget -q https://github.com/nextcloud/tasks/releases/download/v${tasks_version}/tasks.tar.gz -O /tmp/tasks.tar.gz \
+  && cd /tmp && tar xf /tmp/tasks.tar.gz && mv /tmp/tasks /var/www/html/custom_apps
 RUN wget -q https://github.com/juliushaertl/theming_customcss/releases/download/v${theming_customcss_version}/theming_customcss.tar.gz  -O /tmp/theming_customcss.tar.gz \
   && cd /tmp && tar xf /tmp/theming_customcss.tar.gz && mv /tmp/theming_customcss /var/www/html/custom_apps/theming_customcss
 RUN wget -q https://github.com/nextcloud-releases/twofactor_webauthn/releases/download/v${twofactor_webauthn_version}/twofactor_webauthn-v${twofactor_webauthn_version}.tar.gz \
