@@ -12,6 +12,7 @@ ARG files_automatedtagging_version=1.16.1
 ARG login_notes_version=1.2.0
 ARG loginpagebutton_version=1.0.0
 ARG richdocuments_version=8.0.3
+ARG user_saml_version=5.2.2
 ARG theming_customcss_version=1.14.0
 ARG twofactor_admin_version=4.2.0
 ARG twofactor_webauthn_version=1.2.0
@@ -62,8 +63,8 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp
 
 # PHP Extensions needed
 RUN docker-php-ext-install -j "$(nproc)" \
-  pdo_mysql \
   bcmath \
+  bz2 \
   exif \
   gd \
   gmp \
@@ -71,6 +72,7 @@ RUN docker-php-ext-install -j "$(nproc)" \
   ldap \
   opcache \
   pcntl \
+  pdo_mysql \
   pdo_pgsql \
   sysvsem \
   zip
@@ -88,6 +90,7 @@ RUN a2enmod dir env headers mime rewrite setenvif deflate ssl
 # Adjusting PHP settings
 RUN { \
   echo 'opcache.interned_strings_buffer=32'; \
+  echo 'opcache.memory_consumption=256'; \
   echo 'opcache.save_comments=1'; \
   echo 'opcache.revalidate_freq=60'; \
   } > /usr/local/etc/php/conf.d/opcache-recommended.ini;
@@ -99,7 +102,11 @@ RUN { \
 
 RUN { \
   echo 'memory_limit = 2G'; \
-  } > /usr/local/etc/php/conf.d/memory_limit.ini;
+  echo 'upload_max_filesize=30G'; \
+  echo 'post_max_size=30G'; \
+  echo 'max_execution_time=86400'; \
+  echo 'max_input_time=86400'; \
+  } > /usr/local/etc/php/conf.d/nce.ini;
 
 # Update apache configuration for ServerName
 RUN echo "ServerName localhost" | tee /etc/apache2/conf-available/servername.conf \
@@ -130,6 +137,11 @@ RUN php /var/www/html/occ integrity:check-core
 
 ## VARIOUS PATCHES COMES HERE IF NEEDED
 # Patch free since 2023-07-25
+
+## USE CUSTOM USERSAML FOR NOW
+RUN rm -rf /var/www/html/apps/user_saml && \
+    wget -q https://github.com/nextcloud-releases/user_saml/releases/download/v${user_saml_version}/user_saml-v${user_saml_version}.tar.gz \
+    -O /tmp/user_saml.tar.gz && cd /tmp && tar xf /tmp/user_saml.tar.gz && mv /tmp/user_saml /var/www/html/apps
 
 ## INSTALL APPS
 RUN mkdir /var/www/html/custom_apps
