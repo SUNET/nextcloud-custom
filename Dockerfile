@@ -6,16 +6,25 @@ ARG nc_download_url=https://download.nextcloud.com/.customers/server/26.0.5-6ebf
 # Set app versions here
 ARG announcementcenter_version=6.6.2
 ARG checksum_version=1.2.2
+ARG checksum_version=1.2.2
+ARG collectives_version=2.7.0
+ARG contacts_version=5.3.2
+ARG drawio_version=2.1.2
 ARG drive_email_template_version=1.0.0
 ARG files_accesscontrol_version=1.16.1
 ARG files_automatedtagging_version=1.16.1
+ARG forms_version=3.3.1
+ARG integration_excalidraw_version=2.0.3
 ARG login_notes_version=1.2.0
 ARG loginpagebutton_version=1.0.0
+ARG maps_version=1.1.0
+ARG polls_version=5.2.0
 ARG richdocuments_version=8.0.3
-ARG user_saml_version=5.2.2
+ARG tasks_version=0.15.0
 ARG theming_customcss_version=1.14.0
 ARG twofactor_admin_version=4.2.0
 ARG twofactor_webauthn_version=1.2.0
+ARG user_saml_version=5.2.2
 
 # Set environment variables
 ENV APACHE_RUN_USER www-data
