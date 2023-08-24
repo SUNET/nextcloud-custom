@@ -1,4 +1,20 @@
-FROM php:8.1-rc-apache-bullseye
+FROM php:8.2-rc-apache-bullseye
+
+# Set Nextcloud download url here
+ARG nc_download_url=https://download.nextcloud.com/.customers/server/26.0.5-6ebf6df9/nextcloud-26.0.5-enterprise.zip
+
+# Set app versions here
+ARG announcementcenter_version=6.6.2
+ARG checksum_version=1.2.2
+ARG drive_email_template_version=1.0.0
+ARG files_accesscontrol_version=1.16.1
+ARG files_automatedtagging_version=1.16.1
+ARG login_notes_version=1.2.0
+ARG loginpagebutton_version=1.0.0
+ARG richdocuments_version=8.0.3
+ARG theming_customcss_version=1.14.0
+ARG twofactor_admin_version=4.2.0
+ARG twofactor_webauthn_version=1.2.0
 
 # Set environment variables
 ENV APACHE_RUN_USER www-data
@@ -8,31 +24,6 @@ ENV APACHE_LOG_DIR /var/log/apache2
 ENV APACHE_PID_FILE /var/run/apache2/apache2.pid
 ENV APACHE_RUN_DIR /var/run/apache2
 ENV APACHE_LOCK_DIR /var/lock/apache2
-
-# Set Nextcloud download url here
-ARG nc_download_url=https://download.nextcloud.com/.customers/server/26.0.4-2cf2c6d4/nextcloud-26.0.4-enterprise.zip
-
-# Set app versions here
-ARG announcementcenter_version=6.6.1
-ARG checksum_version=1.2.2
-ARG collectives_version=2.7.0
-ARG contacts_version=5.3.2
-ARG drawio_version=2.1.2
-ARG drive_email_template_version=1.0.0
-ARG files_accesscontrol_version=1.16.0
-ARG files_automatedtagging_version=1.16.1
-ARG forms_version=3.3.1
-ARG integration_excalidraw_version=2.0.3
-ARG login_notes_version=1.2.0
-ARG loginpagebutton_version=1.0.0
-ARG maps_version=1.1.0
-ARG polls_version=5.2.0
-ARG richdocuments_version=8.0.2
-ARG user_saml_version=5.2.2
-ARG tasks_version=0.15.0
-ARG theming_customcss_version=1.14.0
-ARG twofactor_admin_version=4.2.0
-ARG twofactor_webauthn_version=1.2.0
 
 # Pre-requisites for the extensions
 RUN set -ex; \
@@ -139,11 +130,6 @@ RUN php /var/www/html/occ integrity:check-core
 
 ## VARIOUS PATCHES COMES HERE IF NEEDED
 # Patch free since 2023-07-25
-
-## USE CUSTOM USERSAML FOR NOW
-RUN rm -rf /var/www/html/apps/user_saml && \
-    wget -q https://github.com/nextcloud-releases/user_saml/releases/download/v${user_saml_version}/user_saml-v${user_saml_version}.tar.gz \
-    -O /tmp/user_saml.tar.gz && cd /tmp && tar xf /tmp/user_saml.tar.gz && mv /tmp/user_saml /var/www/html/apps
 
 ## INSTALL APPS
 RUN mkdir /var/www/html/custom_apps
