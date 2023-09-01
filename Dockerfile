@@ -180,7 +180,7 @@ RUN wget -q https://packages.framasoft.org/projects/nextcloud-apps/login-notes/l
   && cd /tmp && tar xf /tmp/login_notes.tar.gz && mv /tmp/login_notes /var/www/html/custom_apps/
 RUN wget -q https://github.com/SUNET/loginpagebutton/archive/refs/tags/v.${loginpagebutton_version}.tar.gz -O /tmp/loginpagebutton.tar.gz \
   && cd /tmp && tar xf /tmp/loginpagebutton.tar.gz && mv /tmp/loginpagebutton-* /var/www/html/custom_apps/loginpagebutton
-RUN wget -q https://github.com/nextcloud-releases/mail/releases/download/${mail_version}/mail-v${mail_version}.tar.gz -O /tmp/mail.tar.gz \
+RUN wget -q https://github.com/nextcloud-releases/mail/releases/download/v${mail_version}/mail-v${mail_version}.tar.gz -O /tmp/mail.tar.gz \
    && cd /tmp && tar xf /tmp/mail.tar.gz && mv /tmp/mail /var/www/html/custom_apps
 RUN wget -q https://github.com/nextcloud/maps/releases/download/v${maps_version}/maps-${maps_version}.tar.gz -O /tmp/maps.tar.gz \
   && cd /tmp && tar xf /tmp/maps.tar.gz && mv /tmp/maps /var/www/html/custom_apps/
