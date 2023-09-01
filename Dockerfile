@@ -5,7 +5,7 @@ ARG nc_download_url=https://download.nextcloud.com/.customers/server/26.0.5-6ebf
 
 # Set app versions here
 ARG announcementcenter_version=6.6.2
-ARG checksum_version=1.2.2
+ARG calendar_version=4.4.4
 ARG checksum_version=1.2.2
 ARG collectives_version=2.7.0
 ARG contacts_version=5.3.2
@@ -20,6 +20,7 @@ ARG loginpagebutton_version=1.0.0
 ARG maps_version=1.1.0
 ARG polls_version=5.2.0
 ARG richdocuments_version=8.0.3
+ARG snappymail_version=2.28.4
 ARG tasks_version=0.15.0
 ARG theming_customcss_version=1.14.0
 ARG twofactor_admin_version=4.2.0
@@ -156,6 +157,8 @@ RUN rm -rf /var/www/html/apps/user_saml && \
 RUN mkdir /var/www/html/custom_apps
 RUN wget -q https://github.com/nextcloud-releases/announcementcenter/releases/download/v${announcementcenter_version}/announcementcenter-v${announcementcenter_version}.tar.gz  -O /tmp/announcementcenter.tar.gz \
   && cd /tmp && tar xf /tmp/announcementcenter.tar.gz && mv /tmp/announcementcenter /var/www/html/custom_apps/
+RUN wget -q https://github.com/nextcloud-releases/calendar/releases/download/v${calendar_version}/calendar-v${calendar_version}.tar.gz -O /tmp/calendar.tar.gz \
+  && cd /tmp && tar xf /tmp/calendar.tar.gz && mv /tmp/calendar /var/www/html/custom_apps/
 RUN wget -q https://github.com/westberliner/checksum/releases/download/v${checksum_version}/checksum.tar.gz -O /tmp/checksum.tar.gz \
   && cd /tmp && tar xf /tmp/checksum.tar.gz && mv /tmp/checksum /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud/collectives/releases/download/v${collectives_version}/collectives-${collectives_version}.tar.gz -O /tmp/collectives.tar.gz \
@@ -182,6 +185,8 @@ RUN wget -q https://github.com/nextcloud/polls/releases/download/v5.2.0/polls.ta
   && cd /tmp && tar xf /tmp/polls.tar.gz && mv /tmp/polls /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/richdocuments/releases/download/v${richdocuments_version}/richdocuments-v${richdocuments_version}.tar.gz -O /tmp/richdocuments.tar.gz \
   && cd /tmp && tar xf /tmp/richdocuments.tar.gz && mv /tmp/richdocuments /var/www/html/custom_apps
+RUN wget -q https://snappymail.eu/repository/nextcloud/snappymail-${snappymail_version}-nextcloud.tar.gz -O /tmp/snappymail.tar.gz \
+  && cd /tmp && tar xf /tmp/snappymail.tar.gz && mv /tmp/snappymail /var/www/html/custom_apps
 RUN wget -q https://github.com/nextcloud/tasks/releases/download/v${tasks_version}/tasks.tar.gz -O /tmp/tasks.tar.gz \
   && cd /tmp && tar xf /tmp/tasks.tar.gz && mv /tmp/tasks /var/www/html/custom_apps
 RUN wget -q https://github.com/juliushaertl/theming_customcss/releases/download/v${theming_customcss_version}/theming_customcss.tar.gz  -O /tmp/theming_customcss.tar.gz \
