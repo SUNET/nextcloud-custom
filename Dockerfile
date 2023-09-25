@@ -1,7 +1,7 @@
 FROM php:8.2-rc-apache-bullseye
 
 # Set Nextcloud download url here
-ARG nc_download_url=https://download.nextcloud.com/.customers/server/26.0.5-6ebf6df9/nextcloud-26.0.5-enterprise.zip
+ARG nc_download_url=https://download.nextcloud.com/.customers/server/26.0.7-153512ec/nextcloud-26.0.7-enterprise.zip
 
 # Set app versions here
 ARG announcementcenter_version=6.6.2
@@ -19,6 +19,7 @@ ARG loginpagebutton_version=1.0.0
 ARG maps_version=1.1.0
 ARG polls_version=5.2.0
 ARG richdocuments_version=8.0.3
+ARG sciencemesh_version=0.5.0
 ARG tasks_version=0.15.0
 ARG theming_customcss_version=1.14.0
 ARG twofactor_admin_version=4.2.0
@@ -190,13 +191,12 @@ RUN wget -q https://github.com/nextcloud-releases/twofactor_webauthn/releases/do
   && cd /tmp && tar xf /tmp/twofactor_webauthn.tar.gz && mv /tmp/twofactor_webauthn /var/www/html/custom_apps
 RUN wget -q https://github.com/nextcloud-releases/twofactor_admin/releases/download/v${twofactor_admin_version}/twofactor_admin.tar.gz -O /tmp/twofactor_admin.tar.gz \
   && cd /tmp && tar xf /tmp/twofactor_admin.tar.gz && mv /tmp/twofactor_admin /var/www/html/custom_apps/
-
-## INSTALL OUR APPS
 RUN wget -q https://github.com/SUNET/drive-email-template/archive/refs/tags/${drive_email_template_version}.tar.gz -O /tmp/drive-email-template.tar.gz \
   && cd /tmp && tar xf /tmp/drive-email-template.tar.gz && mv /tmp/drive-email-template-* /var/www/html/custom_apps/drive_email_template
-RUN wget -q https://github.com/pondersource/nc-sciencemesh/archive/refs/heads/main.zip -O /tmp/nc-sciencemesh.zip \
-  && cd /tmp && unzip /tmp/nc-sciencemesh.zip
-RUN cd /tmp/nc-sciencemesh-main/ && make  && mv /tmp/nc-sciencemesh-main/ /var/www/html/custom_apps/sciencemesh
+RUN wget -q https://github.com/sciencemesh/nc-sciencemesh/releases/download/v${sciencemesh_version}-nc/sciencemesh.tar.gz -O /tmp/sciencemesh.tar.gz \
+  && cd /tmp && tar xf /tmp/sciencemesh.tar.gz && mv /tmp/sciencemesh /var/www/html/custom_apps/
+
+## INSTALL OUR APPS
 COPY --chown=root:root ./nextcloud-rds.tar.gz /tmp
 RUN cd /tmp && tar xf nextcloud-rds.tar.gz && mv rds/ /var/www/html/custom_apps
 
