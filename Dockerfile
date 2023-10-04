@@ -140,7 +140,7 @@ COPY --chown=root:root ./000-default.conf /etc/apache2/sites-available/
 COPY --chown=root:root ./cron.sh /cron.sh
 
 ## DONT ADD STUFF BETWEEN HERE
-RUN rm -rf /var/www/html && git clone git clone https://github.com/nextcloud/server.git /var/www/html
+RUN rm -rf /var/www/html && git clone https://github.com/nextcloud/server.git /var/www/html
 RUN cd /var/www/html && git submodule update --init && mkdir data && chown -R www-data:www-data config data apps && chmod o-rw /var/www/html
 ## AND HERE, OR CODE INTEGRITY CHECK MIGHT FAIL, AND IMAGE WILL NOT BUILD
 
