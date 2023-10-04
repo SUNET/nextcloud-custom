@@ -38,7 +38,9 @@ ENV APACHE_LOCK_DIR /var/lock/apache2
 # Pre-requisites for the extensions
 RUN set -ex; \
   apt-get -q update > /dev/null && apt-get -q install -y \
+  build-essential \
   freetype* \
+  git \
   libgmp* \
   libicu* \
   libldap* \
@@ -48,6 +50,7 @@ RUN set -ex; \
   libpq* \
   libweb* \
   libzip* \
+  npm \
   zlib* \
   curl \
   gnupg2 \
@@ -137,20 +140,13 @@ COPY --chown=root:root ./000-default.conf /etc/apache2/sites-available/
 COPY --chown=root:root ./cron.sh /cron.sh
 
 ## DONT ADD STUFF BETWEEN HERE
-RUN wget -q ${nc_download_url} -O /tmp/nextcloud.zip && cd /tmp && unzip -qq /tmp/nextcloud.zip && cd /tmp/nextcloud \
-  && mkdir -p /var/www/html/data && touch /var/www/html/data/.ocdata && mkdir /var/www/html/config \
-  && cp -a /tmp/nextcloud/* /var/www/html && cp -a /tmp/nextcloud/.[^.]* /var/www/html \
-  && chown -R www-data:root /var/www/html && chmod +x /var/www/html/occ && rm -rf /tmp/nextcloud
-RUN php /var/www/html/occ integrity:check-core
+RUN rm -rf /var/www/html && git clone git clone https://github.com/nextcloud/server.git /var/www/html
+RUN cd /var/www/html && git submodule update --init && mkdir data && chown -R www-data:www-data config data apps && chmod o-rw /var/www/html
 ## AND HERE, OR CODE INTEGRITY CHECK MIGHT FAIL, AND IMAGE WILL NOT BUILD
 
 ## VARIOUS PATCHES COMES HERE IF NEEDED
-# Patch free since 2023-07-25
-
-## USE CUSTOM USERSAML FOR NOW
-RUN rm -rf /var/www/html/apps/user_saml && \
-    wget -q https://github.com/nextcloud-releases/user_saml/releases/download/v${user_saml_version}/user_saml-v${user_saml_version}.tar.gz \
-    -O /tmp/user_saml.tar.gz && cd /tmp && tar xf /tmp/user_saml.tar.gz && mv /tmp/user_saml /var/www/html/apps
+COPY ./40235.diff /var/www/html
+RUN cd /var/www/html && patch -p1 < 40235.diff && make all
 
 ## INSTALL APPS
 RUN mkdir /var/www/html/custom_apps
