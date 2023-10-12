@@ -65,7 +65,6 @@ RUN set -ex; \
   apt-get -q update > /dev/null && apt-get -q install -y \
   build-essential \
   freetype* \
-  git \
   libgmp* \
   libicu* \
   libldap* \
@@ -165,8 +164,11 @@ COPY --chown=root:root ./000-default.conf /etc/apache2/sites-available/
 COPY --chown=root:root ./cron.sh /cron.sh
 
 ## DONT ADD STUFF BETWEEN HERE
-RUN rm -rf /var/www/html && git clone https://github.com/nextcloud/server.git /var/www/html
-RUN cd /var/www/html && git submodule update --init && mkdir data && chown -R www-data:www-data config data apps && chmod o-rw /var/www/html
+RUN wget -q ${nc_download_url} -O /tmp/nextcloud.zip && cd /tmp && unzip -qq /tmp/nextcloud.zip && cd /tmp/nextcloud \
+  && mkdir -p /var/www/html/data && touch /var/www/html/data/.ocdata && mkdir /var/www/html/config \
+  && cp -a /tmp/nextcloud/* /var/www/html && cp -a /tmp/nextcloud/.[^.]* /var/www/html \
+  && chown -R www-data:root /var/www/html && chmod +x /var/www/html/occ && rm -rf /tmp/nextcloud
+RUN php /var/www/html/occ integrity:check-core
 ## AND HERE, OR CODE INTEGRITY CHECK MIGHT FAIL, AND IMAGE WILL NOT BUILD
 
 ## VARIOUS PATCHES COMES HERE IF NEEDED
@@ -220,6 +222,9 @@ RUN wget -q https://github.com/SUNET/drive-email-template/archive/refs/tags/${dr
   && cd /tmp && tar xf /tmp/drive-email-template.tar.gz && mv /tmp/drive-email-template-* /var/www/html/custom_apps/drive_email_template
 RUN wget -q https://github.com/sciencemesh/nc-sciencemesh/releases/download/v${sciencemesh_version}-nc/sciencemesh.tar.gz -O /tmp/sciencemesh.tar.gz \
   && cd /tmp && tar xf /tmp/sciencemesh.tar.gz && mv /tmp/sciencemesh /var/www/html/custom_apps/
+RUN wget -q https://github.com/pondersource/mfazones/blob/main/release/mfazones.tar.gz?raw=true -O /tmp/mfazones.tar.gz \
+  && cd /tmp && tar xf /tmp/mfazones.tar.gz && mv /tmp/mfazones /var/www/html/custom_apps/
+
 
 ## INSTALL OUR APPS
 COPY --chown=root:root ./nextcloud-rds.tar.gz /tmp
