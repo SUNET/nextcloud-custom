@@ -176,6 +176,8 @@ COPY ./40235.diff /var/www/html/40235.diff
 RUN cd /var/www/html/ && patch -p 1 < 40235.diff
 COPY ./workflowengine-workflowengine.js /var/www/html/dist/workflowengine-workflowengine.js
 COPY ./workflowengine-workflowengine.js.map /var/www/html/dist/workflowengine-workflowengine.js.map
+COPY ./39411.diff /var/www/html/39411.diff
+RUN cd /var/www/html/ && patch -p 1 < 39411.diff
 
 
 
