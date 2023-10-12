@@ -35,6 +35,31 @@ ENV APACHE_PID_FILE /var/run/apache2/apache2.pid
 ENV APACHE_RUN_DIR /var/run/apache2
 ENV APACHE_LOCK_DIR /var/lock/apache2
 
+# Set Nextcloud download url here
+ARG nc_download_url=https://download.nextcloud.com/.customers/server/26.0.7-153512ec/nextcloud-26.0.7-enterprise.zip
+
+# Set app versions here
+ARG announcementcenter_version=6.6.1
+ARG checksum_version=1.2.2
+ARG collectives_version=2.7.0
+ARG contacts_version=5.3.2
+ARG drawio_version=2.1.2
+ARG drive_email_template_version=1.0.0
+ARG files_accesscontrol_version=1.16.0
+ARG files_automatedtagging_version=1.16.1
+ARG forms_version=3.3.1
+ARG integration_excalidraw_version=2.0.3
+ARG login_notes_version=1.2.0
+ARG loginpagebutton_version=1.0.0
+ARG maps_version=1.1.0
+ARG polls_version=5.2.0
+ARG richdocuments_version=8.0.2
+ARG user_saml_version=5.2.2
+ARG tasks_version=0.15.0
+ARG theming_customcss_version=1.14.0
+ARG twofactor_admin_version=4.2.0
+ARG twofactor_webauthn_version=1.2.0
+
 # Pre-requisites for the extensions
 RUN set -ex; \
   apt-get -q update > /dev/null && apt-get -q install -y \
@@ -145,8 +170,12 @@ RUN cd /var/www/html && git submodule update --init && mkdir data && chown -R ww
 ## AND HERE, OR CODE INTEGRITY CHECK MIGHT FAIL, AND IMAGE WILL NOT BUILD
 
 ## VARIOUS PATCHES COMES HERE IF NEEDED
-COPY ./40235.diff /var/www/html
-RUN cd /var/www/html && patch -p1 < 40235.diff && make all
+COPY ./40235.diff /var/www/html/40235.diff
+RUN cd /var/www/html/ && patch -p 1 < 40235.diff
+COPY ./workflowengine-workflowengine.js /var/www/html/dist/workflowengine-workflowengine.js
+COPY ./workflowengine-workflowengine.js.map /var/www/html/dist/workflowengine-workflowengine.js.map
+
+
 
 ## INSTALL APPS
 RUN mkdir /var/www/html/custom_apps
