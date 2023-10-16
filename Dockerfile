@@ -16,6 +16,7 @@ ARG forms_version=3.3.1
 ARG integration_excalidraw_version=2.0.3
 ARG login_notes_version=1.2.0
 ARG loginpagebutton_version=1.0.0
+ARG mail_version=3.4.2
 ARG maps_version=1.1.1
 ARG polls_version=5.3.2
 ARG richdocuments_version=8.0.4
@@ -34,31 +35,6 @@ ENV APACHE_LOG_DIR /var/log/apache2
 ENV APACHE_PID_FILE /var/run/apache2/apache2.pid
 ENV APACHE_RUN_DIR /var/run/apache2
 ENV APACHE_LOCK_DIR /var/lock/apache2
-
-# Set Nextcloud download url here
-ARG nc_download_url=https://download.nextcloud.com/.customers/server/26.0.7-153512ec/nextcloud-26.0.7-enterprise.zip
-
-# Set app versions here
-ARG announcementcenter_version=6.6.1
-ARG checksum_version=1.2.2
-ARG collectives_version=2.7.0
-ARG contacts_version=5.3.2
-ARG drawio_version=2.1.2
-ARG drive_email_template_version=1.0.0
-ARG files_accesscontrol_version=1.16.0
-ARG files_automatedtagging_version=1.16.1
-ARG forms_version=3.3.1
-ARG integration_excalidraw_version=2.0.3
-ARG login_notes_version=1.2.0
-ARG loginpagebutton_version=1.0.0
-ARG maps_version=1.1.0
-ARG polls_version=5.2.0
-ARG richdocuments_version=8.0.2
-ARG user_saml_version=5.2.2
-ARG tasks_version=0.15.0
-ARG theming_customcss_version=1.14.0
-ARG twofactor_admin_version=4.2.0
-ARG twofactor_webauthn_version=1.2.0
 
 # Pre-requisites for the extensions
 RUN set -ex; \
@@ -231,6 +207,10 @@ RUN wget -q https://github.com/pondersource/mfazones/blob/main/release/mfazones.
 ## INSTALL OUR APPS
 COPY --chown=root:root ./nextcloud-rds.tar.gz /tmp
 RUN cd /tmp && tar xf nextcloud-rds.tar.gz && mv rds/ /var/www/html/custom_apps
+COPY --chown=root:root ./mail.tar.gz /tmp
+RUN cd /tmp && tar xf ./mail.tar.gz && mv mail/ /var/www/html/custom_apps/
+COPY --chown=root:root ./sql_app_password_manager-0.0.1.tar.gz /tmp
+RUN cd /tmp && tar xf ./sql_app_password_manager-0.0.1.tar.gz && mv sql_app_password_manager/ /var/www/html/custom_apps/
 
 ## ADD www-data to tty group
 RUN usermod -a -G tty www-data
