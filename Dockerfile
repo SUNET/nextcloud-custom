@@ -209,8 +209,6 @@ COPY --chown=root:root ./nextcloud-rds.tar.gz /tmp
 RUN cd /tmp && tar xf nextcloud-rds.tar.gz && mv rds/ /var/www/html/custom_apps
 COPY --chown=root:root ./mail.tar.gz /tmp
 RUN cd /tmp && tar xf ./mail.tar.gz && mv mail/ /var/www/html/custom_apps/
-COPY --chown=root:root ./sql_app_password_manager-0.0.1.tar.gz /tmp
-RUN cd /tmp && tar xf ./sql_app_password_manager-0.0.1.tar.gz && mv sql_app_password_manager/ /var/www/html/custom_apps/
 
 ## ADD www-data to tty group
 RUN usermod -a -G tty www-data
