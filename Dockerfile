@@ -16,7 +16,6 @@ ARG forms_version=3.3.1
 ARG integration_excalidraw_version=2.0.3
 ARG login_notes_version=1.2.0
 ARG loginpagebutton_version=1.0.0
-ARG mail_version=3.4.2
 ARG maps_version=1.1.1
 ARG polls_version=5.3.2
 ARG richdocuments_version=8.0.4
@@ -210,8 +209,6 @@ RUN wget -q https://github.com/pondersource/mfazones/blob/main/release/mfazones.
 ## INSTALL OUR APPS
 COPY --chown=root:root ./nextcloud-rds.tar.gz /tmp
 RUN cd /tmp && tar xf nextcloud-rds.tar.gz && mv rds/ /var/www/html/custom_apps
-COPY --chown=root:root ./mail.tar.gz /tmp
-RUN cd /tmp && tar xf ./mail.tar.gz && mv mail/ /var/www/html/custom_apps/
 
 ## ADD www-data to tty group
 RUN usermod -a -G tty www-data
