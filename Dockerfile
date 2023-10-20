@@ -154,6 +154,9 @@ COPY ./workflowengine-workflowengine.js /var/www/html/dist/workflowengine-workfl
 COPY ./workflowengine-workflowengine.js.map /var/www/html/dist/workflowengine-workflowengine.js.map
 COPY ./39411.diff /var/www/html/39411.diff
 RUN cd /var/www/html/ && patch -p 1 < 39411.diff
+COPY ./512b0a7c52640c9da8905e52fc906e72.patch /var/www/html
+RUN cd /var/www/html/ && patch -p 1 < 512b0a7c52640c9da8905e52fc906e72.patch && rm 512b0a7c52640c9da8905e52fc906e72.patch 39411.diff
+
 
 
 
