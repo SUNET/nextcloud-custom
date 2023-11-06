@@ -1,30 +1,29 @@
 FROM php:8.2-rc-apache-bullseye
 
 # Set Nextcloud download url here
-ARG nc_download_url=https://download.nextcloud.com/.customers/server/26.0.7-153512ec/nextcloud-26.0.7-enterprise.zip
+ARG nc_download_url=https://download.nextcloud.com/.customers/server/27.1.3-91ccca2c/nextcloud-27.1.3-enterprise.zip
 
 # Set app versions here
 ARG announcementcenter_version=6.6.2
-ARG calendar_version=4.5.1
+ARG calendar_version=4.5.2
 ARG checksum_version=1.2.2
-ARG collectives_version=2.7.1
+ARG collectives_version=2.8.2
 ARG contacts_version=5.4.2
 ARG drive_email_template_version=1.0.0
-ARG files_accesscontrol_version=1.16.2
-ARG files_automatedtagging_version=1.16.1
+ARG files_accesscontrol_version=1.17.1
+ARG files_automatedtagging_version=1.17.0
 ARG forms_version=3.3.1
-ARG integration_excalidraw_version=2.0.3
-ARG login_notes_version=1.2.0
+ARG integration_excalidraw_version=2.0.4
+ARG login_notes_version=1.3.1
 ARG loginpagebutton_version=1.0.0
 ARG maps_version=1.1.1
-ARG polls_version=5.3.2
-ARG richdocuments_version=8.0.4
+ARG polls_version=5.4.1
+ARG richdocuments_version=8.2.2
 ARG sciencemesh_version=0.5.0
 ARG tasks_version=0.15.0
 ARG theming_customcss_version=1.14.0
 ARG twofactor_admin_version=4.3.0
 ARG twofactor_webauthn_version=1.2.0
-ARG user_saml_version=5.2.2
 
 # Set environment variables
 ENV APACHE_RUN_USER www-data
@@ -153,8 +152,6 @@ COPY ./workflowengine-workflowengine.js /var/www/html/dist/workflowengine-workfl
 COPY ./workflowengine-workflowengine.js.map /var/www/html/dist/workflowengine-workflowengine.js.map
 COPY ./39411.diff /var/www/html/39411.diff
 RUN cd /var/www/html/ && patch -p 1 < 39411.diff
-COPY ./512b0a7c52640c9da8905e52fc906e72.patch /var/www/html
-RUN cd /var/www/html/ && patch -p 1 < 512b0a7c52640c9da8905e52fc906e72.patch && rm 512b0a7c52640c9da8905e52fc906e72.patch 39411.diff
 
 
 
