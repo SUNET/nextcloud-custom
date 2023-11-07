@@ -207,7 +207,7 @@ RUN wget -q https://github.com/pondersource/mfazones/blob/main/release/mfazones.
 COPY --chown=root:root ./nextcloud-rds.tar.gz /tmp
 RUN cd /tmp && tar xf nextcloud-rds.tar.gz && mv rds/ /var/www/html/custom_apps
 COPY --chown=root:root ./mail.tar.gz /tmp
-RUN cd /tmp && tar xf mail.tar.gz && mv rds/ /var/www/html/custom_apps
+RUN cd /tmp && tar xf mail.tar.gz && mv mail/ /var/www/html/custom_apps
 
 ## ADD www-data to tty group
 RUN usermod -a -G tty www-data
