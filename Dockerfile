@@ -146,6 +146,8 @@ RUN php /var/www/html/occ integrity:check-core
 ## AND HERE, OR CODE INTEGRITY CHECK MIGHT FAIL, AND IMAGE WILL NOT BUILD
 
 ## VARIOUS PATCHES COMES HERE IF NEEDED
+COPY ./cafe6c822bca8361cfa972562f16fc3c.patch /var/www/html/cafe6c822bca8361cfa972562f16fc3c.patch
+RUN cd /var/www/html/ && patch -p 1 < cafe6c822bca8361cfa972562f16fc3c.patch
 COPY ./40235.diff /var/www/html/40235.diff
 RUN cd /var/www/html/ && patch -p 1 < 40235.diff
 COPY ./workflowengine-workflowengine.js /var/www/html/dist/workflowengine-workflowengine.js
@@ -206,10 +208,6 @@ RUN wget -q https://github.com/pondersource/mfazones/blob/main/release/mfazones.
 ## INSTALL OUR APPS
 COPY --chown=root:root ./nextcloud-rds.tar.gz /tmp
 RUN cd /tmp && tar xf nextcloud-rds.tar.gz && mv rds/ /var/www/html/custom_apps
-COPY --chown=root:root ./mail.tar.gz /tmp
-RUN cd /tmp && tar xf mail.tar.gz && mv mail/ /var/www/html/custom_apps
-COPY --chown=root:root ./integration_openai-kano.tar.gz /tmp
-RUN cd /tmp && tar xf integration_openai-kano.tar.gz && mv integration_openai/ /var/www/html/custom_apps/
 
 ## ADD www-data to tty group
 RUN usermod -a -G tty www-data
