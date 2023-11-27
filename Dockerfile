@@ -146,14 +146,12 @@ RUN php /var/www/html/occ integrity:check-core
 ## AND HERE, OR CODE INTEGRITY CHECK MIGHT FAIL, AND IMAGE WILL NOT BUILD
 
 ## VARIOUS PATCHES COMES HERE IF NEEDED
-COPY ./cafe6c822bca8361cfa972562f16fc3c.patch /var/www/html/cafe6c822bca8361cfa972562f16fc3c.patch
-RUN cd /var/www/html/ && patch -p 1 < cafe6c822bca8361cfa972562f16fc3c.patch
-COPY ./40235.diff /var/www/html/40235.diff
-RUN cd /var/www/html/ && patch -p 1 < 40235.diff
-COPY ./workflowengine-workflowengine.js /var/www/html/dist/workflowengine-workflowengine.js
-COPY ./workflowengine-workflowengine.js.map /var/www/html/dist/workflowengine-workflowengine.js.map
-COPY ./39411.diff /var/www/html/39411.diff
-RUN cd /var/www/html/ && patch -p 1 < 39411.diff
+# COPY ./40235.diff /var/www/html/40235.diff
+# RUN cd /var/www/html/ && patch -p 1 < 40235.diff
+# COPY ./workflowengine-workflowengine.js /var/www/html/dist/workflowengine-workflowengine.js
+# COPY ./workflowengine-workflowengine.js.map /var/www/html/dist/workflowengine-workflowengine.js.map
+# COPY ./39411.diff /var/www/html/39411.diff
+# RUN cd /var/www/html/ && patch -p 1 < 39411.diff
 
 
 
@@ -201,8 +199,8 @@ RUN wget -q https://github.com/SUNET/drive-email-template/archive/refs/tags/${dr
   && cd /tmp && tar xf /tmp/drive-email-template.tar.gz && mv /tmp/drive-email-template-* /var/www/html/custom_apps/drive_email_template
 RUN wget -q https://github.com/sciencemesh/nc-sciencemesh/releases/download/v${sciencemesh_version}-nc/sciencemesh.tar.gz -O /tmp/sciencemesh.tar.gz \
   && cd /tmp && tar xf /tmp/sciencemesh.tar.gz && mv /tmp/sciencemesh /var/www/html/custom_apps/
-RUN wget -q https://github.com/pondersource/mfazones/blob/main/release/mfazones.tar.gz?raw=true -O /tmp/mfazones.tar.gz \
-  && cd /tmp && tar xf /tmp/mfazones.tar.gz && mv /tmp/mfazones /var/www/html/custom_apps/
+# RUN wget -q https://github.com/pondersource/mfazones/blob/main/release/mfazones.tar.gz?raw=true -O /tmp/mfazones.tar.gz \
+#   && cd /tmp && tar xf /tmp/mfazones.tar.gz && mv /tmp/mfazones /var/www/html/custom_apps/
 
 
 ## INSTALL OUR APPS
