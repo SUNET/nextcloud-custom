@@ -1,49 +1,48 @@
 diff --git a/apps/files_external/lib/Lib/Storage/AmazonS3.php b/apps/files_external/lib/Lib/Storage/AmazonS3.php
-index 3d982bdab0232..e9398815055bd 100644
+index 8e2a6b8ea12..5619b7be8dd 100644
 --- a/apps/files_external/lib/Lib/Storage/AmazonS3.php
 +++ b/apps/files_external/lib/Lib/Storage/AmazonS3.php
-@@ -580,10 +580,7 @@ public function copy($source, $target, $isFile = null) {
+@@ -582,7 +582,10 @@ class AmazonS3 extends \OC\Files\Storage\Common {
  
  		if ($isFile === true || $this->is_file($source)) {
  			try {
--				$this->getConnection()->copyObject([
--					'Bucket' => $this->bucket,
--					'Key' => $this->cleanKey($target),
--					'CopySource' => S3Client::encodeKey($this->bucket . '/' . $source),
-+				$this->copyObject($source, $target, [
+-				$this->copyObject($source, $target, [
++ 				$this->getConnection()->copyObject([
++ 					'Bucket' => $this->bucket,
++ 					'Key' => $this->cleanKey($target),
++ 					'CopySource' => S3Client::encodeKey($this->bucket . '/' . $source),
  					'StorageClass' => $this->storageClass,
  				]);
  				$this->testTimeout();
 diff --git a/lib/private/Files/ObjectStore/S3ObjectTrait.php b/lib/private/Files/ObjectStore/S3ObjectTrait.php
-index e0d0f2ce9c7e8..e9c52f11936bc 100644
+index 217e1a1a2ff..7328287acee 100644
 --- a/lib/private/Files/ObjectStore/S3ObjectTrait.php
 +++ b/lib/private/Files/ObjectStore/S3ObjectTrait.php
-@@ -27,6 +27,7 @@
- namespace OC\Files\ObjectStore;
- 
- use Aws\S3\Exception\S3MultipartUploadException;
-+use Aws\S3\MultipartCopy;
- use Aws\S3\MultipartUploader;
- use Aws\S3\S3Client;
- use GuzzleHttp\Psr7;
-@@ -189,9 +190,16 @@ public function objectExists($urn) {
+@@ -189,23 +189,9 @@ trait S3ObjectTrait {
+ 	public function objectExists($urn) {
  		return $this->getConnection()->doesObjectExist($this->bucket, $urn, $this->getSSECParameters());
  	}
- 
--	public function copyObject($from, $to) {
--		$this->getConnection()->copy($this->getBucket(), $from, $this->getBucket(), $to, 'private', [
--			'params' => $this->getSSECParameters() + $this->getSSECParameters(true)
--		]);
-+	public function copyObject($from, $to, array $options = []) {
-+		$copy = new MultipartCopy($this->getConnection(), [
-+			"source_bucket" => $this->getBucket(),
-+			"source_key" => $from
-+		], array_merge([
-+			"bucket" => $this->getBucket(),
-+			"key" => $to,
-+			"acl" => "private",
-+			"params" => $this->getSSECParameters() + $this->getSSECParameters(true)
-+		], $options));
-+		$copy->copy();
+-
+-	public function copyObject($from, $to, array $options = []) {
+-		$sourceMetadata = $this->getConnection()->headObject([
+-			'Bucket' => $this->getBucket(),
+-			'Key' => $from,
+-		] + $this->getSSECParameters());
+-
+-		$copy = new MultipartCopy($this->getConnection(), [
+-			"source_bucket" => $this->getBucket(),
+-			"source_key" => $from
+-		], array_merge([
+-			"bucket" => $this->getBucket(),
+-			"key" => $to,
+-			"acl" => "private",
+-			"params" => $this->getSSECParameters() + $this->getSSECParameters(true),
+-			"source_metadata" => $sourceMetadata
+-		], $options));
+-		$copy->copy();
++ 	public function copyObject($from, $to) {
++ 		$this->getConnection()->copy($this->getBucket(), $from, $this->getBucket(), $to, 'private', [
++ 			'params' => $this->getSSECParameters() + $this->getSSECParameters(true)
++ 		]);
  	}
  }

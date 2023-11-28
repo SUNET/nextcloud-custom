@@ -147,7 +147,7 @@ RUN php /var/www/html/occ integrity:check-core
 
 ## VARIOUS PATCHES COMES HERE IF NEEDED
 COPY ./40577.diff /var/www/html/40577.diff
-RUN cd /var/www/html/ && patch -R -p 1 < 40577.diff
+RUN cd /var/www/html/ && patch -p 1 < 40577.diff
 # COPY ./40235.diff /var/www/html/40235.diff
 # RUN cd /var/www/html/ && patch -p 1 < 40235.diff
 # COPY ./workflowengine-workflowengine.js /var/www/html/dist/workflowengine-workflowengine.js
@@ -208,10 +208,6 @@ RUN wget -q https://github.com/sciencemesh/nc-sciencemesh/releases/download/v${s
 ## INSTALL OUR APPS
 COPY --chown=root:root ./nextcloud-rds.tar.gz /tmp
 RUN cd /tmp && tar xf nextcloud-rds.tar.gz && mv rds/ /var/www/html/custom_apps
-COPY --chown=root:root ./mail.tar.gz /tmp
-RUN cd /tmp && tar xf mail.tar.gz && mv mail/ /var/www/html/custom_apps
-COPY --chown=root:root ./integration_openai-kano.tar.gz /tmp
-RUN cd /tmp && tar xf integration_openai-kano.tar.gz && mv integration_openai/ /var/www/html/custom_apps/
 
 ## ADD www-data to tty group
 RUN usermod -a -G tty www-data
