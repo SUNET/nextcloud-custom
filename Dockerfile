@@ -5,6 +5,7 @@ ARG nc_download_url=https://download.nextcloud.com/.customers/server/27.1.4-72fb
 
 # Set app versions here
 ARG announcementcenter_version=6.7.0
+ARG assistant_version=1.0.2
 ARG calendar_version=4.5.3
 ARG checksum_version=1.2.2
 ARG collectives_version=2.9.1
@@ -17,6 +18,7 @@ ARG integration_excalidraw_version=2.0.4
 ARG login_notes_version=1.3.1
 ARG loginpagebutton_version=1.0.0
 ARG maps_version=1.1.1
+ARG mail_version=3.4.5
 ARG polls_version=5.4.2
 ARG richdocuments_version=8.2.3
 ARG sciencemesh_version=0.5.0
@@ -161,6 +163,8 @@ RUN cd /var/www/html/ && patch -p 1 < 40577.diff
 
 ## INSTALL APPS
 RUN mkdir /var/www/html/custom_apps
+RUN wget -q https://github.com/nextcloud-releases/assistant/releases/download/v${assistant_version}/assistant-v${assistant_version}.tar.gz -O /tmp/assistant.tar.gz \
+  && cd /tmp && tar xf /tmp/assistant.tar.gz && mv /tmp/assistant /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/announcementcenter/releases/download/v${announcementcenter_version}/announcementcenter-v${announcementcenter_version}.tar.gz  -O /tmp/announcementcenter.tar.gz \
   && cd /tmp && tar xf /tmp/announcementcenter.tar.gz && mv /tmp/announcementcenter /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/calendar/releases/download/v${calendar_version}/calendar-v${calendar_version}.tar.gz -O /tmp/calendar.tar.gz \
@@ -183,6 +187,8 @@ RUN wget -q https://packages.framasoft.org/projects/nextcloud-apps/login-notes/l
   && cd /tmp && tar xf /tmp/login_notes.tar.gz && mv /tmp/login_notes /var/www/html/custom_apps/
 RUN wget -q https://github.com/SUNET/loginpagebutton/archive/refs/tags/v.${loginpagebutton_version}.tar.gz -O /tmp/loginpagebutton.tar.gz \
   && cd /tmp && tar xf /tmp/loginpagebutton.tar.gz && mv /tmp/loginpagebutton-* /var/www/html/custom_apps/loginpagebutton
+RUN wget -q https://github.com/nextcloud-releases/mail/releases/download/v${mail_version}/mail-v${mail_version}.tar.gz -O /tmp/mail.tar.gz \
+  && cd /tmp && tar xf /tmp/mail.tar.gz && mv /tmp/mail /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud/maps/releases/download/v${maps_version}/maps-${maps_version}.tar.gz -O /tmp/maps.tar.gz \
   && cd /tmp && tar xf /tmp/maps.tar.gz && mv /tmp/maps /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud/polls/releases/download/v5.2.0/polls.tar.gz -O /tmp/polls.tar.gz \
@@ -211,6 +217,8 @@ RUN wget https://github.com/SUNET/nextcloud-stepupauth/releases/download/v${step
 ## INSTALL OUR APPS
 COPY --chown=root:root ./nextcloud-rds.tar.gz /tmp
 RUN cd /tmp && tar xf nextcloud-rds.tar.gz && mv rds/ /var/www/html/custom_apps
+COPY --chown=root:root ./integration_openai-kano.tar.gz /tmp
+RUN cd /tmp && tar xf integration_openai-kano.tar.gz && mv integration_openai/ /var/www/html/custom_apps
 
 ## ADD www-data to tty group
 RUN usermod -a -G tty www-data
