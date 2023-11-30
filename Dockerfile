@@ -20,6 +20,7 @@ ARG maps_version=1.1.1
 ARG polls_version=5.4.2
 ARG richdocuments_version=8.2.3
 ARG sciencemesh_version=0.5.0
+ARG stepupauth_version=0.1.0
 ARG tasks_version=0.15.0
 ARG theming_customcss_version=1.15.0
 ARG twofactor_admin_version=4.3.0
@@ -201,6 +202,8 @@ RUN wget -q https://github.com/SUNET/drive-email-template/archive/refs/tags/${dr
   && cd /tmp && tar xf /tmp/drive-email-template.tar.gz && mv /tmp/drive-email-template-* /var/www/html/custom_apps/drive_email_template
 RUN wget -q https://github.com/sciencemesh/nc-sciencemesh/releases/download/v${sciencemesh_version}-nc/sciencemesh.tar.gz -O /tmp/sciencemesh.tar.gz \
   && cd /tmp && tar xf /tmp/sciencemesh.tar.gz && mv /tmp/sciencemesh /var/www/html/custom_apps/
+RUN wget https://github.com/SUNET/nextcloud-stepupauth/releases/download/v${stepupauth_version}/stepupauth-${stepupauth_version}.tar.gz -O /tmp/stepupauth.tar.gz \
+  && cd /tmp && tar xf /tmp/stepupauth.tar.gz && mv /tmp/stepupauth /var/www/html/custom_apps/
 # RUN wget -q https://github.com/pondersource/mfazones/blob/main/release/mfazones.tar.gz?raw=true -O /tmp/mfazones.tar.gz \
 #   && cd /tmp && tar xf /tmp/mfazones.tar.gz && mv /tmp/mfazones /var/www/html/custom_apps/
 
