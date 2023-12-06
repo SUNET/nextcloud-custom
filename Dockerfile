@@ -5,6 +5,7 @@ ARG nc_download_url=https://download.nextcloud.com/.customers/server/27.1.4-72fb
 
 # Set app versions here
 ARG announcementcenter_version=6.7.0
+ARG assistant_version=1.0.2
 ARG calendar_version=4.5.3
 ARG checksum_version=1.2.2
 ARG collectives_version=2.9.1
@@ -14,6 +15,7 @@ ARG files_accesscontrol_version=1.17.1
 ARG files_automatedtagging_version=1.17.0
 ARG forms_version=3.3.1
 ARG integration_excalidraw_version=2.0.4
+ARG integration_openai_version=1.1.4
 ARG login_notes_version=1.3.1
 ARG loginpagebutton_version=1.0.0
 ARG maps_version=1.1.1
@@ -164,6 +166,8 @@ RUN wget -q https://github.com/nextcloud-releases/mail/releases/download/v${mail
 
 ## INSTALL APPS
 RUN mkdir /var/www/html/custom_apps
+RUN wget -q https://github.com/nextcloud-releases/assistant/releases/download/v${assistant_version}/assistant-v${assistant_version}.tar.gz -O /tmp/assistant.tar.gz \
+  && cd /tmp && tar xf /tmp/assistant.tar.gz && mv /tmp/assistant /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/announcementcenter/releases/download/v${announcementcenter_version}/announcementcenter-v${announcementcenter_version}.tar.gz  -O /tmp/announcementcenter.tar.gz \
   && cd /tmp && tar xf /tmp/announcementcenter.tar.gz && mv /tmp/announcementcenter /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/calendar/releases/download/v${calendar_version}/calendar-v${calendar_version}.tar.gz -O /tmp/calendar.tar.gz \
@@ -182,6 +186,8 @@ RUN wget -q https://github.com/nextcloud-releases/forms/releases/download/v${for
   && cd /tmp && tar xf /tmp/forms.tar.gz && mv /tmp/forms /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/integration_excalidraw/releases/download/v${integration_excalidraw_version}/integration_excalidraw-v${integration_excalidraw_version}.tar.gz -O /tmp/integration_excalidraw.tar.gz \
   && cd /tmp && tar xf /tmp/integration_excalidraw.tar.gz && mv /tmp/integration_excalidraw /var/www/html/custom_apps/
+RUN wget -q https://github.com/nextcloud-releases/integration_openai/releases/download/v${integration_openai_version}/integration_openai-v${integration_openai_version}.tar.gz -O /tmp/integration_openai.tar.gz \
+  && cd /tmp && tar xf /tmp/integration_openai.tar.gz && mv /tmp/integration_openai /var/www/html/custom_apps/
 RUN wget -q https://packages.framasoft.org/projects/nextcloud-apps/login-notes/login_notes-${login_notes_version}.tar.gz -O /tmp/login_notes.tar.gz \
   && cd /tmp && tar xf /tmp/login_notes.tar.gz && mv /tmp/login_notes /var/www/html/custom_apps/
 RUN wget -q https://github.com/SUNET/loginpagebutton/archive/refs/tags/v.${loginpagebutton_version}.tar.gz -O /tmp/loginpagebutton.tar.gz \
