@@ -124,8 +124,8 @@ RUN { \
 RUN echo "ServerName localhost" | tee /etc/apache2/conf-available/servername.conf \
   && a2enconf servername
 
-RUN sed 's/^ServerTokens OS/ServerTokens Prod/' /etc/apache2/conf-available/security.conf
-RUN sed 's/^ServerSignature On/ServerSignature Off/' /etc/apache2/conf-available/security.conf
+RUN sed -i 's/^ServerTokens OS/ServerTokens Prod/' /etc/apache2/conf-available/security.conf
+RUN sed -i 's/^ServerSignature On/ServerSignature Off/' /etc/apache2/conf-available/security.conf
 
 # Set permissions to allow non-root user to access necessary folders
 RUN chmod -R 777 ${APACHE_RUN_DIR} ${APACHE_LOCK_DIR} ${APACHE_LOG_DIR} ${APACHE_DOCUMENT_ROOT}
