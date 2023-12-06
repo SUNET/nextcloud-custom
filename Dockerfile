@@ -220,8 +220,6 @@ RUN wget https://github.com/SUNET/nextcloud-stepupauth/releases/download/v${step
 ## INSTALL OUR APPS
 COPY --chown=root:root ./nextcloud-rds.tar.gz /tmp
 RUN cd /tmp && tar xf nextcloud-rds.tar.gz && mv rds/ /var/www/html/custom_apps
-COPY --chown=root:root ./integration_openai-kano.tar.gz /tmp
-RUN cd /tmp && tar xf integration_openai-kano.tar.gz && mv integration_openai/ /var/www/html/custom_apps
 
 ## ADD www-data to tty group
 RUN usermod -a -G tty www-data
