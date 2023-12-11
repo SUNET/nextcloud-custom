@@ -159,6 +159,10 @@ RUN cd /var/www/html/ && patch -p 1 < 40577.diff
 # COPY ./39411.diff /var/www/html/39411.diff
 # RUN cd /var/www/html/ && patch -p 1 < 39411.diff
 
+## Install global site selector
+COPY --chown=root:root ./globalsiteselector-2.5.0-beta1.tar.gz /tmp/globalsiteselector.tar.gz
+RUN cd /tmp && tar xf /tmp/globalsiteselector.tar.gz && rm -rf /var/www/html/apps/globalsiteselector && mv /tmp/globalsiteselector /var/www/html/apps/
+
 ## Install app that needs to go in the regular apps folder
 RUN wget -q https://github.com/nextcloud-releases/mail/releases/download/v${mail_version}/mail-v${mail_version}.tar.gz -O /tmp/mail.tar.gz \
   && cd /tmp && tar xf /tmp/mail.tar.gz && mv /tmp/mail /var/www/html/apps/
