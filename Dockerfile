@@ -19,7 +19,7 @@ ARG integration_openai_version=1.1.4
 ARG login_notes_version=1.3.1
 ARG loginpagebutton_version=1.0.0
 ARG maps_version=1.1.1
-ARG mail_version=3.5.0-rc.2
+# ARG mail_version=3.5.0-rc.2
 ARG polls_version=5.4.2
 ARG richdocuments_version=8.2.3
 ARG sciencemesh_version=0.5.0
@@ -164,8 +164,8 @@ COPY --chown=root:root ./globalsiteselector-2.5.0-beta1.tar.gz /tmp/globalsitese
 RUN cd /tmp && tar xf /tmp/globalsiteselector.tar.gz && rm -rf /var/www/html/apps/globalsiteselector && mv /tmp/globalsiteselector /var/www/html/apps/
 
 ## Install app that needs to go in the regular apps folder
-RUN wget -q https://github.com/nextcloud-releases/mail/releases/download/v${mail_version}/mail-v${mail_version}.tar.gz -O /tmp/mail.tar.gz \
-  && cd /tmp && tar xf /tmp/mail.tar.gz && mv /tmp/mail /var/www/html/apps/
+# RUN wget -q https://github.com/nextcloud-releases/mail/releases/download/v${mail_version}/mail-v${mail_version}.tar.gz -O /tmp/mail.tar.gz \
+#   && cd /tmp && tar xf /tmp/mail.tar.gz && mv /tmp/mail /var/www/html/apps/
 
 
 ## INSTALL APPS
