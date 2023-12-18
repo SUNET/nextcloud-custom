@@ -152,6 +152,8 @@ RUN php /var/www/html/occ integrity:check-core
 ## VARIOUS PATCHES COMES HERE IF NEEDED
 COPY ./41914.diff /var/www/html/41914.diff
 RUN cd /var/www/html/ && patch -p 1 < 41914.diff
+COPY ./41998.diff /var/www/html/41998.diff
+RUN cd /var/www/html/ && patch -p 1 < 41998.diff
 # COPY ./40235.diff /var/www/html/40235.diff
 # RUN cd /var/www/html/ && patch -p 1 < 40235.diff
 # COPY ./workflowengine-workflowengine.js /var/www/html/dist/workflowengine-workflowengine.js
