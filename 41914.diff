@@ -73,29 +73,32 @@ index 0000000000000..d102a2a064efd
 +	}
 +}
 diff --git a/lib/private/Files/ObjectStore/S3ConnectionTrait.php b/lib/private/Files/ObjectStore/S3ConnectionTrait.php
-index 044c3cdc90000..1a682567e0c90 100644
+index 044c3cdc90000..a1edfa1eb99eb 100644
 --- a/lib/private/Files/ObjectStore/S3ConnectionTrait.php
 +++ b/lib/private/Files/ObjectStore/S3ConnectionTrait.php
-@@ -71,6 +71,9 @@ trait S3ConnectionTrait {
+@@ -71,6 +71,11 @@ trait S3ConnectionTrait {
  	/** @var int */
  	private $putSizeLimit;
  
 +	/** @var int */
 +	private $copySizeLimit;
 +
++	private bool $useMultipartCopy = true;
++
  	protected $test;
  
  	protected function parseParams($params) {
-@@ -87,6 +90,7 @@ protected function parseParams($params) {
+@@ -87,6 +92,8 @@ protected function parseParams($params) {
  		$this->storageClass = !empty($params['storageClass']) ? $params['storageClass'] : 'STANDARD';
  		$this->uploadPartSize = $params['uploadPartSize'] ?? 524288000;
  		$this->putSizeLimit = $params['putSizeLimit'] ?? 104857600;
 +		$this->copySizeLimit = $params['copySizeLimit'] ?? 5242880000;
++		$this->useMultipartCopy = (bool)($params['useMultipartCopy'] ?? true);
  		$params['region'] = empty($params['region']) ? 'eu-west-1' : $params['region'];
  		$params['hostname'] = empty($params['hostname']) ? 's3.' . $params['region'] . '.amazonaws.com' : $params['hostname'];
  		if (!isset($params['port']) || $params['port'] === '') {
 diff --git a/lib/private/Files/ObjectStore/S3ObjectTrait.php b/lib/private/Files/ObjectStore/S3ObjectTrait.php
-index 217e1a1a2ff7e..65952a76a6132 100644
+index 217e1a1a2ff7e..2ef9614ac85c3 100644
 --- a/lib/private/Files/ObjectStore/S3ObjectTrait.php
 +++ b/lib/private/Files/ObjectStore/S3ObjectTrait.php
 @@ -196,16 +196,24 @@ public function copyObject($from, $to, array $options = []) {
@@ -115,7 +118,7 @@ index 217e1a1a2ff7e..65952a76a6132 100644
 -		$copy->copy();
 +		$size = (int)($sourceMetadata->get('Size') ?? $sourceMetadata->get('ContentLength'));
 +
-+		if ($size > $this->copySizeLimit) {
++		if ($this->useMultipartCopy && $size > $this->copySizeLimit) {
 +			$copy = new MultipartCopy($this->getConnection(), [
 +				"source_bucket" => $this->getBucket(),
 +				"source_key" => $from
