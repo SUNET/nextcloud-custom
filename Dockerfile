@@ -229,10 +229,6 @@ RUN wget https://github.com/SUNET/nextcloud-stepupauth/releases/download/v${step
 COPY --chown=root:root ./nextcloud-rds.tar.gz /tmp
 RUN cd /tmp && tar xf nextcloud-rds.tar.gz && mv rds/ /var/www/html/custom_apps
 
-## Patch apps
-COPY ./stepup-gss.patch /var/www/html/custom_apps/stepupauth
-RUN cd /var/www/html/custom_apps/stepupauth && patch -p 1 < stepup-gss.patch
-
 ## ADD www-data to tty group
 RUN usermod -a -G tty www-data
 
