@@ -150,8 +150,8 @@ RUN php /var/www/html/occ integrity:check-core
 ## AND HERE, OR CODE INTEGRITY CHECK MIGHT FAIL, AND IMAGE WILL NOT BUILD
 
 ## VARIOUS PATCHES COMES HERE IF NEEDED
-COPY ./41914.diff /var/www/html/41914.diff
-RUN cd /var/www/html/ && patch -p 1 < 41914.diff
+COPY ./42522.diff /var/www/html/42522.diff
+RUN cd /var/www/html/ && patch -p 1 < 42522.diff
 #COPY ./41998.diff /var/www/html/41998.diff
 #RUN cd /var/www/html/ && patch -p 1 < 41998.diff
 # COPY ./40235.diff /var/www/html/40235.diff
