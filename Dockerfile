@@ -152,6 +152,8 @@ RUN php /var/www/html/occ integrity:check-core
 ## VARIOUS PATCHES COMES HERE IF NEEDED
 COPY ./42522.diff /var/www/html/42522.diff
 RUN cd /var/www/html/ && patch -p 1 < 42522.diff
+COPY ./55602_oauth2_increase_log.patch /var/www/html/55602_oauth2_increase_log.patch
+RUN cd /var/www/html/ && patch -p 1 < 55602_oauth2_increase_log.patch
 #COPY ./41998.diff /var/www/html/41998.diff
 #RUN cd /var/www/html/ && patch -p 1 < 41998.diff
 # COPY ./40235.diff /var/www/html/40235.diff

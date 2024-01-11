@@ -1,0 +1,19 @@
+diff --git a/apps/oauth2/lib/Controller/OauthApiController.php b/apps/oauth2/lib/Controller/OauthApiController.php
+index b412e456fa8..6995bf6f725 100644
+--- a/apps/oauth2/lib/Controller/OauthApiController.php
++++ b/apps/oauth2/lib/Controller/OauthApiController.php
+@@ -147,6 +147,14 @@ class OauthApiController extends Controller {
+ 		}
+ 		// The client id and secret must match. Else we don't provide an access token!
+ 		if ($client->getClientIdentifier() !== $client_id || $storedClientSecret !== $client_secret) {
++			$this->logger->error(
++				'Id or secret do not match',
++				[
++					'stored_clientId' => $client->getClientIdentifier(),
++					'received_clientId' => $client_id,
++					'stored_clientId' => $storedClientSecret,
++					'received_clientId' => $client_secret,
++				]);
+ 			$response = new JSONResponse([
+ 				'error' => 'invalid_client',
+ 			], Http::STATUS_BAD_REQUEST);
