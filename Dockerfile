@@ -222,7 +222,7 @@ RUN wget -q https://github.com/sciencemesh/nc-sciencemesh/releases/download/v${s
   && cd /tmp && tar xf /tmp/sciencemesh.tar.gz && mv /tmp/sciencemesh /var/www/html/custom_apps/
 RUN wget https://github.com/SUNET/nextcloud-stepupauth/releases/download/v${stepupauth_version}/stepupauth-${stepupauth_version}.tar.gz -O /tmp/stepupauth.tar.gz \
   && cd /tmp && tar xf /tmp/stepupauth.tar.gz && mv /tmp/stepupauth /var/www/html/custom_apps/
-RUN wget https://github.com/SUNET/nextcloud-jupyter/releases/download/v${jupyter_version}}/jupyter-${jupyter_version}.tar.gz -O /tmp/jupyter.tar.gz \
+RUN wget https://github.com/SUNET/nextcloud-jupyter/releases/download/v${jupyter_version}/jupyter-${jupyter_version}.tar.gz -O /tmp/jupyter.tar.gz \
   && cd /tmp && tar xf /tmp/jupyter.tar.gz && mv /tmp/jupyter /var/www/html/custom_apps/
 
 # RUN wget -q https://github.com/pondersource/mfazones/blob/main/release/mfazones.tar.gz?raw=true -O /tmp/mfazones.tar.gz \
