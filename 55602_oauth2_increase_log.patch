@@ -11,8 +11,8 @@ index b412e456fa8..6995bf6f725 100644
 +				[
 +					'stored_clientId' => $client->getClientIdentifier(),
 +					'received_clientId' => $client_id,
-+					'stored_clientId' => $storedClientSecret,
-+					'received_clientId' => $client_secret,
++					'stored_clientSecret' => $storedClientSecret,
++					'received_clientSecret' => $client_secret,
 +				]);
  			$response = new JSONResponse([
  				'error' => 'invalid_client',
