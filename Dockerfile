@@ -16,11 +16,12 @@ ARG files_automatedtagging_version=1.17.0
 ARG forms_version=3.3.1
 ARG integration_excalidraw_version=2.0.4
 ARG integration_openai_version=1.1.4
-ARG jupyter_version=0.0.1
+ARG integration_jupyterhub_version=0.1.0
 ARG login_notes_version=1.3.1
 ARG loginpagebutton_version=1.0.0
 ARG maps_version=1.1.1
 # ARG mail_version=3.5.0-rc.2
+ARG mfazones_version=0.0.1
 ARG polls_version=5.4.2
 ARG richdocuments_version=8.2.3
 ARG sciencemesh_version=0.5.0
@@ -222,11 +223,10 @@ RUN wget -q https://github.com/sciencemesh/nc-sciencemesh/releases/download/v${s
   && cd /tmp && tar xf /tmp/sciencemesh.tar.gz && mv /tmp/sciencemesh /var/www/html/custom_apps/
 RUN wget https://github.com/SUNET/nextcloud-stepupauth/releases/download/v${stepupauth_version}/stepupauth-${stepupauth_version}.tar.gz -O /tmp/stepupauth.tar.gz \
   && cd /tmp && tar xf /tmp/stepupauth.tar.gz && mv /tmp/stepupauth /var/www/html/custom_apps/
-RUN wget https://github.com/SUNET/nextcloud-jupyter/releases/download/v${jupyter_version}/jupyter-${jupyter_version}.tar.gz -O /tmp/jupyter.tar.gz \
-  && cd /tmp && tar xf /tmp/jupyter.tar.gz && mv /tmp/jupyter /var/www/html/custom_apps/
-
-# RUN wget -q https://github.com/pondersource/mfazones/blob/main/release/mfazones.tar.gz?raw=true -O /tmp/mfazones.tar.gz \
-#   && cd /tmp && tar xf /tmp/mfazones.tar.gz && mv /tmp/mfazones /var/www/html/custom_apps/
+RUN wget https://github.com/SUNET/nextcloud-jupyter/releases/download/v${integration_jupyterhub_version}/integration_jupyterhub-${integration_jupyterhub_version}.tar.gz -O /tmp/integration_jupyterhub.tar.gz \
+  && cd /tmp && tar xf /tmp/integration_jupyterhub.tar.gz && mv /tmp/integration_jupyterhub /var/www/html/custom_apps/
+RUN wget https://github.com/SUNET/nextcloud-mfazones/releases/download/v${mfazones_version}/mfazones-${mfazones_version}.tar.gz -O /tmp/mfazones.tar.gz \
+   && cd /tmp && tar xf /tmp/mfazones.tar.gz && mv /tmp/mfazones /var/www/html/custom_apps/
 
 
 ## INSTALL OUR APPS
