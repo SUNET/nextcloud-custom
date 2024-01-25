@@ -1,0 +1,14 @@
+diff --git a/lib/private/Files/ObjectStore/S3ObjectTrait.php b/lib/private/Files/ObjectStore/S3ObjectTrait.php
+index 2ef9614ac85c3..623c4d08c74aa 100644
+--- a/lib/private/Files/ObjectStore/S3ObjectTrait.php
++++ b/lib/private/Files/ObjectStore/S3ObjectTrait.php
+@@ -212,7 +212,8 @@ public function copyObject($from, $to, array $options = []) {
+ 			$copy->copy();
+ 		} else {
+ 			$this->getConnection()->copy($this->getBucket(), $from, $this->getBucket(), $to, 'private', array_merge([
+-				'params' => $this->getSSECParameters() + $this->getSSECParameters(true)
++				'params' => $this->getSSECParameters() + $this->getSSECParameters(true),
++				'mup_threshold' => PHP_INT_MAX,
+ 			], $options));
+ 		}
+ 	}

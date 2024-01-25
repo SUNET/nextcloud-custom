@@ -154,6 +154,8 @@ RUN php /var/www/html/occ integrity:check-core
 ## VARIOUS PATCHES COMES HERE IF NEEDED
 COPY ./42522.diff /var/www/html/42522.diff
 RUN cd /var/www/html/ && patch -p 1 < 42522.diff
+COPY ./s3sdknomultipart-53ba30db9fcd168dd7a38fb9314e8775e19e33fe.diff /var/www/html/s3sdknomultipart-53ba30db9fcd168dd7a38fb9314e8775e19e33fe.diff
+RUN cd /var/www/html/ && patch -p 1 < s3sdknomultipart-53ba30db9fcd168dd7a38fb9314e8775e19e33fe.diff
 COPY ./55602_oauth2_increase_log.patch /var/www/html/55602_oauth2_increase_log.patch
 RUN cd /var/www/html/ && patch -p 1 < 55602_oauth2_increase_log.patch
 #COPY ./41998.diff /var/www/html/41998.diff
@@ -225,8 +227,8 @@ RUN wget https://github.com/SUNET/nextcloud-stepupauth/releases/download/v${step
   && cd /tmp && tar xf /tmp/stepupauth.tar.gz && mv /tmp/stepupauth /var/www/html/custom_apps/
 RUN wget https://github.com/SUNET/nextcloud-jupyter/releases/download/v${integration_jupyterhub_version}/integration_jupyterhub-${integration_jupyterhub_version}.tar.gz -O /tmp/integration_jupyterhub.tar.gz \
   && cd /tmp && tar xf /tmp/integration_jupyterhub.tar.gz && mv /tmp/integration_jupyterhub /var/www/html/custom_apps/
-RUN wget https://github.com/SUNET/nextcloud-mfazones/releases/download/v${mfazones_version}/mfazones-${mfazones_version}.tar.gz -O /tmp/mfazones.tar.gz \
-   && cd /tmp && tar xf /tmp/mfazones.tar.gz && mv /tmp/mfazones /var/www/html/custom_apps/
+#RUN wget https://github.com/SUNET/nextcloud-mfazones/releases/download/v${mfazones_version}/mfazones-${mfazones_version}.tar.gz -O /tmp/mfazones.tar.gz \
+#   && cd /tmp && tar xf /tmp/mfazones.tar.gz && mv /tmp/mfazones /var/www/html/custom_apps/
 
 
 ## INSTALL OUR APPS
