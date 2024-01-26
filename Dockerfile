@@ -6,7 +6,7 @@ ARG nc_download_url=https://download.nextcloud.com/.customers/server/27.1.6-a5b3
 # Set app versions here
 ARG announcementcenter_version=6.7.0
 ARG assistant_version=1.0.2
-ARG calendar_version=4.6.5
+ARG calendar_version=4.6.4
 ARG checksum_version=1.2.3
 ARG collectives_version=2.9.2
 ARG contacts_version=5.5.1
