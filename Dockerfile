@@ -1,7 +1,7 @@
 FROM php:8.2-rc-apache-bullseye
 
 # Set Nextcloud download url here
-ARG nc_download_url=https://download.nextcloud.com/.customers/server/27.1.4-72fb3426/nextcloud-27.1.4-enterprise.zip
+ARG nc_download_url=https://download.nextcloud.com/.customers/server/27.1.6-a5b3751e/nextcloud-27.1.6-enterprise.zip
 
 # Set app versions here
 ARG announcementcenter_version=6.7.0
@@ -152,8 +152,8 @@ RUN php /var/www/html/occ integrity:check-core
 ## AND HERE, OR CODE INTEGRITY CHECK MIGHT FAIL, AND IMAGE WILL NOT BUILD
 
 ## VARIOUS PATCHES COMES HERE IF NEEDED
-COPY ./42522.diff /var/www/html/42522.diff
-RUN cd /var/www/html/ && patch -p 1 < 42522.diff
+COPY ./s3nomulti.diff /var/www/html/s3nomulti.diff
+RUN cd /var/www/html/ && patch -p 1 < s3nomulti.diff
 COPY ./s3sdknomultipart-53ba30db9fcd168dd7a38fb9314e8775e19e33fe.diff /var/www/html/s3sdknomultipart-53ba30db9fcd168dd7a38fb9314e8775e19e33fe.diff
 RUN cd /var/www/html/ && patch -p 1 < s3sdknomultipart-53ba30db9fcd168dd7a38fb9314e8775e19e33fe.diff
 COPY ./55602_oauth2_increase_log.patch /var/www/html/55602_oauth2_increase_log.patch
