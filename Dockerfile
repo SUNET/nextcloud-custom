@@ -206,7 +206,7 @@ RUN wget -q https://github.com/SUNET/loginpagebutton/archive/refs/tags/v.${login
   && cd /tmp && tar xf /tmp/loginpagebutton.tar.gz && mv /tmp/loginpagebutton-* /var/www/html/custom_apps/loginpagebutton
 RUN wget -q https://github.com/nextcloud/maps/releases/download/v${maps_version}/maps-${maps_version}.tar.gz -O /tmp/maps.tar.gz \
   && cd /tmp && tar xf /tmp/maps.tar.gz && mv /tmp/maps /var/www/html/custom_apps/
-RUN wget -q https://github.com/nextcloud/polls/releases/download/v5.2.0/polls.tar.gz -O /tmp/polls.tar.gz \
+RUN wget -q https://github.com/nextcloud/polls/releases/download/v${polls_version}/polls.tar.gz -O /tmp/polls.tar.gz \
   && cd /tmp && tar xf /tmp/polls.tar.gz && mv /tmp/polls /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/richdocuments/releases/download/v${richdocuments_version}/richdocuments-v${richdocuments_version}.tar.gz -O /tmp/richdocuments.tar.gz \
   && cd /tmp && tar xf /tmp/richdocuments.tar.gz && mv /tmp/richdocuments /var/www/html/custom_apps
