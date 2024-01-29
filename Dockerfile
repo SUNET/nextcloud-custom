@@ -47,7 +47,9 @@ ENV TZ=Etc/UTC
 # Pre-requisites for the extensions
 RUN set -ex; \
   apt-get -q update > /dev/null && apt-get -q install -y \
-  apt-utils \
+  apt-utils
+RUN set -ex; \
+  apt-get -q install -y \
   build-essential \
   freetype* \
   libgmp* \
