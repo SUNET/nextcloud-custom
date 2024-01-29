@@ -21,7 +21,7 @@ ARG login_notes_version=1.3.1
 ARG loginpagebutton_version=1.0.0
 ARG maps_version=1.2.0
 # ARG mail_version=3.5.0-rc.2
-ARG mfazones_version=0.0.1
+ARG mfazones_version=0.0.2
 ARG polls_version=5.4.2
 ARG richdocuments_version=8.2.4
 ARG sciencemesh_version=0.5.0
@@ -227,8 +227,8 @@ RUN wget https://github.com/SUNET/nextcloud-stepupauth/releases/download/v${step
   && cd /tmp && tar xf /tmp/stepupauth.tar.gz && mv /tmp/stepupauth /var/www/html/custom_apps/
 RUN wget https://github.com/SUNET/nextcloud-jupyter/releases/download/v${integration_jupyterhub_version}/integration_jupyterhub-${integration_jupyterhub_version}.tar.gz -O /tmp/integration_jupyterhub.tar.gz \
   && cd /tmp && tar xf /tmp/integration_jupyterhub.tar.gz && mv /tmp/integration_jupyterhub /var/www/html/custom_apps/
-#RUN wget https://github.com/SUNET/nextcloud-mfazones/releases/download/v${mfazones_version}/mfazones-${mfazones_version}.tar.gz -O /tmp/mfazones.tar.gz \
-#   && cd /tmp && tar xf /tmp/mfazones.tar.gz && mv /tmp/mfazones /var/www/html/custom_apps/
+RUN wget https://github.com/SUNET/nextcloud-mfazones/releases/download/v${mfazones_version}/mfazones-${mfazones_version}.tar.gz -O /tmp/mfazones.tar.gz \
+  && cd /tmp && tar xf /tmp/mfazones.tar.gz && mv /tmp/mfazones /var/www/html/custom_apps/
 
 
 ## INSTALL OUR APPS
