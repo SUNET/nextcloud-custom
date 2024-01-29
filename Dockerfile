@@ -1,4 +1,4 @@
-FROM php:8.2-rc-apache-bullseye
+FROM php:8.2-rc-apache-bullseye as apt
 
 # Set Nextcloud download url here
 ARG nc_download_url=https://download.nextcloud.com/.customers/server/27.1.6-a5b3751e/nextcloud-27.1.6-enterprise.zip
@@ -23,6 +23,7 @@ ARG maps_version=1.2.0
 # ARG mail_version=3.5.0-rc.2
 ARG mfazones_version=0.0.2
 ARG polls_version=5.4.2
+ARG rds_version=0.0.2
 ARG richdocuments_version=8.2.4
 ARG sciencemesh_version=0.5.0
 ARG stepupauth_version=0.2.0
@@ -31,6 +32,8 @@ ARG theming_customcss_version=1.15.0
 ARG twofactor_admin_version=4.4.0
 ARG twofactor_webauthn_version=1.3.2
 
+# For install
+ARG DEBIAN_FRONTEND=noninteractive
 # Set environment variables
 ENV APACHE_RUN_USER www-data
 ENV APACHE_RUN_GROUP www-data
@@ -39,10 +42,12 @@ ENV APACHE_LOG_DIR /var/log/apache2
 ENV APACHE_PID_FILE /var/run/apache2/apache2.pid
 ENV APACHE_RUN_DIR /var/run/apache2
 ENV APACHE_LOCK_DIR /var/lock/apache2
+ENV TZ=Etc/UTC
 
 # Pre-requisites for the extensions
 RUN set -ex; \
   apt-get -q update > /dev/null && apt-get -q install -y \
+  apt-utils \
   build-essential \
   freetype* \
   libgmp* \
@@ -67,6 +72,12 @@ RUN set -ex; \
   unzip \
   vim \
   wget > /dev/null
+
+RUN wget -q https://downloads.rclone.org/rclone-current-linux-amd64.deb \
+  && dpkg -i ./rclone-current-linux-amd64.deb \
+  && rm ./rclone-current-linux-amd64.deb
+
+FROM apt as php
 
 # PECL Modules
 RUN pecl -q install apcu \
@@ -135,13 +146,13 @@ RUN sed -i 's/^ServerSignature On/ServerSignature Off/' /etc/apache2/conf-availa
 RUN chmod -R 777 ${APACHE_RUN_DIR} ${APACHE_LOCK_DIR} ${APACHE_LOG_DIR} ${APACHE_DOCUMENT_ROOT}
 
 # Should be no need to modify beyond this point, unless you need to patch something or add more apps
-ARG DEBIAN_FRONTEND=noninteractive
-ENV TZ=Etc/UTC
-RUN wget -q https://downloads.rclone.org/rclone-current-linux-amd64.deb \
-  && dpkg -i ./rclone-current-linux-amd64.deb \
-  && rm ./rclone-current-linux-amd64.deb && rm -rf /var/lib/apt/lists/*
 COPY --chown=root:root ./000-default.conf /etc/apache2/sites-available/
 COPY --chown=root:root ./cron.sh /cron.sh
+
+## ADD www-data to tty group
+RUN usermod -a -G tty www-data
+
+FROM php as nextcloud
 
 ## DONT ADD STUFF BETWEEN HERE
 RUN wget -q ${nc_download_url} -O /tmp/nextcloud.zip && cd /tmp && unzip -qq /tmp/nextcloud.zip && cd /tmp/nextcloud \
@@ -166,6 +177,8 @@ RUN cd /var/www/html/ && patch -p 1 < 55602_oauth2_increase_log.patch
 # COPY ./workflowengine-workflowengine.js.map /var/www/html/dist/workflowengine-workflowengine.js.map
 # COPY ./39411.diff /var/www/html/39411.diff
 # RUN cd /var/www/html/ && patch -p 1 < 39411.diff
+
+FROM nextcloud as apps
 
 ## Install global site selector
 COPY --chown=root:root ./globalsiteselector-2.5.0-beta1.tar.gz /tmp/globalsiteselector.tar.gz
@@ -223,21 +236,15 @@ RUN wget -q https://github.com/SUNET/drive-email-template/archive/refs/tags/${dr
   && cd /tmp && tar xf /tmp/drive-email-template.tar.gz && mv /tmp/drive-email-template-* /var/www/html/custom_apps/drive_email_template
 RUN wget -q https://github.com/sciencemesh/nc-sciencemesh/releases/download/v${sciencemesh_version}-nc/sciencemesh.tar.gz -O /tmp/sciencemesh.tar.gz \
   && cd /tmp && tar xf /tmp/sciencemesh.tar.gz && mv /tmp/sciencemesh /var/www/html/custom_apps/
-RUN wget https://github.com/SUNET/nextcloud-stepupauth/releases/download/v${stepupauth_version}/stepupauth-${stepupauth_version}.tar.gz -O /tmp/stepupauth.tar.gz \
+RUN wget -q https://github.com/SUNET/nextcloud-stepupauth/releases/download/v${stepupauth_version}/stepupauth-${stepupauth_version}.tar.gz -O /tmp/stepupauth.tar.gz \
   && cd /tmp && tar xf /tmp/stepupauth.tar.gz && mv /tmp/stepupauth /var/www/html/custom_apps/
-RUN wget https://github.com/SUNET/nextcloud-jupyter/releases/download/v${integration_jupyterhub_version}/integration_jupyterhub-${integration_jupyterhub_version}.tar.gz -O /tmp/integration_jupyterhub.tar.gz \
+RUN wget -q https://github.com/SUNET/nextcloud-jupyter/releases/download/v${integration_jupyterhub_version}/integration_jupyterhub-${integration_jupyterhub_version}.tar.gz -O /tmp/integration_jupyterhub.tar.gz \
   && cd /tmp && tar xf /tmp/integration_jupyterhub.tar.gz && mv /tmp/integration_jupyterhub /var/www/html/custom_apps/
-RUN wget https://github.com/SUNET/nextcloud-mfazones/releases/download/v${mfazones_version}/mfazones-${mfazones_version}.tar.gz -O /tmp/mfazones.tar.gz \
+RUN wget -q https://github.com/SUNET/nextcloud-mfazones/releases/download/v${mfazones_version}/mfazones-${mfazones_version}.tar.gz -O /tmp/mfazones.tar.gz \
   && cd /tmp && tar xf /tmp/mfazones.tar.gz && mv /tmp/mfazones /var/www/html/custom_apps/
-
-
-## INSTALL OUR APPS
-COPY --chown=root:root ./nextcloud-rds.tar.gz /tmp
-RUN cd /tmp && tar xf nextcloud-rds.tar.gz && mv rds/ /var/www/html/custom_apps
-
-## ADD www-data to tty group
-RUN usermod -a -G tty www-data
+RUN wget -q https://github.com/Sciebo-RDS/nextcloud-rds/releases/download/v${rds_version}/rds-${rds_version}.tar.gz -O /tmp/rds.tar.gz \
+  && cd /tmp && tar xf /tmp/rds.tar.gz && mv /tmp/rds /var/www/html/custom_apps
 
 # CLEAN UP
 RUN apt remove -y wget curl make npm patch && apt autoremove -y
-RUN rm -rf /tmp/*.tar.* && chown -R www-data:root /var/www/html
+RUN rm -rf /tmp/*.tar.* && chown -R www-data:root /var/www/html && rm -rf /var/lib/apt/lists/*
