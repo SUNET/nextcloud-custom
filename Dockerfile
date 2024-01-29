@@ -1,5 +1,3 @@
-FROM php:8.2-rc-apache-bullseye as apt
-
 # Set Nextcloud download url here
 ARG nc_download_url=https://download.nextcloud.com/.customers/server/27.1.6-a5b3751e/nextcloud-27.1.6-enterprise.zip
 
@@ -44,6 +42,7 @@ ENV APACHE_RUN_DIR /var/run/apache2
 ENV APACHE_LOCK_DIR /var/lock/apache2
 ENV TZ=Etc/UTC
 
+FROM php:8.2-rc-apache-bullseye as apt
 # Pre-requisites for the extensions
 RUN set -ex; \
   apt-get -q update > /dev/null && apt-get -q install -y \
