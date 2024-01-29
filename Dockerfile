@@ -41,8 +41,41 @@ ARG APACHE_LOCK_DIR /var/lock/apache2
 ARG TZ=Etc/UTC
 
 FROM php:8.2-rc-apache-bullseye as apt
-
+ARG nc_download_url
+ARG announcementcenter_version
+ARG assistant_version
+ARG calendar_version
+ARG checksum_version
+ARG collectives_version
+ARG contacts_version
+ARG drive_email_template_version
+ARG files_accesscontrol_version
+ARG files_automatedtagging_version
+ARG forms_version
+ARG integration_excalidraw_version
+ARG integration_openai_version
+ARG integration_jupyterhub_version
+ARG login_notes_version
+ARG loginpagebutton_version
+ARG maps_version
+ARG mfazones_version
+ARG polls_version
+ARG rds_version
+ARG richdocuments_version
+ARG sciencemesh_version
+ARG stepupauth_version
+ARG tasks_version
+ARG theming_customcss_version
+ARG twofactor_admin_version
+ARG twofactor_webauthn_version
 ARG DEBIAN_FRONTEND
+ARG APACHE_RUN_USER
+ARG APACHE_RUN_GROUP
+ARG APACHE_DOCUMENT_ROOT
+ARG APACHE_LOG_DIR
+ARG APACHE_PID_FILE
+ARG APACHE_RUN_DIR
+ARG APACHE_LOCK_DIR
 ARG TZ
 # Pre-requisites for the extensions
 RUN set -ex; \
@@ -80,6 +113,34 @@ RUN wget -q https://downloads.rclone.org/rclone-current-linux-amd64.deb \
   && rm ./rclone-current-linux-amd64.deb
 
 FROM apt as php
+ARG nc_download_url
+ARG announcementcenter_version
+ARG assistant_version
+ARG calendar_version
+ARG checksum_version
+ARG collectives_version
+ARG contacts_version
+ARG drive_email_template_version
+ARG files_accesscontrol_version
+ARG files_automatedtagging_version
+ARG forms_version
+ARG integration_excalidraw_version
+ARG integration_openai_version
+ARG integration_jupyterhub_version
+ARG login_notes_version
+ARG loginpagebutton_version
+ARG maps_version
+ARG mfazones_version
+ARG polls_version
+ARG rds_version
+ARG richdocuments_version
+ARG sciencemesh_version
+ARG stepupauth_version
+ARG tasks_version
+ARG theming_customcss_version
+ARG twofactor_admin_version
+ARG twofactor_webauthn_version
+ARG DEBIAN_FRONTEND
 ARG APACHE_RUN_USER
 ARG APACHE_RUN_GROUP
 ARG APACHE_DOCUMENT_ROOT
@@ -88,14 +149,6 @@ ARG APACHE_PID_FILE
 ARG APACHE_RUN_DIR
 ARG APACHE_LOCK_DIR
 ARG TZ
-ENV APACHE_RUN_USER=${APACHE_RUN_USER}
-ENV APACHE_RUN_GROUP=${APACHE_RUN_GROUP}
-ENV APACHE_DOCUMENT_ROOT=${APACHE_DOCUMENT_ROOT}
-ENV APACHE_LOG_DIR=${APACHE_LOG_DIR}
-ENV APACHE_PID_FILE=${APACHE_PID_FILE}
-ENV APACHE_RUN_DIR=${APACHE_RUN_DIR}
-ENV APACHE_LOCK_DIR=${APACHE_LOCK_DIR}
-ENV TZ=${TZ}
 
 # PECL Modules
 RUN pecl -q install apcu \
@@ -198,7 +251,7 @@ RUN cd /var/www/html/ && patch -p 1 < 55602_oauth2_increase_log.patch
 # RUN cd /var/www/html/ && patch -p 1 < 39411.diff
 
 FROM nextcloud as apps
-
+ARG nc_download_url
 ARG announcementcenter_version
 ARG assistant_version
 ARG calendar_version
@@ -225,6 +278,15 @@ ARG tasks_version
 ARG theming_customcss_version
 ARG twofactor_admin_version
 ARG twofactor_webauthn_version
+ARG DEBIAN_FRONTEND
+ARG APACHE_RUN_USER
+ARG APACHE_RUN_GROUP
+ARG APACHE_DOCUMENT_ROOT
+ARG APACHE_LOG_DIR
+ARG APACHE_PID_FILE
+ARG APACHE_RUN_DIR
+ARG APACHE_LOCK_DIR
+ARG TZ
 
 ## Install global site selector
 COPY --chown=root:root ./globalsiteselector-2.5.0-beta1.tar.gz /tmp/globalsiteselector.tar.gz
