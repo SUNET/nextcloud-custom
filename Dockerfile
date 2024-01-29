@@ -31,13 +31,13 @@ ARG twofactor_webauthn_version=1.3.2
 
 # Set environment variables
 ARG DEBIAN_FRONTEND=noninteractive
-ARG APACHE_RUN_USER www-data
-ARG APACHE_RUN_GROUP www-data
-ARG APACHE_DOCUMENT_ROOT /var/www/html
-ARG APACHE_LOG_DIR /var/log/apache2
-ARG APACHE_PID_FILE /var/run/apache2/apache2.pid
-ARG APACHE_RUN_DIR /var/run/apache2
-ARG APACHE_LOCK_DIR /var/lock/apache2
+ARG APACHE_RUN_USER=www-data
+ARG APACHE_RUN_GROUP=www-data
+ARG APACHE_DOCUMENT_ROOT=/var/www/html
+ARG APACHE_LOG_DIR=/var/log/apache2
+ARG APACHE_PID_FILE=/var/run/apache2/apache2.pid
+ARG APACHE_RUN_DIR=/var/run/apache2
+ARG APACHE_LOCK_DIR=/var/lock/apache2
 ARG TZ=Etc/UTC
 
 FROM php:8.2-rc-apache-bullseye as apt
