@@ -18,7 +18,6 @@ ARG integration_jupyterhub_version=0.1.0
 ARG login_notes_version=1.3.1
 ARG loginpagebutton_version=1.0.0
 ARG maps_version=1.2.0
-# ARG mail_version=3.5.0-rc.2
 ARG mfazones_version=0.0.2
 ARG polls_version=5.4.2
 ARG rds_version=0.0.2
@@ -30,19 +29,21 @@ ARG theming_customcss_version=1.15.0
 ARG twofactor_admin_version=4.4.0
 ARG twofactor_webauthn_version=1.3.2
 
-# For install
-ARG DEBIAN_FRONTEND=noninteractive
 # Set environment variables
-ENV APACHE_RUN_USER www-data
-ENV APACHE_RUN_GROUP www-data
-ENV APACHE_DOCUMENT_ROOT /var/www/html
-ENV APACHE_LOG_DIR /var/log/apache2
-ENV APACHE_PID_FILE /var/run/apache2/apache2.pid
-ENV APACHE_RUN_DIR /var/run/apache2
-ENV APACHE_LOCK_DIR /var/lock/apache2
-ENV TZ=Etc/UTC
+ARG DEBIAN_FRONTEND=noninteractive
+ARG APACHE_RUN_USER www-data
+ARG APACHE_RUN_GROUP www-data
+ARG APACHE_DOCUMENT_ROOT /var/www/html
+ARG APACHE_LOG_DIR /var/log/apache2
+ARG APACHE_PID_FILE /var/run/apache2/apache2.pid
+ARG APACHE_RUN_DIR /var/run/apache2
+ARG APACHE_LOCK_DIR /var/lock/apache2
+ARG TZ=Etc/UTC
 
 FROM php:8.2-rc-apache-bullseye as apt
+
+ARG DEBIAN_FRONTEND
+ARG TZ
 # Pre-requisites for the extensions
 RUN set -ex; \
   apt-get -q update > /dev/null && apt-get -q install -y \
@@ -79,6 +80,14 @@ RUN wget -q https://downloads.rclone.org/rclone-current-linux-amd64.deb \
   && rm ./rclone-current-linux-amd64.deb
 
 FROM apt as php
+ENV APACHE_RUN_USER=${APACHE_RUN_USER}
+ENV APACHE_RUN_GROUP=${APACHE_RUN_GROUP}
+ENV APACHE_DOCUMENT_ROOT=${APACHE_DOCUMENT_ROOT}
+ENV APACHE_LOG_DIR=${APACHE_LOG_DIR}
+ENV APACHE_PID_FILE=${APACHE_PID_FILE}
+ENV APACHE_RUN_DIR=${APACHE_RUN_DIR}
+ENV APACHE_LOCK_DIR=${APACHE_LOCK_DIR}
+ENV TZ=${TZ}
 
 # PECL Modules
 RUN pecl -q install apcu \
@@ -154,6 +163,7 @@ COPY --chown=root:root ./cron.sh /cron.sh
 RUN usermod -a -G tty www-data
 
 FROM php as nextcloud
+ARG nc_download_url
 
 ## DONT ADD STUFF BETWEEN HERE
 RUN wget -q ${nc_download_url} -O /tmp/nextcloud.zip && cd /tmp && unzip -qq /tmp/nextcloud.zip && cd /tmp/nextcloud \
@@ -180,6 +190,33 @@ RUN cd /var/www/html/ && patch -p 1 < 55602_oauth2_increase_log.patch
 # RUN cd /var/www/html/ && patch -p 1 < 39411.diff
 
 FROM nextcloud as apps
+
+ARG announcementcenter_version
+ARG assistant_version
+ARG calendar_version
+ARG checksum_version
+ARG collectives_version
+ARG contacts_version
+ARG drive_email_template_version
+ARG files_accesscontrol_version
+ARG files_automatedtagging_version
+ARG forms_version
+ARG integration_excalidraw_version
+ARG integration_openai_version
+ARG integration_jupyterhub_version
+ARG login_notes_version
+ARG loginpagebutton_version
+ARG maps_version
+ARG mfazones_version
+ARG polls_version
+ARG rds_version
+ARG richdocuments_version
+ARG sciencemesh_version
+ARG stepupauth_version
+ARG tasks_version
+ARG theming_customcss_version
+ARG twofactor_admin_version
+ARG twofactor_webauthn_version
 
 ## Install global site selector
 COPY --chown=root:root ./globalsiteselector-2.5.0-beta1.tar.gz /tmp/globalsiteselector.tar.gz
