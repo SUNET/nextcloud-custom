@@ -84,5 +84,5 @@ RUN wget -q https://github.com/Sciebo-RDS/nextcloud-rds/releases/download/v${rds
   && cd /tmp && tar xf /tmp/rds.tar.gz && mv /tmp/rds /var/www/html/custom_apps
 
 # CLEAN UP
-RUN apt remove -y curl make npm patch && apt autoremove -y
+RUN apt remove -y wget && apt autoremove -y
 RUN rm -rf /tmp/*.tar.* && chown -R www-data:root /var/www/html && rm -rf /var/lib/apt/lists/*
