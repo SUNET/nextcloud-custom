@@ -116,7 +116,7 @@ COPY --chown=root:root ./cron.sh /cron.sh
 RUN usermod -a -G tty www-data
 
 FROM php as nextcloud
-ARG nc_download_url=https://download.nextcloud.com/.customers/server/27.1.6-a5b3751e/nextcloud-27.1.6-enterprise.zip
+ARG nc_download_url=https://download.nextcloud.com/.customers/server/28.0.2-c67268a0/nextcloud-28.0.2-enterprise.zip
 
 ## DONT ADD STUFF BETWEEN HERE
 RUN wget -q ${nc_download_url} -O /tmp/nextcloud.zip && cd /tmp && unzip -qq /tmp/nextcloud.zip && cd /tmp/nextcloud \
