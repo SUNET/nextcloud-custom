@@ -1,171 +1,31 @@
-FROM php:8.2-rc-apache-bullseye as apt
-ARG DEBIAN_FRONTEND=noninteractive
-ARG TZ=Etc/UTC
-# Pre-requisites for the extensions
-RUN set -ex; \
-  apt-get -q update > /dev/null && apt-get -q install -y \
-  apt-utils
-RUN set -ex; \
-  apt-get -q install -y \
-  build-essential \
-  freetype* \
-  libgmp* \
-  libicu* \
-  libldap* \
-  libmagickwand* \
-  libmemcached* \
-  libpng* \
-  libpq* \
-  libweb* \
-  libzip* \
-  npm \
-  zlib* \
-  curl \
-  gnupg2 \
-  make \
-  mariadb-client \
-  npm \
-  patch \
-  redis-tools \
-  ssl-cert \
-  unzip \
-  vim \
-  wget > /dev/null
+FROM docker.sunet.se/drive/nextcloud-base:28.0.3.3-1
 
-RUN wget -q https://downloads.rclone.org/rclone-current-linux-amd64.deb \
-  && dpkg -i ./rclone-current-linux-amd64.deb \
-  && rm ./rclone-current-linux-amd64.deb
-
-FROM apt as php
-ARG APACHE_DOCUMENT_ROOT=/var/www/html
-ARG APACHE_LOG_DIR=/var/log/apache2
-ARG APACHE_RUN_DIR=/var/run/apache2
-ARG APACHE_LOCK_DIR=/var/lock/apache2
-
-# PECL Modules
-RUN pecl -q install apcu \
-  imagick \
-  memcached \
-  redis > /dev/null
-
-# Adjusting freetype message error
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp
-
-# PHP Extensions needed
-RUN docker-php-ext-install -j "$(nproc)" \
-  bcmath \
-  bz2 \
-  exif \
-  gd \
-  gmp \
-  intl \
-  ldap \
-  opcache \
-  pcntl \
-  pdo_mysql \
-  pdo_pgsql \
-  sysvsem \
-  zip
-
-# More extensions
-RUN docker-php-ext-enable \
-  imagick \
-  apcu \
-  memcached \
-  redis
-
-# Enabling Modules
-RUN a2enmod dir env headers mime rewrite setenvif deflate ssl
-
-# Adjusting PHP settings
-RUN { \
-  echo 'opcache.interned_strings_buffer=32'; \
-  echo 'opcache.memory_consumption=256'; \
-  echo 'opcache.save_comments=1'; \
-  echo 'opcache.revalidate_freq=60'; \
-  } > /usr/local/etc/php/conf.d/opcache-recommended.ini;
-
-RUN { \
-  echo 'extension=apcu.so'; \
-  echo 'apc.enable_cli=1'; \
-  } > /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini;
-
-RUN { \
-  echo 'memory_limit = 2G'; \
-  echo 'upload_max_filesize=30G'; \
-  echo 'post_max_size=30G'; \
-  echo 'max_execution_time=86400'; \
-  echo 'max_input_time=86400'; \
-  } > /usr/local/etc/php/conf.d/nce.ini;
-
-# Update apache configuration for ServerName
-RUN echo "ServerName localhost" | tee /etc/apache2/conf-available/servername.conf \
-  && a2enconf servername
-
-RUN sed -i 's/^ServerTokens OS/ServerTokens Prod/' /etc/apache2/conf-available/security.conf
-RUN sed -i 's/^ServerSignature On/ServerSignature Off/' /etc/apache2/conf-available/security.conf
-
-# Set permissions to allow non-root user to access necessary folders
-RUN chmod -R 777 ${APACHE_RUN_DIR} ${APACHE_LOCK_DIR} ${APACHE_LOG_DIR} ${APACHE_DOCUMENT_ROOT}
-
-# Should be no need to modify beyond this point, unless you need to patch something or add more apps
-COPY --chown=root:root ./000-default.conf /etc/apache2/sites-available/
-COPY --chown=root:root ./cron.sh /cron.sh
-
-## ADD www-data to tty group
-RUN usermod -a -G tty www-data
-
-FROM php as nextcloud
-ARG nc_download_url=https://download.nextcloud.com/.customers/server/27.1.6-a5b3751e/nextcloud-27.1.6-enterprise.zip
-
-## DONT ADD STUFF BETWEEN HERE
-RUN wget -q ${nc_download_url} -O /tmp/nextcloud.zip && cd /tmp && unzip -qq /tmp/nextcloud.zip && cd /tmp/nextcloud \
-  && mkdir -p /var/www/html/data && touch /var/www/html/data/.ocdata && mkdir /var/www/html/config \
-  && cp -a /tmp/nextcloud/* /var/www/html && cp -a /tmp/nextcloud/.[^.]* /var/www/html \
-  && chown -R www-data:root /var/www/html && chmod +x /var/www/html/occ && rm -rf /tmp/nextcloud
-RUN php /var/www/html/occ integrity:check-core
-## AND HERE, OR CODE INTEGRITY CHECK MIGHT FAIL, AND IMAGE WILL NOT BUILD
-
-## VARIOUS PATCHES COMES HERE IF NEEDED
-COPY ./s3nomulti.diff /var/www/html/s3nomulti.diff
-RUN cd /var/www/html/ && patch -p 1 < s3nomulti.diff
-COPY ./s3sdknomultipart-53ba30db9fcd168dd7a38fb9314e8775e19e33fe.diff /var/www/html/s3sdknomultipart-53ba30db9fcd168dd7a38fb9314e8775e19e33fe.diff
-RUN cd /var/www/html/ && patch -p 1 < s3sdknomultipart-53ba30db9fcd168dd7a38fb9314e8775e19e33fe.diff
-COPY ./55602_oauth2_increase_log.patch /var/www/html/55602_oauth2_increase_log.patch
-RUN cd /var/www/html/ && patch -p 1 < 55602_oauth2_increase_log.patch
-
-FROM nextcloud as apps
 ARG announcementcenter_version=6.7.0
-ARG assistant_version=1.0.2
-ARG calendar_version=4.6.4
+ARG assistant_version=1.0.3
+ARG calendar_version=4.6.5
 ARG checksum_version=1.2.3
 ARG collectives_version=2.9.2
-ARG contacts_version=5.5.1
+ARG contacts_version=5.5.2
 ARG drive_email_template_version=1.0.0
-ARG files_accesscontrol_version=1.17.1
-ARG files_automatedtagging_version=1.17.0
-ARG forms_version=3.4.4
+ARG files_accesscontrol_version=1.18.0
+ARG files_automatedtagging_version=1.18.0
+ARG forms_version=4.1.1
 ARG integration_excalidraw_version=2.0.4
-ARG integration_openai_version=1.1.5
+ARG integration_openai_version=1.2.0
 ARG integration_jupyterhub_version=0.1.0
-ARG login_notes_version=1.3.1
+ARG login_notes_version=1.4.0
 ARG loginpagebutton_version=1.0.0
-ARG maps_version=1.2.0
+ARG maps_version=1.3.1
 ARG mfazones_version=0.0.6
-ARG polls_version=5.4.2
+ARG polls_version=6.1.3
 ARG rds_version=0.0.2
-ARG richdocuments_version=8.2.4
+ARG richdocuments_version=8.3.1
 ARG sciencemesh_version=0.5.0
 ARG stepupauth_version=0.2.0
 ARG tasks_version=0.15.0
 ARG theming_customcss_version=1.15.0
 ARG twofactor_admin_version=4.4.0
 ARG twofactor_webauthn_version=1.3.2
-
-## Install app that needs to go in the regular apps folder
-# RUN wget -q https://github.com/nextcloud-releases/mail/releases/download/v${mail_version}/mail-v${mail_version}.tar.gz -O /tmp/mail.tar.gz \
-#   && cd /tmp && tar xf /tmp/mail.tar.gz && mv /tmp/mail /var/www/html/apps/
-
 
 ## INSTALL APPS
 RUN mkdir /var/www/html/custom_apps
@@ -224,5 +84,5 @@ RUN wget -q https://github.com/Sciebo-RDS/nextcloud-rds/releases/download/v${rds
   && cd /tmp && tar xf /tmp/rds.tar.gz && mv /tmp/rds /var/www/html/custom_apps
 
 # CLEAN UP
-RUN apt remove -y wget curl make npm patch && apt autoremove -y
+RUN apt remove -y wget && apt autoremove -y
 RUN rm -rf /tmp/*.tar.* && chown -R www-data:root /var/www/html && rm -rf /var/lib/apt/lists/*
