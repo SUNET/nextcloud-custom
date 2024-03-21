@@ -87,7 +87,3 @@ RUN wget -q https://github.com/SUNET/nextcloud-mfazones/releases/download/v${mfa
   && cd /tmp && tar xf /tmp/mfazones.tar.gz && mv /tmp/mfazones /var/www/html/custom_apps/
 RUN wget -q https://github.com/Sciebo-RDS/nextcloud-rds/releases/download/v${rds_version}/rds-${rds_version}.tar.gz -O /tmp/rds.tar.gz \
   && cd /tmp && tar xf /tmp/rds.tar.gz && mv /tmp/rds /var/www/html/custom_apps
-
-# CLEAN UP
-RUN apt remove -y wget curl make npm patch && apt autoremove -y
-RUN rm -rf /tmp/*.tar.* && chown -R www-data:root /var/www/html && rm -rf /var/lib/apt/lists/*
