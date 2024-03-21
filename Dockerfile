@@ -27,55 +27,6 @@ ARG theming_customcss_version=1.15.0
 ARG twofactor_admin_version=4.4.0
 ARG twofactor_webauthn_version=1.3.2
 
-# Set environment variables
-ARG DEBIAN_FRONTEND=noninteractive
-ARG APACHE_RUN_USER=www-data
-ARG APACHE_RUN_GROUP=www-data
-ARG APACHE_DOCUMENT_ROOT=/var/www/html
-ARG APACHE_LOG_DIR=/var/log/apache2
-ARG APACHE_PID_FILE=/var/run/apache2/apache2.pid
-ARG APACHE_RUN_DIR=/var/run/apache2
-ARG APACHE_LOCK_DIR=/var/lock/apache2
-ARG TZ=Etc/UTC
-
-FROM nextcloud as apps
-ARG nc_download_url
-ARG announcementcenter_version
-ARG assistant_version
-ARG calendar_version
-ARG checksum_version
-ARG collectives_version
-ARG contacts_version
-ARG drive_email_template_version
-ARG files_accesscontrol_version
-ARG files_automatedtagging_version
-ARG forms_version
-ARG integration_excalidraw_version
-ARG integration_openai_version
-ARG integration_jupyterhub_version
-ARG login_notes_version
-ARG loginpagebutton_version
-ARG maps_version
-ARG mfazones_version
-ARG polls_version
-ARG rds_version
-ARG richdocuments_version
-ARG sciencemesh_version
-ARG stepupauth_version
-ARG tasks_version
-ARG theming_customcss_version
-ARG twofactor_admin_version
-ARG twofactor_webauthn_version
-ARG DEBIAN_FRONTEND
-ARG APACHE_RUN_USER
-ARG APACHE_RUN_GROUP
-ARG APACHE_DOCUMENT_ROOT
-ARG APACHE_LOG_DIR
-ARG APACHE_PID_FILE
-ARG APACHE_RUN_DIR
-ARG APACHE_LOCK_DIR
-ARG TZ
-
 ## Install app that needs to go in the regular apps folder
 # RUN wget -q https://github.com/nextcloud-releases/mail/releases/download/v${mail_version}/mail-v${mail_version}.tar.gz -O /tmp/mail.tar.gz \
 #   && cd /tmp && tar xf /tmp/mail.tar.gz && mv /tmp/mail /var/www/html/apps/
