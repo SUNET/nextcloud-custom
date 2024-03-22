@@ -16,13 +16,15 @@ ARG integration_jupyterhub_version=0.1.0
 ARG login_notes_version=1.4.0
 ARG loginpagebutton_version=1.0.0
 ARG maps_version=1.3.1
-ARG mfazones_version=0.0.6
+ARG mfazones_version=0.0.7
 ARG polls_version=6.1.3
 ARG rds_version=0.0.2
 ARG richdocuments_version=8.3.1
 ARG sciencemesh_version=0.5.0
 ARG stepupauth_version=0.2.0
+ARG stt_helper_version=1.1.1
 ARG tasks_version=0.15.0
+ARG text2image_helper_version=1.0.2
 ARG theming_customcss_version=1.15.0
 ARG twofactor_admin_version=4.4.0
 ARG twofactor_webauthn_version=1.3.2
@@ -82,6 +84,10 @@ RUN wget -q https://github.com/SUNET/nextcloud-mfazones/releases/download/v${mfa
   && cd /tmp && tar xf /tmp/mfazones.tar.gz && mv /tmp/mfazones /var/www/html/custom_apps/
 RUN wget -q https://github.com/Sciebo-RDS/nextcloud-rds/releases/download/v${rds_version}/rds-${rds_version}.tar.gz -O /tmp/rds.tar.gz \
   && cd /tmp && tar xf /tmp/rds.tar.gz && mv /tmp/rds /var/www/html/custom_apps
+RUN wget -q https://github.com/nextcloud-releases/stt_helper/releases/download/v${stt_helper_version}/stt_helper-v${stt_helper_version}.tar.gz -O /tmp/stt_helper.tar.gz \
+  && cd /tmp && tar xf /tmp/stt_helper.tar.gz && mv /tmp/stt_helper /var/www/html/custom_apps/
+RUN wget -q https://github.com/nextcloud-releases/text2image_helper/releases/download/v${text2image_helper_version}/text2image_helper-v${text2image_helper_version}.tar.gz -O /tmp/text2image_helper.tar.gz \
+  && cd /tmp && tar xf /tmp/text2image_helper.tar.gz && mv /tmp/text2image_helper /var/www/html/custom_apps/
 
 # CLEAN UP
 RUN apt remove -y wget && apt autoremove -y
