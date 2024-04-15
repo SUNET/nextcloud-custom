@@ -1,4 +1,4 @@
-FROM docker.sunet.se/drive/nextcloud-base:28.0.4.2-1
+FROM docker.sunet.se/drive/nextcloud-base:28.0.4.2-mpc1
 
 ARG announcementcenter_version=6.8.1
 ARG assistant_version=1.0.7
