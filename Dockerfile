@@ -1,4 +1,4 @@
-FROM docker.sunet.se/drive/nextcloud-base:28.0.4.2-mpc1
+FROM docker.sunet.se/drive/nextcloud-base:28.0.4.2-1
 
 ARG announcementcenter_version=6.8.1
 ARG assistant_version=1.0.7
@@ -16,7 +16,7 @@ ARG integration_jupyterhub_version=0.1.0
 ARG login_notes_version=1.5.0
 ARG loginpagebutton_version=1.0.0
 ARG maps_version=1.3.1
-ARG mfazones_version=0.0.8
+ARG mfazones_version=0.0.9
 ARG polls_version=7.0.3
 ARG rds_version=0.0.2
 ARG richdocuments_version=8.3.4
