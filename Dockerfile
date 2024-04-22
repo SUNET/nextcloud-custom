@@ -91,5 +91,4 @@ RUN wget -q https://github.com/nextcloud-releases/text2image_helper/releases/dow
 
 # CLEAN UP
 RUN apt remove -y wget && apt autoremove -y
-RUN rm -rf /tmp/*.tar.* && chown -R www-data:root /var/www/html && rm -rf /var/lib/apt/lists/*
-RUN chmod a=r -R /var/www/html/
+RUN rm -rf /tmp/*.tar.* && chown -R www-data:root /var/www/html && chmod -w -R /var/www/html/ && rm -rf /var/lib/apt/lists/*
