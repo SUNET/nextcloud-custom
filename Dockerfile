@@ -1,31 +1,32 @@
 FROM docker.sunet.se/drive/nextcloud-base:28.0.5.2-1
 
 ARG announcementcenter_version=6.8.1
-ARG assistant_version=1.0.7
-ARG calendar_version=4.6.7
+ARG assistant_version=1.0.8
+ARG calendar_version=4.7.2
 ARG checksum_version=1.2.4
 ARG collectives_version=2.10.1
 ARG contacts_version=5.5.3
+ARG dicomviewer_version=2.1.1
 ARG drive_email_template_version=1.0.0
 ARG files_accesscontrol_version=1.18.0
 ARG files_automatedtagging_version=1.18.0
-ARG forms_version=4.2.0
+ARG forms_version=4.2.3
 ARG integration_excalidraw_version=2.1.0
-ARG integration_openai_version=1.2.1
+ARG integration_openai_version=2.0.0
 ARG integration_jupyterhub_version=0.1.0
 ARG login_notes_version=1.5.0
 ARG loginpagebutton_version=1.0.0
-ARG maps_version=1.3.1
+ARG maps_version=1.4.0
 ARG mfazones_version=0.1.0
 ARG polls_version=7.0.3
 ARG rds_version=0.0.2
-ARG richdocuments_version=8.3.4
+ARG richdocuments_version=8.3.6
 ARG sciencemesh_version=0.5.0
 ARG stepupauth_version=0.2.0
 ARG stt_helper_version=1.1.1
 ARG tasks_version=0.15.0
 ARG text2image_helper_version=1.0.2
-ARG theming_customcss_version=1.15.0
+ARG theming_customcss_version=1.16.0
 ARG twofactor_admin_version=4.5.0
 ARG twofactor_webauthn_version=1.4.0
 
@@ -43,6 +44,8 @@ RUN wget -q https://github.com/nextcloud/collectives/releases/download/v${collec
   && cd /tmp && tar xf /tmp/collectives.tar.gz && mv /tmp/collectives /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/contacts/releases/download/v${contacts_version}/contacts-v${contacts_version}.tar.gz -O /tmp/contacts.tar.gz \
   && cd /tmp && tar xf /tmp/contacts.tar.gz && mv /tmp/contacts /var/www/html/custom_apps/
+RUN wget -q https://github.com/ayselafsar/dicomviewer/releases/download/v${dicomviewer_version}/dicomviewer-${dicomviewer_version}.tar.gz -O /tmp/${dicomviewer_version}.tar.gz \
+  && cd /tmp && tar xf /tmp/dicomviewer.tar.gz && mv /tmp/dicomviewer /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/files_accesscontrol/releases/download/v${files_accesscontrol_version}/files_accesscontrol-v${files_accesscontrol_version}.tar.gz -O /tmp/files_accesscontrol.tar.gz \
   && cd /tmp && tar xf /tmp/files_accesscontrol.tar.gz && mv /tmp/files_accesscontrol /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/files_automatedtagging/releases/download/v${files_automatedtagging_version}/files_automatedtagging-v${files_automatedtagging_version}.tar.gz -O /tmp/files_automatedtagging.tar.gz \
