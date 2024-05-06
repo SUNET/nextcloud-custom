@@ -44,7 +44,7 @@ RUN wget -q https://github.com/nextcloud/collectives/releases/download/v${collec
   && cd /tmp && tar xf /tmp/collectives.tar.gz && mv /tmp/collectives /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/contacts/releases/download/v${contacts_version}/contacts-v${contacts_version}.tar.gz -O /tmp/contacts.tar.gz \
   && cd /tmp && tar xf /tmp/contacts.tar.gz && mv /tmp/contacts /var/www/html/custom_apps/
-RUN wget -q https://github.com/ayselafsar/dicomviewer/releases/download/v${dicomviewer_version}/dicomviewer-${dicomviewer_version}.tar.gz -O /tmp/${dicomviewer_version}.tar.gz \
+RUN wget -q https://github.com/ayselafsar/dicomviewer/releases/download/v${dicomviewer_version}/dicomviewer-${dicomviewer_version}.tar.gz -O /tmp/dicomviewer.tar.gz \
   && cd /tmp && tar xf /tmp/dicomviewer.tar.gz && mv /tmp/dicomviewer /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/files_accesscontrol/releases/download/v${files_accesscontrol_version}/files_accesscontrol-v${files_accesscontrol_version}.tar.gz -O /tmp/files_accesscontrol.tar.gz \
   && cd /tmp && tar xf /tmp/files_accesscontrol.tar.gz && mv /tmp/files_accesscontrol /var/www/html/custom_apps/
