@@ -1,4 +1,4 @@
-FROM docker.sunet.se/drive/nextcloud-base:28.0.5.2-2
+FROM docker.sunet.se/drive/nextcloud-base:28.0.5.2-3
 
 ARG announcementcenter_version=6.8.1
 ARG assistant_version=1.0.8
@@ -16,6 +16,7 @@ ARG integration_openai_version=2.0.0
 ARG integration_jupyterhub_version=0.1.0
 ARG login_notes_version=1.5.0
 ARG loginpagebutton_version=1.0.0
+ARG mail_version=3.6.0
 ARG maps_version=1.4.0
 ARG mfazones_version=0.1.0
 ARG polls_version=7.0.3
@@ -62,6 +63,8 @@ RUN wget -q https://github.com/SUNET/loginpagebutton/archive/refs/tags/v.${login
   && cd /tmp && tar xf /tmp/loginpagebutton.tar.gz && mv /tmp/loginpagebutton-* /var/www/html/custom_apps/loginpagebutton
 RUN wget -q https://github.com/nextcloud/maps/releases/download/v${maps_version}/maps-${maps_version}.tar.gz -O /tmp/maps.tar.gz \
   && cd /tmp && tar xf /tmp/maps.tar.gz && mv /tmp/maps /var/www/html/custom_apps/
+RUN wget -q https://github.com/nextcloud-releases/mail/releases/download/v${mail_version}/mail-v${mail_version}.tar.gz -O /tmp/mail.tar.gz \
+  && cd /tmp && tar xf /tmp/mail.tar.gz && mv /tmp/mail /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud/polls/releases/download/v${polls_version}/polls.tar.gz -O /tmp/polls.tar.gz \
   && cd /tmp && tar xf /tmp/polls.tar.gz && mv /tmp/polls /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/richdocuments/releases/download/v${richdocuments_version}/richdocuments-v${richdocuments_version}.tar.gz -O /tmp/richdocuments.tar.gz \
