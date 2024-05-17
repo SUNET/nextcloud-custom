@@ -98,6 +98,7 @@ RUN wget -q https://github.com/nextcloud-releases/text2image_helper/releases/dow
 # Patch mail app
 COPY ./masterpassword.patch /var/www/html/custom_apps/mail/
 RUN cd /var/www/html/custom_apps/mail && \
+  apt-get update && apt-get install -y patch && \
   patch -p1 < ./masterpassword.patch && \
   rm masterpassword.patch
 
