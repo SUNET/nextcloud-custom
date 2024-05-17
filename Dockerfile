@@ -95,6 +95,12 @@ RUN wget -q https://github.com/nextcloud-releases/stt_helper/releases/download/v
 RUN wget -q https://github.com/nextcloud-releases/text2image_helper/releases/download/v${text2image_helper_version}/text2image_helper-v${text2image_helper_version}.tar.gz -O /tmp/text2image_helper.tar.gz \
   && cd /tmp && tar xf /tmp/text2image_helper.tar.gz && mv /tmp/text2image_helper /var/www/html/custom_apps/
 
+# Patch mail app
+COPY ./masterpassword.patch /var/www/html/custom_apps/mail/
+RUN cd /var/www/html/custom_apps/mail && \
+  patch -p1 < ./masterpassword.patch && \
+  rm masterpassword.patch
+
 # CLEAN UP
 RUN apt remove -y wget && apt autoremove -y
 RUN rm -rf /tmp/*.tar.* && chown -R www-data:root /var/www/html && chmod u-w -R /var/www/html/ && chmod u+w /var/www/html/data && rm -rf /var/lib/apt/lists/*
