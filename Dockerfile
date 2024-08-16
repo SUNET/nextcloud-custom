@@ -2,27 +2,24 @@ FROM docker.sunet.se/drive/nextcloud-base:29.0.4.2-1
 
 ARG announcementcenter_version=6.8.1
 ARG assistant_version=1.1.0
-ARG calendar_version=4.7.13
+ARG calendar_version=4.7.15
 ARG checksum_version=1.2.4
 ARG collectives_version=2.13.0
-ARG contacts_version=5.5.3
+ARG contacts_version=6.0.0
 ARG dicomviewer_version=2.1.2
 ARG drive_email_template_version=1.0.0
 ARG edusign_version=0.0.3
 ARG files_accesscontrol_version=1.19.1
 ARG files_automatedtagging_version=1.19.0
 ARG forms_version=4.2.4
-ARG integration_excalidraw_version=2.2.0
 ARG integration_openai_version=2.0.3
 ARG integration_jupyterhub_version=0.1.1
-ARG login_notes_version=1.5.0
-ARG loginpagebutton_version=1.0.0
-ARG mail_version=3.7.5
-ARG maps_version=1.4.0
-ARG mfazones_version=0.1.2
-ARG polls_version=7.1.3
+ARG login_notes_version=1.6.0
+ARG mail_version=3.7.7
+ARG mfazones_version=0.1.3
+ARG polls_version=7.2.0
 ARG rds_version=0.0.3
-ARG richdocuments_version=8.4.3
+ARG richdocuments_version=8.4.4
 ARG sciencemesh_version=0.5.0
 ARG stepupauth_version=0.2.0
 ARG stt_helper_version=1.1.1
@@ -56,16 +53,10 @@ RUN wget -q https://github.com/nextcloud-releases/files_automatedtagging/release
   && cd /tmp && tar xf /tmp/files_automatedtagging.tar.gz && mv /tmp/files_automatedtagging /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/forms/releases/download/v${forms_version}/forms-v${forms_version}.tar.gz -O /tmp/forms.tar.gz \
   && cd /tmp && tar xf /tmp/forms.tar.gz && mv /tmp/forms /var/www/html/custom_apps/
-RUN wget -q https://github.com/nextcloud-releases/integration_excalidraw/releases/download/v${integration_excalidraw_version}/integration_excalidraw-v${integration_excalidraw_version}.tar.gz -O /tmp/integration_excalidraw.tar.gz \
-  && cd /tmp && tar xf /tmp/integration_excalidraw.tar.gz && mv /tmp/integration_excalidraw /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/integration_openai/releases/download/v${integration_openai_version}/integration_openai-v${integration_openai_version}.tar.gz -O /tmp/integration_openai.tar.gz \
   && cd /tmp && tar xf /tmp/integration_openai.tar.gz && mv /tmp/integration_openai /var/www/html/custom_apps/
 RUN wget -q https://packages.framasoft.org/projects/nextcloud-apps/login-notes/login_notes-${login_notes_version}.tar.gz -O /tmp/login_notes.tar.gz \
   && cd /tmp && tar xf /tmp/login_notes.tar.gz && mv /tmp/login_notes /var/www/html/custom_apps/
-RUN wget -q https://github.com/SUNET/loginpagebutton/archive/refs/tags/v.${loginpagebutton_version}.tar.gz -O /tmp/loginpagebutton.tar.gz \
-  && cd /tmp && tar xf /tmp/loginpagebutton.tar.gz && mv /tmp/loginpagebutton-* /var/www/html/custom_apps/loginpagebutton
-RUN wget -q https://github.com/nextcloud/maps/releases/download/v${maps_version}/maps-${maps_version}.tar.gz -O /tmp/maps.tar.gz \
-  && cd /tmp && tar xf /tmp/maps.tar.gz && mv /tmp/maps /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/mail/releases/download/v${mail_version}/mail-v${mail_version}.tar.gz -O /tmp/mail.tar.gz \
   && cd /tmp && tar xf /tmp/mail.tar.gz && mv /tmp/mail /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud/polls/releases/download/v${polls_version}/polls.tar.gz -O /tmp/polls.tar.gz \
