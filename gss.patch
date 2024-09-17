@@ -1,0 +1,30 @@
+diff --git a/lib/UserBackend.php b/lib/UserBackend.php
+index bd2d0ca..7149baf 100644
+--- a/lib/UserBackend.php
++++ b/lib/UserBackend.php
+@@ -23,6 +23,7 @@
+ 
+ use OC\User\Backend;
+ use OCP\DB\QueryBuilder\IQueryBuilder;
++use OCP\EventDispatcher\IEventDispatcher;
+ use OCP\Files\NotPermittedException;
+ use OCP\IDBConnection;
+ use OCP\IGroupManager;
+@@ -43,6 +44,7 @@ class UserBackend implements IUserBackend, UserInterface, ICountUsersBackend {
+ 	public function __construct(
+ 		private IDBConnection $db,
+ 		private ISession $session,
++		private IEventDispatcher $eventDispatcher,
+ 		private IGroupManager $groupManager,
+ 		private IUserManager $userManager
+ 	) {
+@@ -107,9 +109,7 @@ public function createUserIfNotExists(string $uid): void {
+ 			}
+ 			// trigger any other initialization
+ 			$user = $this->userManager->get($uid);
+-			\OC::$server->getEventDispatcher()->dispatch(
+-				IUser::class . '::firstLogin', new GenericEvent($user)
+-			);
++			$this->eventDispatcher->dispatch(IUser::class . '::firstLogin', new GenericEvent($user));
+ 		}
+ 	}
