@@ -28,10 +28,6 @@ index bd2d0ca..7149baf 100644
 +			$this->eventDispatcher->dispatch(IUser::class . '::firstLogin', new GenericEvent($user));
  		}
  	}
-diff --git a/lib/UserBackend.php b/lib/UserBackend.php
-index 7149baf..c71831e 100644
---- a/lib/UserBackend.php
-+++ b/lib/UserBackend.php
 @@ -23,6 +23,7 @@
  
  use OC\User\Backend;
