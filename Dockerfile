@@ -59,7 +59,7 @@ RUN wget -q https://packages.framasoft.org/projects/nextcloud-apps/login-notes/l
   && cd /tmp && tar xf /tmp/login_notes.tar.gz && mv /tmp/login_notes /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/mail/releases/download/v${mail_version}/mail-v${mail_version}.tar.gz -O /tmp/mail.tar.gz \
   && cd /tmp && tar xf /tmp/mail.tar.gz && mv /tmp/mail /var/www/html/custom_apps/
-RUN wget -q https://github.com/nextcloud-releases/polls/releases/download/v${polls_version}/polls-v${polls_version}.tar.gz \
+RUN wget -q https://github.com/nextcloud-releases/polls/releases/download/v${polls_version}/polls-v${polls_version}.tar.gz -O /tmp/polls.tar.gz \
   && cd /tmp && tar xf /tmp/polls.tar.gz && mv /tmp/polls /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/richdocuments/releases/download/v${richdocuments_version}/richdocuments-v${richdocuments_version}.tar.gz -O /tmp/richdocuments.tar.gz \
   && cd /tmp && tar xf /tmp/richdocuments.tar.gz && mv /tmp/richdocuments /var/www/html/custom_apps
