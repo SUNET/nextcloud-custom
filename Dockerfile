@@ -1,10 +1,10 @@
-FROM docker.sunet.se/drive/nextcloud-base:29.0.4.2-1
+FROM docker.sunet.se/drive/nextcloud-base:29.0.7.2-1
 
-ARG announcementcenter_version=6.8.1
+ARG announcementcenter_version=7.0.0
 ARG assistant_version=1.1.0
-ARG calendar_version=4.7.15
+ARG calendar_version=4.7.16
 ARG checksum_version=1.2.4
-ARG collectives_version=2.13.0
+ARG collectives_version=2.14.4
 ARG contacts_version=6.0.0
 ARG dicomviewer_version=2.1.2
 ARG drive_email_template_version=1.0.0
@@ -15,15 +15,15 @@ ARG forms_version=4.2.4
 ARG integration_openai_version=2.0.3
 ARG integration_jupyterhub_version=0.1.2
 ARG login_notes_version=1.6.0
-ARG mail_version=3.7.7
+ARG mail_version=3.7.8
 ARG mfazones_version=0.2.0
-ARG polls_version=7.2.0
+ARG polls_version=7.2.4
 ARG rds_version=0.0.3
-ARG richdocuments_version=8.4.4
+ARG richdocuments_version=8.4.6
 ARG sciencemesh_version=0.5.0
 ARG stepupauth_version=0.2.0
 ARG stt_helper_version=1.1.1
-ARG tasks_version=0.16.0
+ARG tasks_version=0.16.1
 ARG text2image_helper_version=1.0.2
 ARG theming_customcss_version=1.17.0
 ARG twofactor_admin_version=4.5.0
