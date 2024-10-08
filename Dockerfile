@@ -100,6 +100,11 @@ COPY ./gss.patch /var/www/html/apps/globalsiteselector/
 RUN cd /var/www/html/apps/globalsiteselector && \
   patch -p1 < ./gss.patch && \
   rm gss.patch
+# Patch files_trashbin app
+COPY ./files_trashbin.patch /var/www/html/
+RUN cd /var/www/html && \
+  patch -p1 < ./files_trashbin.patch && \
+  rm files_trashbin.patch
 
 # CLEAN UP
 RUN apt remove -y wget patch && apt autoremove -y
