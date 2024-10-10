@@ -16,7 +16,7 @@ ARG integration_openai_version=2.0.3
 ARG integration_jupyterhub_version=0.1.2
 ARG login_notes_version=1.6.0
 ARG mail_version=3.7.8
-ARG mfazones_version=0.2.0
+ARG mfazones_version=0.2.1
 ARG polls_version=7.2.4
 ARG rds_version=0.0.3
 ARG richdocuments_version=8.4.6
@@ -105,6 +105,12 @@ COPY ./files_trashbin.patch /var/www/html/
 RUN cd /var/www/html && \
   patch -p1 < ./files_trashbin.patch && \
   rm files_trashbin.patch
+
+# Patch files cache
+COPY ./files_cache.patch /var/www/html/
+RUN cd /var/www/html && \
+  patch -p1 < ./files_cache.patch && \
+  rm files_cache.patch
 
 # CLEAN UP
 RUN apt remove -y wget patch && apt autoremove -y
