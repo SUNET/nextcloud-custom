@@ -1,10 +1,10 @@
-FROM docker.sunet.se/drive/nextcloud-base:29.0.7.2-1
+FROM docker.sunet.se/drive/nextcloud-base:29.0.4.2-1
 
-ARG announcementcenter_version=7.0.0
+ARG announcementcenter_version=6.8.1
 ARG assistant_version=1.1.0
-ARG calendar_version=4.7.16
+ARG calendar_version=4.7.15
 ARG checksum_version=1.2.4
-ARG collectives_version=2.14.4
+ARG collectives_version=2.13.0
 ARG contacts_version=6.0.0
 ARG dicomviewer_version=2.1.2
 ARG drive_email_template_version=1.0.0
@@ -15,15 +15,15 @@ ARG forms_version=4.2.4
 ARG integration_openai_version=2.0.3
 ARG integration_jupyterhub_version=0.1.2
 ARG login_notes_version=1.6.0
-ARG mail_version=3.7.8
-ARG mfazones_version=0.2.1
-ARG polls_version=7.2.4
+ARG mail_version=3.7.7
+ARG mfazones_version=0.1.3
+ARG polls_version=7.2.0
 ARG rds_version=0.0.3
-ARG richdocuments_version=8.4.6
+ARG richdocuments_version=8.4.4
 ARG sciencemesh_version=0.5.0
 ARG stepupauth_version=0.2.0
 ARG stt_helper_version=1.1.1
-ARG tasks_version=0.16.1
+ARG tasks_version=0.16.0
 ARG text2image_helper_version=1.0.2
 ARG theming_customcss_version=1.17.0
 ARG twofactor_admin_version=4.5.0
@@ -59,7 +59,7 @@ RUN wget -q https://packages.framasoft.org/projects/nextcloud-apps/login-notes/l
   && cd /tmp && tar xf /tmp/login_notes.tar.gz && mv /tmp/login_notes /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/mail/releases/download/v${mail_version}/mail-v${mail_version}.tar.gz -O /tmp/mail.tar.gz \
   && cd /tmp && tar xf /tmp/mail.tar.gz && mv /tmp/mail /var/www/html/custom_apps/
-RUN wget -q https://github.com/nextcloud-releases/polls/releases/download/v${polls_version}/polls-v${polls_version}.tar.gz -O /tmp/polls.tar.gz \
+RUN wget -q https://github.com/nextcloud/polls/releases/download/v${polls_version}/polls.tar.gz -O /tmp/polls.tar.gz \
   && cd /tmp && tar xf /tmp/polls.tar.gz && mv /tmp/polls /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/richdocuments/releases/download/v${richdocuments_version}/richdocuments-v${richdocuments_version}.tar.gz -O /tmp/richdocuments.tar.gz \
   && cd /tmp && tar xf /tmp/richdocuments.tar.gz && mv /tmp/richdocuments /var/www/html/custom_apps
@@ -95,11 +95,13 @@ RUN cd /var/www/html/custom_apps/mail && \
   apt-get update && apt-get install -y patch && \
   patch -p1 < ./masterpassword.patch && \
   rm masterpassword.patch
+
 # Patch gss app
 COPY ./gss.patch /var/www/html/apps/globalsiteselector/
 RUN cd /var/www/html/apps/globalsiteselector && \
   patch -p1 < ./gss.patch && \
   rm gss.patch
+
 # Patch files_trashbin app
 COPY ./files_trashbin.patch /var/www/html/
 RUN cd /var/www/html && \
