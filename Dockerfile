@@ -95,22 +95,6 @@ RUN cd /var/www/html/custom_apps/mail && \
   apt-get update && apt-get install -y patch && \
   patch -p1 < ./masterpassword.patch && \
   rm masterpassword.patch
-# Patch gss app
-COPY ./gss.patch /var/www/html/apps/globalsiteselector/
-RUN cd /var/www/html/apps/globalsiteselector && \
-  patch -p1 < ./gss.patch && \
-  rm gss.patch
-# Patch files_trashbin app
-COPY ./files_trashbin.patch /var/www/html/
-RUN cd /var/www/html && \
-  patch -p1 < ./files_trashbin.patch && \
-  rm files_trashbin.patch
-
-# Patch files cache
-COPY ./files_cache.patch /var/www/html/
-RUN cd /var/www/html && \
-  patch -p1 < ./files_cache.patch && \
-  rm files_cache.patch
 
 # CLEAN UP
 RUN apt remove -y wget patch && apt autoremove -y
