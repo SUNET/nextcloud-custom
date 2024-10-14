@@ -96,7 +96,7 @@ RUN cd /var/www/html/custom_apps/mail && \
   patch -p1 < ./masterpassword.patch && \
   rm masterpassword.patch
 # Patch files_trashbin
-COPY ./files_trashbin.patch /var/www/html/custom_apps/mail/
+COPY ./files_trashbin.patch /var/www/html/
 RUN cd /var/www/html/ && \
   patch -p1 < ./files_trashbin.patch && \
   rm files_trashbin.patch
