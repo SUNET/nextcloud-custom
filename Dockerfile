@@ -95,6 +95,7 @@ RUN cd /var/www/html/custom_apps/mail && \
   apt-get update && apt-get install -y patch && \
   patch -p1 < ./masterpassword.patch && \
   rm masterpassword.patch
+
 # Patch files_trashbin
 COPY ./files_trashbin.patch /var/www/html/
 RUN cd /var/www/html/ && \
