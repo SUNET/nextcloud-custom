@@ -95,6 +95,11 @@ RUN cd /var/www/html/custom_apps/mail && \
   apt-get update && apt-get install -y patch && \
   patch -p1 < ./masterpassword.patch && \
   rm masterpassword.patch
+# Patch files_trashbin
+COPY ./files_trashbin.patch /var/www/html/custom_apps/mail/
+RUN cd /var/www/html/ && \
+  patch -p1 < ./files_trashbin.patch && \
+  rm files_trashbin.patch
 
 # CLEAN UP
 RUN apt remove -y wget patch && apt autoremove -y
