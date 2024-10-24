@@ -1,4 +1,4 @@
-FROM docker.sunet.se/drive/nextcloud-base:29.0.8.2-3 as build
+FROM docker.sunet.se/drive/nextcloud-base:29.0.8.2-4 as build
 
 ARG announcementcenter_version=7.0.0
 ARG assistant_version=1.1.0
@@ -97,6 +97,6 @@ RUN cd /var/www/html/custom_apps/mail && \
   patch -p1 < ./masterpassword.patch && \
   rm masterpassword.patch
 
-FROM docker.sunet.se/drive/nextcloud-base:29.0.8.2-3
+FROM docker.sunet.se/drive/nextcloud-base:29.0.8.2-4
 COPY --from=build /var/www/html/custom_apps /var/www/html/custom_apps
 
