@@ -90,6 +90,13 @@ RUN wget -q https://github.com/nextcloud-releases/stt_helper/releases/download/v
 RUN wget -q https://github.com/nextcloud-releases/text2image_helper/releases/download/v${text2image_helper_version}/text2image_helper-v${text2image_helper_version}.tar.gz -O /tmp/text2image_helper.tar.gz \
   && cd /tmp && tar xf /tmp/text2image_helper.tar.gz && mv /tmp/text2image_helper /var/www/html/custom_apps/
 
+# Tokenerror patch
+COPY ./tokenerror.patch /var/www/html/
+RUN cd /var/www/html && \
+  apt-get update && apt-get install -y patch && \
+  patch -p1 < ./tokenerror.patch && \
+  rm tokenerror.patch
+
 # Patch mail app
 COPY ./masterpassword.patch /var/www/html/custom_apps/mail/
 RUN cd /var/www/html/custom_apps/mail && \
