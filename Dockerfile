@@ -1,4 +1,4 @@
-FROM docker.sunet.se/drive/nextcloud-base:29.0.8.2-4 as build
+FROM docker.sunet.se/drive/nextcloud-base:29.0.8.2-5 as build
 
 ARG announcementcenter_version=7.0.0
 ARG assistant_version=1.1.0
@@ -89,14 +89,6 @@ RUN wget -q https://github.com/nextcloud-releases/stt_helper/releases/download/v
   && cd /tmp && tar xf /tmp/stt_helper.tar.gz && mv /tmp/stt_helper /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/text2image_helper/releases/download/v${text2image_helper_version}/text2image_helper-v${text2image_helper_version}.tar.gz -O /tmp/text2image_helper.tar.gz \
   && cd /tmp && tar xf /tmp/text2image_helper.tar.gz && mv /tmp/text2image_helper /var/www/html/custom_apps/
-
-# Tokenerror patch
-COPY ./tokenerror.patch /var/www/html/
-RUN cd /var/www/html && \
-  apt-get update && apt-get install -y patch && \
-  patch -p1 < ./tokenerror.patch && \
-  rm tokenerror.patch
-
 # Patch mail app
 COPY ./masterpassword.patch /var/www/html/custom_apps/mail/
 RUN cd /var/www/html/custom_apps/mail && \
@@ -104,6 +96,6 @@ RUN cd /var/www/html/custom_apps/mail && \
   patch -p1 < ./masterpassword.patch && \
   rm masterpassword.patch
 
-FROM docker.sunet.se/drive/nextcloud-base:29.0.8.2-4
+FROM docker.sunet.se/drive/nextcloud-base:29.0.8.2-5
 COPY --from=build /var/www/html/custom_apps /var/www/html/custom_apps
 
