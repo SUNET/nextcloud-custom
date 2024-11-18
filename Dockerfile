@@ -1,33 +1,36 @@
-FROM docker.sunet.se/drive/nextcloud-base:29.0.8.2-5 as build
+FROM docker.sunet.se/drive/nextcloud-base:29.0.9.3-1 as build
 
-ARG announcementcenter_version=7.0.0
+# Apps from appstore
+ARG announcementcenter_version=7.0.1
 ARG assistant_version=1.1.0
 ARG calendar_version=4.7.16
-ARG checksum_version=1.2.4
-ARG collectives_version=2.14.4
-ARG contacts_version=6.0.0
-ARG dicomviewer_version=2.1.2
-ARG drive_email_template_version=1.0.0
-ARG edusign_version=0.0.3
+ARG checksum_version=1.2.5
+ARG collectives_version=2.15.0
+ARG contacts_version=6.0.1
+ARG dicomviewer_version=2.2.1
 ARG files_accesscontrol_version=1.19.1
 ARG files_automatedtagging_version=1.19.0
-ARG forms_version=4.2.4
-ARG integration_openai_version=2.0.3
+ARG forms_version=4.3.3
 ARG integration_jupyterhub_version=0.1.2
-ARG login_notes_version=1.6.0
-ARG mail_version=3.7.8
+ARG integration_openai_version=2.0.3
+ARG login_notes_version=1.6.1
+ARG mail_version=3.7.9
 ARG mfazones_version=0.2.1
 ARG polls_version=7.2.4
-ARG rds_version=0.0.3
-ARG richdocuments_version=8.4.6
-ARG sciencemesh_version=0.5.0
+ARG richdocuments_version=8.4.8
 ARG stepupauth_version=0.2.0
 ARG stt_helper_version=1.1.1
 ARG tasks_version=0.16.1
 ARG text2image_helper_version=1.0.2
 ARG theming_customcss_version=1.17.0
-ARG twofactor_admin_version=4.5.0
+ARG twofactor_admin_version=4.7.1
 ARG twofactor_webauthn_version=1.4.0
+
+# Not published
+ARG drive_email_template_version=1.0.0
+ARG edusign_version=0.0.3
+ARG rds_version=0.0.3
+ARG sciencemesh_version=0.5.0
 
 ## INSTALL APPS
 RUN apt update && apt install -y patch wget tar
@@ -96,6 +99,6 @@ RUN cd /var/www/html/custom_apps/mail && \
   patch -p1 < ./masterpassword.patch && \
   rm masterpassword.patch
 
-FROM docker.sunet.se/drive/nextcloud-base:29.0.8.2-5
+FROM docker.sunet.se/drive/nextcloud-base:29.0.9.3-1
 COPY --from=build /var/www/html/custom_apps /var/www/html/custom_apps
 
