@@ -96,11 +96,6 @@ RUN cd /var/www/html/custom_apps/mail && \
   apt-get update && apt-get install -y patch && \
   patch -p1 < ./masterpassword.patch && \
   rm masterpassword.patch
-# Use patched user_saml
-RUN cd /var/www/html/apps && \
-    wget https://github.com/SUNET/user_saml/releases/download/v6.3.0/user_saml.tar.gz && \
-    rm -rf user_saml && tar xf user_saml.tar.gz && rm user_saml.tar.gz
-
 FROM docker.sunet.se/drive/nextcloud-base:29.0.8.2-4
 COPY --from=build /var/www/html/custom_apps /var/www/html/custom_apps
 
