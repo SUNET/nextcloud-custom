@@ -1,36 +1,33 @@
-FROM docker.sunet.se/drive/nextcloud-base:29.0.9.3-1 as build
+FROM docker.sunet.se/drive/nextcloud-base:29.0.8.2-4 as build
 
-# Apps from appstore
-ARG announcementcenter_version=7.0.1
+ARG announcementcenter_version=7.0.0
 ARG assistant_version=1.1.0
 ARG calendar_version=4.7.16
-ARG checksum_version=1.2.5
-ARG collectives_version=2.15.0
-ARG contacts_version=6.0.1
-ARG dicomviewer_version=2.2.1
+ARG checksum_version=1.2.4
+ARG collectives_version=2.14.4
+ARG contacts_version=6.0.0
+ARG dicomviewer_version=2.1.2
+ARG drive_email_template_version=1.0.0
+ARG edusign_version=0.0.3
 ARG files_accesscontrol_version=1.19.1
 ARG files_automatedtagging_version=1.19.0
-ARG forms_version=4.3.3
-ARG integration_jupyterhub_version=0.1.2
+ARG forms_version=4.2.4
 ARG integration_openai_version=2.0.3
-ARG login_notes_version=1.6.1
-ARG mail_version=3.7.9
-ARG mfazones_version=0.2.2
+ARG integration_jupyterhub_version=0.1.2
+ARG login_notes_version=1.6.0
+ARG mail_version=3.7.8
+ARG mfazones_version=0.2.1
 ARG polls_version=7.2.4
-ARG richdocuments_version=8.4.8
-ARG stepupauth_version=0.2.1
+ARG rds_version=0.0.3
+ARG richdocuments_version=8.4.6
+ARG sciencemesh_version=0.5.0
+ARG stepupauth_version=0.2.0
 ARG stt_helper_version=1.1.1
 ARG tasks_version=0.16.1
 ARG text2image_helper_version=1.0.2
 ARG theming_customcss_version=1.17.0
-ARG twofactor_admin_version=4.7.1
+ARG twofactor_admin_version=4.5.0
 ARG twofactor_webauthn_version=1.4.0
-
-# Not published
-ARG drive_email_template_version=1.0.0
-ARG edusign_version=0.0.3
-ARG rds_version=0.0.3
-ARG sciencemesh_version=0.5.0
 
 ## INSTALL APPS
 RUN apt update && apt install -y patch wget tar
@@ -92,13 +89,18 @@ RUN wget -q https://github.com/nextcloud-releases/stt_helper/releases/download/v
   && cd /tmp && tar xf /tmp/stt_helper.tar.gz && mv /tmp/stt_helper /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/text2image_helper/releases/download/v${text2image_helper_version}/text2image_helper-v${text2image_helper_version}.tar.gz -O /tmp/text2image_helper.tar.gz \
   && cd /tmp && tar xf /tmp/text2image_helper.tar.gz && mv /tmp/text2image_helper /var/www/html/custom_apps/
+
 # Patch mail app
 COPY ./masterpassword.patch /var/www/html/custom_apps/mail/
 RUN cd /var/www/html/custom_apps/mail && \
   apt-get update && apt-get install -y patch && \
   patch -p1 < ./masterpassword.patch && \
   rm masterpassword.patch
+# Use patched user_saml
+RUN cd /var/www/html/apps && \
+    wget https://github.com/SUNET/user_saml/releases/download/v6.3.0/user_saml.tar.gz && \
+    rm -rf user_saml && tar xf user_saml.tar.gz && rm user_saml.tar.gz
 
-FROM docker.sunet.se/drive/nextcloud-base:29.0.9.3-1
+FROM docker.sunet.se/drive/nextcloud-base:29.0.8.2-4
 COPY --from=build /var/www/html/custom_apps /var/www/html/custom_apps
 
