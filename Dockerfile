@@ -1,30 +1,27 @@
 FROM docker.sunet.se/drive/nextcloud-base:29.0.10.3-1 as build
 
 # Apps from appstore
-ARG announcementcenter_version=7.0.1
-ARG assistant_version=1.1.0
-ARG calendar_version=4.7.16
+ARG announcementcenter_version=7.1.0
+ARG assistant_version=2.3.0
+ARG calendar_version=5.0.9
 ARG checksum_version=1.2.5
-ARG collectives_version=2.15.1
-ARG contacts_version=6.0.1
-ARG dicomviewer_version=2.2.1
-ARG files_accesscontrol_version=1.19.1
-ARG files_automatedtagging_version=1.19.0
-ARG forms_version=4.3.4
-ARG integration_jupyterhub_version=0.1.2
-ARG integration_openai_version=2.0.3
+ARG collectives_version=2.15.2
+ARG contacts_version=6.1.3
+ARG dicomviewer_version=2.3.0
+ARG files_accesscontrol_version=1.20.1
+ARG files_automatedtagging_version=1.20.0
+ARG forms_version=4.3.5
+ARG integration_openai_version=3.4.0
 ARG login_notes_version=1.6.1
-ARG mail_version=3.7.15
-ARG mfazones_version=0.2.1
-ARG polls_version=7.2.5
-ARG richdocuments_version=8.4.9
+ARG mail_version=4.1.2
+ARG mfazones_version=0.2.3
+ARG polls_version=7.2.9
+ARG richdocuments_version=8.5.3
 ARG stepupauth_version=0.2.1
-ARG stt_helper_version=1.1.1
 ARG tasks_version=0.16.1
-ARG text2image_helper_version=1.0.2
-ARG theming_customcss_version=1.17.0
+ARG theming_customcss_version=1.18.0
 ARG twofactor_admin_version=4.7.1
-ARG twofactor_webauthn_version=1.4.0
+ARG twofactor_webauthn_version=2.0.0
 
 # Not published
 ARG drive_email_template_version=1.0.0
