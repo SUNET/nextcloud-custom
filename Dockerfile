@@ -11,6 +11,7 @@ ARG dicomviewer_version=2.3.0
 ARG files_accesscontrol_version=1.20.1
 ARG files_automatedtagging_version=1.20.0
 ARG forms_version=4.3.5
+ARG integration_jupyterhub_version=0.1.3
 ARG integration_openai_version=3.4.0
 ARG login_notes_version=1.6.1
 ARG mail_version=4.1.2
