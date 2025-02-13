@@ -96,4 +96,5 @@ RUN wget -q https://github.com/Sciebo-RDS/nextcloud-rds/releases/download/v${rds
 
 FROM docker.sunet.se/drive/nextcloud-base:30.0.5.2-1
 COPY --from=build /var/www/html/custom_apps /var/www/html/custom_apps
-
+COPY entrypoint.sh /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
