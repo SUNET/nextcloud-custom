@@ -12,13 +12,11 @@ ARG dicomviewer_version=2.3.0
 ARG files_accesscontrol_version=1.20.1
 ARG files_automatedtagging_version=1.20.0
 ARG forms_version=4.3.5
-ARG groupfolders_version=19.0.3
-ARG imap_manager_version=0.0.1
 ARG integration_jupyterhub_version=0.1.3
 ARG integration_openai_version=3.4.0
 ARG login_notes_version=1.6.1
 ARG mail_version=4.1.2
-ARG mfazones_version=0.2.4
+ARG mfazones_version=0.2.3
 ARG polls_version=7.2.9
 ARG richdocuments_version=8.5.3
 ARG stepupauth_version=0.2.2
@@ -60,10 +58,6 @@ RUN wget -q https://github.com/nextcloud-releases/files_automatedtagging/release
   && cd /tmp && tar xf /tmp/files_automatedtagging.tar.gz && mv /tmp/files_automatedtagging /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/forms/releases/download/v${forms_version}/forms-v${forms_version}.tar.gz -O /tmp/forms.tar.gz \
   && cd /tmp && tar xf /tmp/forms.tar.gz && mv /tmp/forms /var/www/html/custom_apps/
-RUN wget -q https://github.com/nextcloud-releases/groupfolders/releases/download/v${groupfolders_version}/groupfolders-v${groupfolders_version}.tar.gz -O /tmp/groupfolders.tar.gz \
-  && cd /tmp && tar xf /tmp/groupfolders.tar.gz && mv /tmp/groupfolders /var/www/html/custom_apps/
-RUN wget -q https://github.com/SUNET/nextcloud-imap_manager/releases/download/v${imap_manager_version}/imap_manager-${imap_manager_version}.tar.gz -O /tmp/imap_manager.tar.gz \
-  && cd /tmp && tar xf /tmp/imap_manager.tar.gz && mv /tmp/imap_manager /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/integration_openai/releases/download/v${integration_openai_version}/integration_openai-v${integration_openai_version}.tar.gz -O /tmp/integration_openai.tar.gz \
   && cd /tmp && tar xf /tmp/integration_openai.tar.gz && mv /tmp/integration_openai /var/www/html/custom_apps/
 RUN wget -q https://packages.framasoft.org/projects/nextcloud-apps/login-notes/login_notes-${login_notes_version}.tar.gz -O /tmp/login_notes.tar.gz \
