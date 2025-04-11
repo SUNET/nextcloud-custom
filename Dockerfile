@@ -1,4 +1,4 @@
-FROM docker.sunet.se/drive/nextcloud-base:30.0.5.2-1 as build
+FROM docker.sunet.se/drive/nextcloud-base:30.0.9.3-1 as build
 
 # Apps from appstore
 ARG announcementcenter_version=7.1.0
