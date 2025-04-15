@@ -1,4 +1,6 @@
-FROM docker.sunet.se/drive/nextcloud-base:30.0.9.3-1 AS build
+ARG NEXTCLOUD_BASE_IMAGE_TAG=30.0.9.3-1
+
+FROM docker.sunet.se/drive/nextcloud-base:${NEXTCLOUD_BASE_IMAGE_TAG} AS build
 
 # Apps from appstore
 ARG announcementcenter_version=7.1.0
@@ -103,7 +105,7 @@ RUN wget -q https://github.com/Sciebo-RDS/nextcloud-rds/releases/download/v${rds
 # RUN wget -q https://github.com/nextcloud-releases/text2image_helper/releases/download/v${text2image_helper_version}/text2image_helper-v${text2image_helper_version}.tar.gz -O /tmp/text2image_helper.tar.gz \
 #   && cd /tmp && tar xf /tmp/text2image_helper.tar.gz && mv /tmp/text2image_helper /var/www/html/custom_apps/
 
-FROM docker.sunet.se/drive/nextcloud-base:30.0.9.3-1
+FROM docker.sunet.se/drive/nextcloud-base:${NEXTCLOUD_BASE_IMAGE_TAG}
 COPY --from=build /var/www/html/custom_apps /var/www/html/custom_apps
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
