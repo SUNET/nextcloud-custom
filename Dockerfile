@@ -5,6 +5,7 @@ FROM docker.sunet.se/drive/nextcloud-base:${NEXTCLOUD_BASE_IMAGE_TAG} AS build
 # Apps from appstore
 ARG announcementcenter_version=7.1.0
 ARG assistant_version=2.4.0
+ARG auto_groups_version=1.6.2
 ARG calendar_version=5.2.1
 ARG checksum_version=1.2.6
 ARG collectives_version=2.16.1
@@ -43,6 +44,8 @@ RUN wget -q https://github.com/nextcloud-releases/assistant/releases/download/v$
   && cd /tmp && tar xf /tmp/assistant.tar.gz && mv /tmp/assistant /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/announcementcenter/releases/download/v${announcementcenter_version}/announcementcenter-v${announcementcenter_version}.tar.gz  -O /tmp/announcementcenter.tar.gz \
   && cd /tmp && tar xf /tmp/announcementcenter.tar.gz && mv /tmp/announcementcenter /var/www/html/custom_apps/
+RUN wget -q https://github.com/stjosh/auto_groups/releases/download/v${auto_groups_version}/auto_groups-v${auto_groups_version}.tar.gz -O /tmp/auto_groups.tar.gz \
+  && cd /tmp && tar xf /tmp/auto_groups.tar.gz && mv /tmp/auto_groups /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/calendar/releases/download/v${calendar_version}/calendar-v${calendar_version}.tar.gz -O /tmp/calendar.tar.gz \
   && cd /tmp && tar xf /tmp/calendar.tar.gz && mv /tmp/calendar /var/www/html/custom_apps/
 RUN wget -q https://github.com/westberliner/checksum/releases/download/v${checksum_version}/checksum.tar.gz -O /tmp/checksum.tar.gz \
