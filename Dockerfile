@@ -3,28 +3,27 @@ ARG NEXTCLOUD_BASE_IMAGE_TAG=30.0.9.3-1
 FROM docker.sunet.se/drive/nextcloud-base:${NEXTCLOUD_BASE_IMAGE_TAG} AS build
 
 # Apps from appstore
-ARG announcementcenter_version=7.1.0
+ARG announcementcenter_version=7.1.2
 ARG assistant_version=2.4.0
 ARG auto_groups_version=1.6.2
-ARG calendar_version=5.2.1
+ARG calendar_version=5.2.4
 ARG checksum_version=1.2.6
-ARG collectives_version=2.16.1
-ARG contacts_version=7.0.5
-ARG deck_version=1.14.4
+ARG collectives_version=2.17.0
+ARG contacts_version=7.1.0
+ARG deck_version=1.14.5
 ARG dicomviewer_version=2.3.1
 ARG files_accesscontrol_version=1.20.1
 ARG files_automatedtagging_version=1.20.0
 ARG forms_version=5.1.0
 ARG groupfolders_version=18.1.2
-ARG imap_manager_version=0.0.1
+ARG imap_manager_version=0.0.2
 ARG integration_jupyterhub_version=0.1.3
 ARG integration_oidc_version=0.1.2
 ARG integration_openai_version=3.5.0
 ARG login_notes_version=1.6.1
-ARG mail_version=5.0.0
 ARG mfazones_version=0.2.4
 ARG polls_version=7.4.2
-ARG richdocuments_version=8.5.6
+ARG richdocuments_version=8.5.7
 ARG stepupauth_version=0.2.2
 ARG tasks_version=0.16.1
 ARG theming_customcss_version=1.18.0
@@ -76,8 +75,6 @@ RUN wget -q https://github.com/SUNET/nextcloud-integration_oidc/releases/downloa
   && cd /tmp && tar xf /tmp/integration_oidc.tar.gz && mv /tmp/integration_oidc /var/www/html/custom_apps/
 RUN wget -q https://packages.framasoft.org/projects/nextcloud-apps/login-notes/login_notes-${login_notes_version}.tar.gz -O /tmp/login_notes.tar.gz \
   && cd /tmp && tar xf /tmp/login_notes.tar.gz && mv /tmp/login_notes /var/www/html/custom_apps/
-RUN wget -q https://github.com/nextcloud-releases/mail/releases/download/v${mail_version}/mail-v${mail_version}.tar.gz -O /tmp/mail.tar.gz \
-  && cd /tmp && tar xf /tmp/mail.tar.gz && mv /tmp/mail /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/polls/releases/download/v${polls_version}/polls-v${polls_version}.tar.gz -O /tmp/polls.tar.gz \
   && cd /tmp && tar xf /tmp/polls.tar.gz && mv /tmp/polls /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/richdocuments/releases/download/v${richdocuments_version}/richdocuments-v${richdocuments_version}.tar.gz -O /tmp/richdocuments.tar.gz \
