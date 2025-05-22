@@ -1,4 +1,4 @@
-ARG NEXTCLOUD_BASE_IMAGE_TAG=30.0.9.3-1
+ARG NEXTCLOUD_BASE_IMAGE_TAG=30.0.11.2-1
 
 FROM docker.sunet.se/drive/nextcloud-base:${NEXTCLOUD_BASE_IMAGE_TAG} AS build
 
@@ -16,7 +16,7 @@ ARG files_accesscontrol_version=1.20.1
 ARG files_automatedtagging_version=1.20.0
 ARG forms_version=5.1.0
 ARG groupfolders_version=18.1.2
-ARG imap_manager_version=0.0.2
+ARG imap_manager_version=0.0.3
 ARG integration_jupyterhub_version=0.1.3
 ARG integration_oidc_version=0.1.3
 ARG integration_openai_version=3.5.0
@@ -107,5 +107,7 @@ RUN wget -q https://github.com/Sciebo-RDS/nextcloud-rds/releases/download/v${rds
 
 FROM docker.sunet.se/drive/nextcloud-base:${NEXTCLOUD_BASE_IMAGE_TAG}
 COPY --from=build /var/www/html/custom_apps /var/www/html/custom_apps
+COPY 52759.patch /tmp
+RUN cd /var/www/html && patch -p1 -f < /tmp/52759.patch ||:
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
