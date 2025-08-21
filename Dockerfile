@@ -100,14 +100,8 @@ RUN wget -q https://github.com/SUNET/nextcloud-mfazones/releases/download/v${mfa
   && cd /tmp && tar xf /tmp/mfazones.tar.gz && mv /tmp/mfazones /var/www/html/custom_apps/
 RUN wget -q https://sunet.drive.sunet.se/s/EeExMo3YY9xGxr8/download/rdsng.tar.gz -O /tmp/rdsng.tar.gz \
   && cd /tmp && tar xf /tmp/rdsng.tar.gz && mv /tmp/rdsng /var/www/html/custom_apps
-# RUN wget -q https://github.com/nextcloud-releases/stt_helper/releases/download/v${stt_helper_version}/stt_helper-v${stt_helper_version}.tar.gz -O /tmp/stt_helper.tar.gz \
-#   && cd /tmp && tar xf /tmp/stt_helper.tar.gz && mv /tmp/stt_helper /var/www/html/custom_apps/
-# RUN wget -q https://github.com/nextcloud-releases/text2image_helper/releases/download/v${text2image_helper_version}/text2image_helper-v${text2image_helper_version}.tar.gz -O /tmp/text2image_helper.tar.gz \
-#   && cd /tmp && tar xf /tmp/text2image_helper.tar.gz && mv /tmp/text2image_helper /var/www/html/custom_apps/
 
 FROM docker.sunet.se/drive/nextcloud-base:${NEXTCLOUD_BASE_IMAGE_TAG}
 COPY --from=build /var/www/html/custom_apps /var/www/html/custom_apps
-COPY 52759.patch /tmp/
-RUN cd /var/www/html && patch -p1 -f < /tmp/52759.patch ||:
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
