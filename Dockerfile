@@ -107,8 +107,7 @@ RUN wget -q https://sunet.drive.sunet.se/s/EeExMo3YY9xGxr8/download/rdsng.tar.gz
 
 FROM docker.sunet.se/drive/nextcloud-base:${NEXTCLOUD_BASE_IMAGE_TAG}
 COPY --from=build /var/www/html/custom_apps /var/www/html/custom_apps
-COPY 52759.patch v30.0.11-increase-connect-timeout.patch /tmp/
+COPY 52759.patch /tmp/
 RUN cd /var/www/html && patch -p1 -f < /tmp/52759.patch ||:
-RUN cd /var/www/html && patch -p1 -f < /tmp/v30.0.11-increase-connect-timeout.patch ||:
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
