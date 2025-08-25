@@ -102,6 +102,6 @@ RUN wget -q https://sunet.drive.sunet.se/s/EeExMo3YY9xGxr8/download/rdsng.tar.gz
   && cd /tmp && tar xf /tmp/rdsng.tar.gz && mv /tmp/rdsng /var/www/html/custom_apps
 
 FROM docker.sunet.se/drive/nextcloud-base:${NEXTCLOUD_BASE_IMAGE_TAG}
-COPY --from=build /var/www/html/custom_apps /var/www/html/custom_apps
+COPY --from=build --chown=www-data:root /var/www/html/custom_apps /var/www/html/custom_apps
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
