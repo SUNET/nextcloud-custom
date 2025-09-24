@@ -1,0 +1,13 @@
+diff --git a/lib/private/Files/ObjectStore/S3ConnectionTrait.php b/lib/private/Files/ObjectStore/S3ConnectionTrait.php
+index 513444d4bab..7217c9e1c2d 100644
+--- a/lib/private/Files/ObjectStore/S3ConnectionTrait.php
++++ b/lib/private/Files/ObjectStore/S3ConnectionTrait.php
+@@ -104,7 +104,7 @@ trait S3ConnectionTrait {
+ 			'http' => [
+ 				'verify' => $this->getCertificateBundlePath(),
+ 				// Timeout for the connection to S3 server, not for the request.
+-				'connect_timeout' => 5
++				'connect_timeout' => 50
+ 			],
+ 			'use_aws_shared_config_files' => false,
+ 			'retries' => [
