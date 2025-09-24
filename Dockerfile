@@ -1,40 +1,40 @@
-ARG NEXTCLOUD_BASE_IMAGE_TAG=30.0.14.2-3
+ARG NEXTCLOUD_BASE_IMAGE_TAG=30.0.14.2-1
 
 FROM docker.sunet.se/drive/nextcloud-base:${NEXTCLOUD_BASE_IMAGE_TAG} AS build
 
 # Apps from appstore
 ARG announcementcenter_version=7.2.1
-ARG assistant_version=2.7.1
+ARG assistant_version=2.8.0
 ARG auto_groups_version=1.6.2
-ARG calendar_version=5.5.2
+ARG calendar_version=5.5.5
 ARG checksum_version=1.2.6
 ARG collectives_version=3.1.2
-ARG contacts_version=7.2.6
+ARG contacts_version=7.3.2
 ARG deck_version=1.14.6
 ARG dicomviewer_version=2.3.1
-ARG files_accesscontrol_version=1.20.1
+ARG files_accesscontrol_version=1.20.2
 ARG files_automatedtagging_version=1.20.0
 ARG forms_version=5.1.2
-ARG groupfolders_version=18.1.4
-ARG integration_oidc_version=0.1.5
+ARG groupfolders_version=18.1.6
+ARG integration_jupyterhub_version=0.1.4
+ARG integration_oidc_version=0.1.6
 ARG integration_openai_version=3.7.1
-ARG imap_manager_version=0.0.3
-ARG integration_jupyterhub_version=0.1.3
 ARG login_notes_version=1.6.1
 ARG mfazones_version=0.2.4
 ARG polls_version=8.3.10
-ARG richdocuments_version=8.5.10
+ARG richdocuments_version=8.5.11
 ARG stepupauth_version=0.2.2
 ARG tasks_version=0.16.1
 ARG theming_customcss_version=1.18.0
 ARG twofactor_admin_version=4.8.0
-ARG twofactor_webauthn_version=2.3.1
+ARG twofactor_webauthn_version=2.4.0
 
 # Not published
 ARG drive_email_template_version=1.0.0
 ARG edusign_version=0.0.3
 ARG rds_ng_version=1.1.2-pre
 ARG sciencemesh_version=0.5.0
+ARG imap_manager_version=0.0.3
 
 ## INSTALL APPS
 RUN apt update && apt install -y patch wget tar
