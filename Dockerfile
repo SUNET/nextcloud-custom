@@ -1,40 +1,40 @@
-ARG NEXTCLOUD_BASE_IMAGE_TAG=30.0.14.2-1
+ARG NEXTCLOUD_BASE_IMAGE_TAG=33.0.0-dev-sunet1
 
 FROM docker.sunet.se/drive/nextcloud-base:${NEXTCLOUD_BASE_IMAGE_TAG} AS build
 
 # Apps from appstore
 ARG announcementcenter_version=7.2.1
-ARG assistant_version=2.7.1
+ARG assistant_version=2.8.0
 ARG auto_groups_version=1.6.2
-ARG calendar_version=5.5.2
+ARG calendar_version=5.5.5
 ARG checksum_version=1.2.6
 ARG collectives_version=3.1.2
-ARG contacts_version=7.2.6
+ARG contacts_version=8.1.0-dev.0
 ARG deck_version=1.14.6
 ARG dicomviewer_version=2.3.1
-ARG files_accesscontrol_version=1.20.1
+ARG files_accesscontrol_version=1.20.2
 ARG files_automatedtagging_version=1.20.0
 ARG forms_version=5.1.2
-ARG groupfolders_version=18.1.4
+ARG groupfolders_version=20.0.1
+ARG integration_jupyterhub_version=0.1.4
 ARG integration_oidc_version=0.1.6
 ARG integration_openai_version=3.7.1
-ARG imap_manager_version=0.0.3
-ARG integration_jupyterhub_version=0.1.3
 ARG login_notes_version=1.6.1
 ARG mfazones_version=0.2.4
-ARG polls_version=8.3.10
-ARG richdocuments_version=8.5.10
+ARG polls_version=8.4.6
+ARG richdocuments_version=8.5.11
 ARG stepupauth_version=0.2.2
 ARG tasks_version=0.16.1
 ARG theming_customcss_version=1.18.0
 ARG twofactor_admin_version=4.8.0
-ARG twofactor_webauthn_version=2.3.1
+ARG twofactor_webauthn_version=2.4.0
 
 # Not published
 ARG drive_email_template_version=1.0.0
 ARG edusign_version=0.0.3
-ARG rds_ng_version=1.1.1
+ARG rds_ng_version=1.1.2-pre
 ARG sciencemesh_version=0.5.0
+ARG imap_manager_version=0.0.3
 
 ## INSTALL APPS
 RUN apt update && apt install -y patch wget tar
@@ -51,7 +51,7 @@ RUN wget -q https://github.com/westberliner/checksum/releases/download/v${checks
   && cd /tmp && tar xf /tmp/checksum.tar.gz && mv /tmp/checksum /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud/collectives/releases/download/v${collectives_version}/collectives-${collectives_version}.tar.gz -O /tmp/collectives.tar.gz \
   && cd /tmp && tar xf /tmp/collectives.tar.gz && mv /tmp/collectives /var/www/html/custom_apps/
-RUN wget -q https://github.com/nextcloud-releases/contacts/releases/download/v${contacts_version}/contacts-v${contacts_version}.tar.gz -O /tmp/contacts.tar.gz \
+RUN wget -q https://sunet.drive.sunet.se/s/4e9WKGAibfJ23PL/download/contacts_${contacts_version}.tar.gz -O /tmp/contacts.tar.gz \
   && cd /tmp && tar xf /tmp/contacts.tar.gz && mv /tmp/contacts /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/deck/releases/download/v${deck_version}/deck-v${deck_version}.tar.gz -O /tmp/deck.tar.gz \
   && cd /tmp && tar xf /tmp/deck.tar.gz && mv /tmp/deck /var/www/html/custom_apps/
@@ -98,12 +98,10 @@ RUN wget -q https://github.com/SUNET/nextcloud-jupyter/releases/download/v${inte
   && cd /tmp && tar xf /tmp/integration_jupyterhub.tar.gz && mv /tmp/integration_jupyterhub /var/www/html/custom_apps/
 RUN wget -q https://github.com/SUNET/nextcloud-mfazones/releases/download/v${mfazones_version}/mfazones-${mfazones_version}.tar.gz -O /tmp/mfazones.tar.gz \
   && cd /tmp && tar xf /tmp/mfazones.tar.gz && mv /tmp/mfazones /var/www/html/custom_apps/
-RUN wget -q https://sunet.drive.sunet.se/s/s9AyccTDZcKx8qa/download/rdsng-${rds_ng_version}.tar.gz -O /tmp/rdsng.tar.gz \
+RUN wget -q https://sunet.drive.sunet.se/s/Sy6fDa4w69K7NPG/download/rdsng-${rds_ng_version}.tar.gz -O /tmp/rdsng.tar.gz \
   && cd /tmp && tar xf /tmp/rdsng.tar.gz && mv /tmp/rdsng /var/www/html/custom_apps
 
 FROM docker.sunet.se/drive/nextcloud-base:${NEXTCLOUD_BASE_IMAGE_TAG}
 COPY --from=build --chown=www-data:root /var/www/html/custom_apps /var/www/html/custom_apps
-COPY 52759.patch /tmp/
-RUN cd /var/www/html && patch -p1 -f < /tmp/52759.patch ||:
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
