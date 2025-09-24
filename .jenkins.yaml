@@ -1,8 +1,8 @@
 ---
 environment_variables:
-  NEXTCLOUD_VERSION: "30.0.14.2-6"
+  NEXTCLOUD_VERSION: "32.0.0rc3-1"
 git:
-  branch: main
+  branch: eosc
 triggers:
   cron: "@daily"
 clean_workspace: true

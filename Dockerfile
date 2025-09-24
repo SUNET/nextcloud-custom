@@ -1,4 +1,4 @@
-ARG NEXTCLOUD_BASE_IMAGE_TAG=30.0.14.2-3
+ARG NEXTCLOUD_BASE_IMAGE_TAG=32.0.0rc3
 
 FROM docker.sunet.se/drive/nextcloud-base:${NEXTCLOUD_BASE_IMAGE_TAG} AS build
 
@@ -9,7 +9,7 @@ ARG auto_groups_version=1.6.2
 ARG calendar_version=5.5.2
 ARG checksum_version=1.2.6
 ARG collectives_version=3.1.2
-ARG contacts_version=7.2.6
+ARG contacts_version=8.1.0-dev.0
 ARG deck_version=1.14.6
 ARG dicomviewer_version=2.3.1
 ARG files_accesscontrol_version=1.20.1
@@ -51,7 +51,7 @@ RUN wget -q https://github.com/westberliner/checksum/releases/download/v${checks
   && cd /tmp && tar xf /tmp/checksum.tar.gz && mv /tmp/checksum /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud/collectives/releases/download/v${collectives_version}/collectives-${collectives_version}.tar.gz -O /tmp/collectives.tar.gz \
   && cd /tmp && tar xf /tmp/collectives.tar.gz && mv /tmp/collectives /var/www/html/custom_apps/
-RUN wget -q https://github.com/nextcloud-releases/contacts/releases/download/v${contacts_version}/contacts-v${contacts_version}.tar.gz -O /tmp/contacts.tar.gz \
+RUN wget -q https://sunet.drive.sunet.se/s/4e9WKGAibfJ23PL/download/contacts_${contacts_version}.tar.gz -O /tmp/contacts.tar.gz \
   && cd /tmp && tar xf /tmp/contacts.tar.gz && mv /tmp/contacts /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/deck/releases/download/v${deck_version}/deck-v${deck_version}.tar.gz -O /tmp/deck.tar.gz \
   && cd /tmp && tar xf /tmp/deck.tar.gz && mv /tmp/deck /var/www/html/custom_apps/
