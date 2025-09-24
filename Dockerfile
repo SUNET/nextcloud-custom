@@ -1,4 +1,4 @@
-ARG NEXTCLOUD_BASE_IMAGE_TAG=32.0.0rc3
+ARG NEXTCLOUD_BASE_IMAGE_TAG=33.0.0-dev-sunet1
 
 FROM docker.sunet.se/drive/nextcloud-base:${NEXTCLOUD_BASE_IMAGE_TAG} AS build
 
@@ -15,13 +15,13 @@ ARG dicomviewer_version=2.3.1
 ARG files_accesscontrol_version=1.20.2
 ARG files_automatedtagging_version=1.20.0
 ARG forms_version=5.1.2
-ARG groupfolders_version=18.1.6
+ARG groupfolders_version=20.0.1
 ARG integration_jupyterhub_version=0.1.4
 ARG integration_oidc_version=0.1.6
 ARG integration_openai_version=3.7.1
 ARG login_notes_version=1.6.1
 ARG mfazones_version=0.2.4
-ARG polls_version=8.3.10
+ARG polls_version=8.4.6
 ARG richdocuments_version=8.5.11
 ARG stepupauth_version=0.2.2
 ARG tasks_version=0.16.1
