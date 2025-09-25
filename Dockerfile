@@ -1,4 +1,4 @@
-ARG NEXTCLOUD_BASE_IMAGE_TAG=33.0.0-dev-sunet1
+ARG NEXTCLOUD_BASE_IMAGE_TAG=32.0.0rc4
 
 FROM docker.sunet.se/drive/nextcloud-base:${NEXTCLOUD_BASE_IMAGE_TAG} AS build
 
@@ -51,7 +51,7 @@ RUN wget -q https://github.com/westberliner/checksum/releases/download/v${checks
   && cd /tmp && tar xf /tmp/checksum.tar.gz && mv /tmp/checksum /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud/collectives/releases/download/v${collectives_version}/collectives-${collectives_version}.tar.gz -O /tmp/collectives.tar.gz \
   && cd /tmp && tar xf /tmp/collectives.tar.gz && mv /tmp/collectives /var/www/html/custom_apps/
-RUN wget -q https://sunet.drive.sunet.se/s/4e9WKGAibfJ23PL/download/contacts_${contacts_version}.tar.gz -O /tmp/contacts.tar.gz \
+RUN wget -q https://github.com/sara-nl/nextcloud-contacts/releases/download/v.0.0.1_EOSC_test/contacts.tar.gz -O /tmp/contacts.tar.gz \
   && cd /tmp && tar xf /tmp/contacts.tar.gz && mv /tmp/contacts /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/deck/releases/download/v${deck_version}/deck-v${deck_version}.tar.gz -O /tmp/deck.tar.gz \
   && cd /tmp && tar xf /tmp/deck.tar.gz && mv /tmp/deck /var/www/html/custom_apps/
