@@ -1,0 +1,253 @@
+From b1ad63666f290c2faf9f89cfda10e29aa44ce1f3 Mon Sep 17 00:00:00 2001
+From: Robin Appelman <robin@icewind.nl>
+Date: Mon, 18 Nov 2024 17:35:09 +0100
+Subject: [PATCH 1/5] fix: use php://temp instead of php://memory for
+ multi-part upload buffer
+
+this should reduce potential memory issues if the limit is set very high
+
+Signed-off-by: Robin Appelman <robin@icewind.nl>
+---
+ lib/private/Files/ObjectStore/S3ObjectTrait.php | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/private/Files/ObjectStore/S3ObjectTrait.php b/lib/private/Files/ObjectStore/S3ObjectTrait.php
+index 220bec147388d..ff3d1716e11a1 100644
+--- a/lib/private/Files/ObjectStore/S3ObjectTrait.php
++++ b/lib/private/Files/ObjectStore/S3ObjectTrait.php
+@@ -144,7 +144,7 @@ public function writeObject($urn, $stream, ?string $mimetype = null) {
+ 
+ 		// ($psrStream->isSeekable() && $psrStream->getSize() !== null) evaluates to true for a On-Seekable stream
+ 		// so the optimisation does not apply
+-		$buffer = new Psr7\Stream(fopen('php://memory', 'rwb+'));
++		$buffer = new Psr7\Stream(fopen('php://temp', 'rwb+'));
+ 		Utils::copyToStream($psrStream, $buffer, $this->putSizeLimit);
+ 		$buffer->seek(0);
+ 		if ($buffer->getSize() < $this->putSizeLimit) {
+
+From 66326691578b44e77cfbbc73c14a3aa89e8a18a0 Mon Sep 17 00:00:00 2001
+From: Robin Appelman <robin@icewind.nl>
+Date: Mon, 18 Nov 2024 17:53:50 +0100
+Subject: [PATCH 2/5] fix: don't perform the extra buffering in s3 stream write
+ when the stream size is known
+
+Signed-off-by: Robin Appelman <robin@icewind.nl>
+---
+ .../Files/ObjectStore/S3ObjectTrait.php       | 33 +++++++++++++------
+ 1 file changed, 23 insertions(+), 10 deletions(-)
+
+diff --git a/lib/private/Files/ObjectStore/S3ObjectTrait.php b/lib/private/Files/ObjectStore/S3ObjectTrait.php
+index ff3d1716e11a1..c08ee7a5a0aef 100644
+--- a/lib/private/Files/ObjectStore/S3ObjectTrait.php
++++ b/lib/private/Files/ObjectStore/S3ObjectTrait.php
+@@ -140,20 +140,33 @@ protected function writeMultiPart(string $urn, StreamInterface $stream, ?string
+ 	 * @since 7.0.0
+ 	 */
+ 	public function writeObject($urn, $stream, ?string $mimetype = null) {
++		$canSeek = fseek($stream, 0, SEEK_CUR) === 0;
+ 		$psrStream = Utils::streamFor($stream);
+ 
+-		// ($psrStream->isSeekable() && $psrStream->getSize() !== null) evaluates to true for a On-Seekable stream
+-		// so the optimisation does not apply
+-		$buffer = new Psr7\Stream(fopen('php://temp', 'rwb+'));
+-		Utils::copyToStream($psrStream, $buffer, $this->putSizeLimit);
+-		$buffer->seek(0);
+-		if ($buffer->getSize() < $this->putSizeLimit) {
+-			// buffer is fully seekable, so use it directly for the small upload
+-			$this->writeSingle($urn, $buffer, $mimetype);
++
++		$size = $psrStream->getSize();
++		if ($size === null || !$canSeek) {
++			// The s3 single-part upload requires the size to be known for the stream.
++			// So for input streams that don't have a known size, we need to copy (part of)
++			// the input into a temporary stream so the size can be determined
++			$buffer = new Psr7\Stream(fopen('php://temp', 'rw+'));
++			Utils::copyToStream($psrStream, $buffer, $this->putSizeLimit);
++			$buffer->seek(0);
++			if ($buffer->getSize() < $this->putSizeLimit) {
++				// buffer is fully seekable, so use it directly for the small upload
++				$this->writeSingle($urn, $buffer, $mimetype);
++			} else {
++				$loadStream = new Psr7\AppendStream([$buffer, $psrStream]);
++				$this->writeMultiPart($urn, $loadStream, $mimetype);
++			}
+ 		} else {
+-			$loadStream = new Psr7\AppendStream([$buffer, $psrStream]);
+-			$this->writeMultiPart($urn, $loadStream, $mimetype);
++			if ($size < $this->putSizeLimit) {
++				$this->writeSingle($urn, $psrStream, $mimetype);
++			} else {
++				$this->writeMultiPart($urn, $psrStream, $mimetype);
++			}
+ 		}
++		$psrStream->close();
+ 	}
+ 
+ 	/**
+
+From 48640ce1550cf4d714c07cfc21fc5445669675ef Mon Sep 17 00:00:00 2001
+From: Robin Appelman <robin@icewind.nl>
+Date: Wed, 27 Nov 2024 17:29:45 +0100
+Subject: [PATCH 3/5] fix: improve assembly stream
+
+Signed-off-by: Robin Appelman <robin@icewind.nl>
+---
+ apps/dav/lib/Upload/AssemblyStream.php        | 22 ++++++++++++-------
+ .../tests/unit/Upload/AssemblyStreamTest.php  | 22 ++++++++++++++++---
+ 2 files changed, 33 insertions(+), 11 deletions(-)
+
+diff --git a/apps/dav/lib/Upload/AssemblyStream.php b/apps/dav/lib/Upload/AssemblyStream.php
+index 736905d01c2fa..642a8604b1701 100644
+--- a/apps/dav/lib/Upload/AssemblyStream.php
++++ b/apps/dav/lib/Upload/AssemblyStream.php
+@@ -75,6 +75,10 @@ public function stream_seek($offset, $whence = SEEK_SET) {
+ 			$offset = $this->size + $offset;
+ 		}
+ 
++		if ($offset === $this->pos) {
++			return true;
++		}
++
+ 		if ($offset > $this->size) {
+ 			return false;
+ 		}
+@@ -95,7 +99,7 @@ public function stream_seek($offset, $whence = SEEK_SET) {
+ 
+ 		$stream = $this->getStream($this->nodes[$nodeIndex]);
+ 		$nodeOffset = $offset - $nodeStart;
+-		if (fseek($stream, $nodeOffset) === -1) {
++		if ($nodeOffset > 0 && fseek($stream, $nodeOffset) === -1) {
+ 			return false;
+ 		}
+ 		$this->currentNode = $nodeIndex;
+@@ -126,9 +130,14 @@ public function stream_read($count) {
+ 			}
+ 		}
+ 
+-		do {
++		$collectedData = '';
++		// read data until we either got all the data requested or there is no more stream left
++		while ($count > 0 && !is_null($this->currentStream)) {
+ 			$data = fread($this->currentStream, $count);
+ 			$read = strlen($data);
++
++			$count -= $read;
++			$collectedData .= $data;
+ 			$this->currentNodeRead += $read;
+ 
+ 			if (feof($this->currentStream)) {
+@@ -145,14 +154,11 @@ public function stream_read($count) {
+ 					$this->currentStream = null;
+ 				}
+ 			}
+-			// if no data read, try again with the next node because
+-			// returning empty data can make the caller think there is no more
+-			// data left to read
+-		} while ($read === 0 && !is_null($this->currentStream));
++		}
+ 
+ 		// update position
+-		$this->pos += $read;
+-		return $data;
++		$this->pos += strlen($collectedData);
++		return $collectedData;
+ 	}
+ 
+ 	/**
+diff --git a/apps/dav/tests/unit/Upload/AssemblyStreamTest.php b/apps/dav/tests/unit/Upload/AssemblyStreamTest.php
+index 217713eca3301..7430b9e853000 100644
+--- a/apps/dav/tests/unit/Upload/AssemblyStreamTest.php
++++ b/apps/dav/tests/unit/Upload/AssemblyStreamTest.php
+@@ -24,12 +24,16 @@ public function testGetContents($expected, $nodes): void {
+ 	/**
+ 	 * @dataProvider providesNodes()
+ 	 */
+-	public function testGetContentsFread($expected, $nodes): void {
++	public function testGetContentsFread($expected, $nodes, $chunkLength = 3): void {
+ 		$stream = \OCA\DAV\Upload\AssemblyStream::wrap($nodes);
+ 
+ 		$content = '';
+ 		while (!feof($stream)) {
+-			$content .= fread($stream, 3);
++			$chunk = fread($stream, $chunkLength);
++			$content .= $chunk;
++			if ($chunkLength !== 3) {
++				$this->assertEquals($chunkLength, strlen($chunk));
++			}
+ 		}
+ 
+ 		$this->assertEquals($expected, $content);
+@@ -102,7 +106,19 @@ public function providesNodes() {
+ 				]],
+ 			'a ton of nodes' => [
+ 				$tonofdata, $tonofnodes
+-			]
++			],
++			'one read over multiple nodes' => [
++				'1234567890', [
++					$this->buildNode('0', '1234'),
++					$this->buildNode('1', '5678'),
++					$this->buildNode('2', '90'),
++				], 10],
++			'two reads over multiple nodes' => [
++				'1234567890', [
++					$this->buildNode('0', '1234'),
++					$this->buildNode('1', '5678'),
++					$this->buildNode('2', '90'),
++				], 5],
+ 		];
+ 	}
+ 
+
+From eade5703ba704a72100ee2f5bd7b40dc616a2034 Mon Sep 17 00:00:00 2001
+From: Robin Appelman <robin@icewind.nl>
+Date: Thu, 5 Dec 2024 15:16:22 +0100
+Subject: [PATCH 4/5] fix: get object size from stream where possible
+
+Signed-off-by: Robin Appelman <robin@icewind.nl>
+---
+ lib/private/Files/ObjectStore/ObjectStoreStorage.php | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/lib/private/Files/ObjectStore/ObjectStoreStorage.php b/lib/private/Files/ObjectStore/ObjectStoreStorage.php
+index a2e145b2d2203..51ef40617b3a5 100644
+--- a/lib/private/Files/ObjectStore/ObjectStoreStorage.php
++++ b/lib/private/Files/ObjectStore/ObjectStoreStorage.php
+@@ -474,6 +474,14 @@ public function file_put_contents($path, $data) {
+ 	}
+ 
+ 	public function writeStream(string $path, $stream, ?int $size = null): int {
++		if ($size === null) {
++			$stats = fstat($stream);
++			if (is_array($stats) && isset($stats['size'])) {
++				$size = $stats['size'];
++				$this->logger->warning("stream size $size");
++			}
++		}
++
+ 		$stat = $this->stat($path);
+ 		if (empty($stat)) {
+ 			// create new file
+
+From 87a4bff4eec02d4e1d09251c092b28ebef4e6336 Mon Sep 17 00:00:00 2001
+From: Robin Appelman <robin@icewind.nl>
+Date: Mon, 9 Dec 2024 15:40:01 +0100
+Subject: [PATCH 5/5] chore: cleanup leftover debug statement
+
+Signed-off-by: Robin Appelman <robin@icewind.nl>
+---
+ lib/private/Files/ObjectStore/ObjectStoreStorage.php | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/lib/private/Files/ObjectStore/ObjectStoreStorage.php b/lib/private/Files/ObjectStore/ObjectStoreStorage.php
+index 51ef40617b3a5..a6057d83c57cb 100644
+--- a/lib/private/Files/ObjectStore/ObjectStoreStorage.php
++++ b/lib/private/Files/ObjectStore/ObjectStoreStorage.php
+@@ -478,7 +478,6 @@ public function writeStream(string $path, $stream, ?int $size = null): int {
+ 			$stats = fstat($stream);
+ 			if (is_array($stats) && isset($stats['size'])) {
+ 				$size = $stats['size'];
+-				$this->logger->warning("stream size $size");
+ 			}
+ 		}
+ 
