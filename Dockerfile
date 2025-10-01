@@ -35,7 +35,7 @@ ARG twofactor_webauthn_version=2.4.0
 # Not published
 ARG drive_email_template_version=1.0.0
 ARG edusign_version=0.0.3
-ARG rds_ng_version=1.1.2-pre
+ARG rds_ng_version=1.2.0-pre
 ARG imap_manager_version=0.0.4
 
 ## INSTALL APPS
