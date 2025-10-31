@@ -35,7 +35,7 @@ ARG twofactor_webauthn_version=2.4.0
 # Not published
 ARG drive_email_template_version=1.0.0
 ARG edusign_version=0.0.3
-ARG rds_ng_version=1.2.1
+ARG rds_ng_version=1.2.2
 ARG imap_manager_version=0.0.4
 
 ## INSTALL APPS
@@ -104,7 +104,7 @@ RUN wget -q https://github.com/SUNET/nextcloud-jupyter/releases/download/v${inte
   && cd /tmp && tar xf /tmp/integration_jupyterhub.tar.gz && mv /tmp/integration_jupyterhub /var/www/html/custom_apps/
 RUN wget -q https://github.com/SUNET/nextcloud-mfazones/releases/download/v${mfazones_version}/mfazones-${mfazones_version}.tar.gz -O /tmp/mfazones.tar.gz \
   && cd /tmp && tar xf /tmp/mfazones.tar.gz && mv /tmp/mfazones /var/www/html/custom_apps/
-RUN wget -q https://sunet.drive.sunet.se/s/SbdfAMMBbjKBqMJ/download/rdsng-${rds_ng_version}.tar.gz -O /tmp/rdsng.tar.gz \
+RUN wget -q https://sunet.drive.sunet.se/s/eaHMfcpjHmYKaCS/download/rdsng-${rds_ng_version}.tar.gz -O /tmp/rdsng.tar.gz \
   && cd /tmp && tar xf /tmp/rdsng.tar.gz && mv /tmp/rdsng /var/www/html/custom_apps
 
 FROM docker.sunet.se/drive/nextcloud-base:${NEXTCLOUD_BASE_IMAGE_TAG}
