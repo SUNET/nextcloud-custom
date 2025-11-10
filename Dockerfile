@@ -10,6 +10,7 @@ ARG calendar_version=5.5.5
 ARG checksum_version=1.2.6
 ARG collectives_version=3.1.2
 ARG contacts_version=7.3.2
+ARG edusign_version=0.0.4
 ARG deck_version=1.15.2
 ARG dicomviewer_version=2.3.1
 ARG files_accesscontrol_version=2.0.1
@@ -34,7 +35,6 @@ ARG twofactor_webauthn_version=2.4.0
 
 # Not published
 ARG drive_email_template_version=1.0.0
-ARG edusign_version=0.0.3
 ARG rds_ng_version=1.2.2
 ARG imap_manager_version=0.0.4
 
