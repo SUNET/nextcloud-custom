@@ -37,7 +37,7 @@ ARG twofactor_webauthn_version=2.4.1
 ARG drive_email_template_version=1.0.0
 ARG rds_ng_version=1.3.0
 ARG imap_manager_version=0.0.4
-ARG xmlconvert_version=0.1.0
+ARG xmlconvert_version=0.1.1
 ARG prismaapprove_version=0.1.0
 
 ## INSTALL APPS
@@ -108,7 +108,7 @@ RUN wget -q https://github.com/SUNET/nextcloud-mfazones/releases/download/v${mfa
   && cd /tmp && tar xf /tmp/mfazones.tar.gz && mv /tmp/mfazones /var/www/html/custom_apps/
 RUN wget -q https://sunet.drive.sunet.se/s/KKxj6ReMf4RKZqi/download/rdsng-${rds_ng_version}.tar.gz -O /tmp/rdsng.tar.gz \
   && cd /tmp && tar xf /tmp/rdsng.tar.gz && mv /tmp/rdsng /var/www/html/custom_apps
-RUN wget -q https://sunet.drive.sunet.se/s/zakDJ9pgmHQsgnG/download/xmlconvert-${xmlconvert_version}.tar.gz -O /tmp/xmlconvert.tar.gz \
+RUN wget -q https://sunet.drive.sunet.se/s/YimE9HneRzTxY8N/download/xmlconvert-${xmlconvert_version}.tar.gz -O /tmp/xmlconvert.tar.gz \
   && cd /tmp && tar xf /tmp/xmlconvert.tar.gz && mv /tmp/xmlconvert /var/www/html/custom_apps
 RUN wget -q https://sunet.drive.sunet.se/s/GtM6FcKFjrBYgG3/download/prismaapprove-${prismaapprove_version}.tar.gz -O /tmp/prismaapprove.tar.gz \
   && cd /tmp && tar xf /tmp/prismaapprove.tar.gz && mv /tmp/prismaapprove /var/www/html/custom_apps
