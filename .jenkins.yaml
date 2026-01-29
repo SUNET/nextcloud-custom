@@ -1,6 +1,6 @@
 ---
 environment_variables:
-  NEXTCLOUD_VERSION: "31.0.12.4-2"
+  NEXTCLOUD_VERSION: "31.0.12.4-3"
 git:
   branch: main
 triggers:
