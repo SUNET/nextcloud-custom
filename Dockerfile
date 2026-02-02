@@ -1,30 +1,30 @@
-ARG NEXTCLOUD_BASE_IMAGE_TAG=31.0.12.4-1
+ARG NEXTCLOUD_BASE_IMAGE_TAG=32.0.5.1-1
 
 FROM docker.sunet.se/drive/nextcloud-base:${NEXTCLOUD_BASE_IMAGE_TAG} AS build
 
 # Apps from appstore
-ARG announcementcenter_version=7.2.2
-ARG assistant_version=2.11.0
+ARG announcementcenter_version=7.3.0
+ARG assistant_version=2.12.0
 ARG auto_groups_version=1.6.2
-ARG calendar_version=5.5.9
+ARG calendar_version=6.1.6
 ARG checksum_version=2.0.3
-ARG collectives_version=3.4.0
-ARG contacts_version=7.3.8
+ARG collectives_version=3.5.0
+ARG contacts_version=8.3.1
 ARG edusign_version=0.0.9
-ARG deck_version=1.15.5
+ARG deck_version=1.16.3
 ARG dicomviewer_version=2.3.1
-ARG files_accesscontrol_version=2.0.3
-ARG files_automatedtagging_version=2.0.1
-ARG files_retention_version=2.0.1
-ARG forms_version=5.2.3
-ARG groupfolders_version=19.1.12
+ARG files_accesscontrol_version=3.0.2
+ARG files_automatedtagging_version=3.0.3
+ARG files_retention_version=3.0.0
+ARG forms_version=5.2.4
+ARG groupfolders_version=20.1.9
 ARG integration_jupyterhub_version=0.1.4
 ARG integration_oidc_version=0.1.6
-ARG integration_openai_version=3.9.1
+ARG integration_openai_version=3.10.0
 ARG login_notes_version=1.7.0
 ARG mfazones_version=0.2.4
-ARG polls_version=8.5.0
-ARG richdocuments_version=8.7.7
+ARG polls_version=8.6.3
+ARG richdocuments_version=9.0.2
 ARG sharelisting_version=1.3.0
 ARG stepupauth_version=0.2.3
 ARG tasks_version=0.17.1
