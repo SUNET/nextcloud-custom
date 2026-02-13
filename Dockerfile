@@ -38,7 +38,7 @@ ARG drive_email_template_version=1.0.0
 ARG rds_ng_version=1.3.0
 ARG imap_manager_version=0.0.4
 ARG xmlconvert_version=0.1.3
-ARG prismaapprove_version=0.3.0
+ARG prismaapprove_version=0.4.0
 
 ## INSTALL APPS
 RUN apt update && apt install -y patch wget tar
