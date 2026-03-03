@@ -4,34 +4,33 @@ FROM docker.sunet.se/drive/nextcloud-base:${NEXTCLOUD_BASE_IMAGE_TAG} AS build
 
 # Apps from appstore
 ARG announcementcenter_version=7.3.0
-ARG assistant_version=2.12.0
+ARG assistant_version=2.13.0
 ARG auto_groups_version=1.6.2
-ARG calendar_version=6.1.6
+ARG calendar_version=6.2.1
 ARG checksum_version=2.0.3
-ARG collectives_version=3.5.0
-ARG contacts_version=8.3.1
+ARG collectives_version=4.0.0
+ARG contacts_version=8.3.4
 ARG edusign_version=0.0.9
 ARG deck_version=1.16.3
-ARG dicomviewer_version=2.3.1
+ARG dicomviewer_version=2.3.2
 ARG files_accesscontrol_version=3.0.2
 ARG files_automatedtagging_version=3.0.3
 ARG files_retention_version=3.0.0
 ARG forms_version=5.2.4
-ARG groupfolders_version=20.1.9
+ARG groupfolders_version=20.1.12
 ARG integration_jupyterhub_version=0.1.4
 ARG integration_oidc_version=0.1.6
-ARG integration_openai_version=3.10.0
+ARG integration_openai_version=3.10.1
 ARG login_notes_version=1.7.0
-ARG mfazones_version=0.2.4
 ARG polls_version=8.6.3
-ARG richdocuments_version=9.0.2
+ARG richdocuments_version=9.0.3
 ARG sharelisting_version=1.3.0
 ARG stepupauth_version=0.2.3
 ARG tasks_version=0.17.1
 ARG terms_of_service_version=4.6.1
 ARG theming_customcss_version=1.19.0
 ARG twofactor_admin_version=4.9.0
-ARG twofactor_webauthn_version=2.4.1
+ARG twofactor_webauthn_version=2.6.0
 
 # Not published
 ARG drive_email_template_version=1.0.0
@@ -104,8 +103,6 @@ RUN wget -q https://github.com/SUNET/nextcloud-stepupauth/releases/download/v${s
   && cd /tmp && tar xf /tmp/stepupauth.tar.gz && mv /tmp/stepupauth /var/www/html/custom_apps/
 RUN wget -q https://github.com/SUNET/nextcloud-jupyter/releases/download/v${integration_jupyterhub_version}/integration_jupyterhub-${integration_jupyterhub_version}.tar.gz -O /tmp/integration_jupyterhub.tar.gz \
   && cd /tmp && tar xf /tmp/integration_jupyterhub.tar.gz && mv /tmp/integration_jupyterhub /var/www/html/custom_apps/
-RUN wget -q https://github.com/SUNET/nextcloud-mfazones/releases/download/v${mfazones_version}/mfazones-${mfazones_version}.tar.gz -O /tmp/mfazones.tar.gz \
-  && cd /tmp && tar xf /tmp/mfazones.tar.gz && mv /tmp/mfazones /var/www/html/custom_apps/
 RUN wget -q https://sunet.drive.sunet.se/s/KKxj6ReMf4RKZqi/download/rdsng-${rds_ng_version}.tar.gz -O /tmp/rdsng.tar.gz \
   && cd /tmp && tar xf /tmp/rdsng.tar.gz && mv /tmp/rdsng /var/www/html/custom_apps
 RUN wget -q https://platform.sunet.se/SUNET/nextcloud-xmlconvert/releases/download/v${xmlconvert_version}/xmlconvert-${xmlconvert_version}.tar.gz -O /tmp/xmlconvert.tar.gz \
