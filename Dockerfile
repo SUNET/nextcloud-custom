@@ -10,7 +10,7 @@ ARG calendar_version=6.2.1
 ARG checksum_version=2.0.3
 ARG collectives_version=4.0.0
 ARG contacts_version=8.3.4
-ARG edusign_version=0.0.9
+ARG edusign_version=0.0.10
 ARG deck_version=1.16.3
 ARG dicomviewer_version=2.3.2
 ARG files_accesscontrol_version=3.0.2
@@ -19,7 +19,7 @@ ARG files_retention_version=3.0.0
 ARG forms_version=5.2.4
 ARG groupfolders_version=20.1.12
 ARG integration_jupyterhub_version=0.1.4
-ARG integration_oidc_version=0.1.7
+ARG integration_oidc_version=0.1.8
 ARG integration_openai_version=3.10.1
 ARG login_notes_version=1.7.0
 ARG polls_version=8.6.3
@@ -35,7 +35,7 @@ ARG twofactor_webauthn_version=2.6.0
 # Not published
 ARG drive_email_template_version=1.0.0
 ARG rds_ng_version=1.3.0
-ARG imap_manager_version=0.0.4
+ARG imap_manager_version=0.0.6
 ARG xmlconvert_version=0.1.3
 ARG prismaapprove_version=0.4.0
 
