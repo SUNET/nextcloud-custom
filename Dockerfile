@@ -35,7 +35,7 @@ ARG twofactor_webauthn_version=2.6.0
 # Not published
 ARG rds_ng_version=1.3.0
 ARG imap_manager_version=0.0.6
-ARG xmlconvert_version=0.1.3
+ARG xmlconvert_version=0.2.0
 ARG prismaapprove_version=0.6.3
 
 ## INSTALL APPS
