@@ -3,38 +3,38 @@ ARG NEXTCLOUD_BASE_IMAGE_TAG=32.0.8.3-2
 FROM docker.sunet.se/drive/nextcloud-base:${NEXTCLOUD_BASE_IMAGE_TAG} AS build
 
 # Apps from appstore
-ARG announcementcenter_version=7.3.0
+ARG announcementcenter_version=7.4.0
 ARG assistant_version=2.13.0
-ARG auto_groups_version=1.6.2
-ARG calendar_version=6.2.1
+ARG auto_groups_version=1.7.1
+ARG calendar_version=6.4.2
 ARG checksum_version=2.0.3
-ARG collectives_version=4.0.0
-ARG contacts_version=8.3.4
-ARG edusign_version=0.0.10
-ARG deck_version=1.16.3
+ARG collectives_version=4.4.1
+ARG contacts_version=8.3.12
+ARG deck_version=1.16.5
 ARG dicomviewer_version=2.3.2
-ARG files_accesscontrol_version=3.0.2
+ARG edusign_version=0.0.11
+ARG files_accesscontrol_version=3.0.3
 ARG files_automatedtagging_version=3.0.3
 ARG files_retention_version=3.0.0
-ARG forms_version=5.2.4
-ARG groupfolders_version=20.1.12
-ARG integration_jupyterhub_version=0.1.4
-ARG integration_oidc_version=0.1.9
+ARG forms_version=5.2.9
+ARG groupfolders_version=20.1.14
+ARG integration_jupyterhub_version=0.2.5
+ARG integration_oidc_version=0.1.10
 ARG integration_openai_version=3.10.1
-ARG login_notes_version=1.7.0
-ARG polls_version=8.6.3
-ARG richdocuments_version=9.0.3
+ARG login_notes_version=1.8.1
+ARG polls_version=9.1.4
+ARG richdocuments_version=9.0.6
 ARG sharelisting_version=1.3.0
 ARG stepupauth_version=0.2.3
 ARG tasks_version=0.17.1
 ARG terms_of_service_version=4.6.1
-ARG theming_customcss_version=1.19.0
-ARG twofactor_admin_version=4.9.0
+ARG theming_customcss_version=1.20.0
+ARG twofactor_admin_version=4.11.1
 ARG twofactor_webauthn_version=2.6.0
 
 # Not published
 ARG rds_ng_version=1.3.0
-ARG imap_manager_version=0.0.6
+ARG imap_manager_version=0.0.7
 ARG xmlconvert_version=0.2.0
 ARG prismaapprove_version=0.6.3
 
@@ -94,7 +94,8 @@ RUN wget -q https://github.com/juliushaertl/theming_customcss/releases/download/
 RUN wget -q https://github.com/nextcloud-releases/twofactor_webauthn/releases/download/v${twofactor_webauthn_version}/twofactor_webauthn-v${twofactor_webauthn_version}.tar.gz \
   -O /tmp/twofactor_webauthn.tar.gz \
   && cd /tmp && tar xf /tmp/twofactor_webauthn.tar.gz && mv /tmp/twofactor_webauthn /var/www/html/custom_apps
-RUN wget -q https://github.com/nextcloud-releases/twofactor_admin/releases/download/v${twofactor_admin_version}/twofactor_admin.tar.gz -O /tmp/twofactor_admin.tar.gz \
+RUN wget -q https://github.com/nextcloud-releases/twofactor_admin/releases/download/v${twofactor_admin_version}/twofactor_admin-v${twofactor_admin_version}.tar.gz \
+  -O /tmp/twofactor_admin.tar.gz \
   && cd /tmp && tar xf /tmp/twofactor_admin.tar.gz && mv /tmp/twofactor_admin /var/www/html/custom_apps/
 RUN wget -q https://github.com/SUNET/nextcloud-stepupauth/releases/download/v${stepupauth_version}/stepupauth-${stepupauth_version}.tar.gz -O /tmp/stepupauth.tar.gz \
   && cd /tmp && tar xf /tmp/stepupauth.tar.gz && mv /tmp/stepupauth /var/www/html/custom_apps/
