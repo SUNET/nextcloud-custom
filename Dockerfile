@@ -63,7 +63,7 @@ RUN wget -q https://github.com/ayselafsar/dicomviewer/releases/download/v${dicom
   && cd /tmp && tar xf /tmp/dicomviewer.tar.gz && mv /tmp/dicomviewer /var/www/html/custom_apps/
 RUN wget -q https://github.com/SUNET/nextcloud-edusign/releases/download/v${edusign_version}/edusign-${edusign_version}.tar.gz -O /tmp/edusign.tar.gz \
   && cd /tmp && tar xf /tmp/edusign.tar.gz && mv /tmp/edusign /var/www/html/custom_apps/
-RUN wget -q https://github.com/nextcloud-releases/eurooffice/releases/download/${eurooffice_version}/eurooffice-${eurooffice_version}.tar.gz -O /tmp/eurooffice.tar.gz \
+RUN wget -q https://github.com/nextcloud-releases/eurooffice/releases/download/v${eurooffice_version}/eurooffice-v${eurooffice_version}.tar.gz -O /tmp/eurooffice.tar.gz \
   && cd /tmp && tar xf /tmp/eurooffice.tar.gz && mv /tmp/eurooffice /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/files_accesscontrol/releases/download/v${files_accesscontrol_version}/files_accesscontrol-v${files_accesscontrol_version}.tar.gz -O /tmp/files_accesscontrol.tar.gz \
   && cd /tmp && tar xf /tmp/files_accesscontrol.tar.gz && mv /tmp/files_accesscontrol /var/www/html/custom_apps/
