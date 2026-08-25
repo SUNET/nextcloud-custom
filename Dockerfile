@@ -1,4 +1,4 @@
-ARG NEXTCLOUD_BASE_IMAGE_TAG=33.0.6.3-2
+ARG NEXTCLOUD_BASE_IMAGE_TAG=33.0.6.3-3
 
 FROM docker.sunet.se/drive/nextcloud-base:${NEXTCLOUD_BASE_IMAGE_TAG} AS build
 
@@ -20,7 +20,7 @@ ARG files_retention_version=4.0.1
 ARG forms_version=5.3.2
 ARG groupfolders_version=21.0.8
 ARG integration_jupyterhub_version=0.2.5
-ARG integration_oidc_version=0.1.11
+ARG integration_oidc_version=0.1.10
 ARG integration_openai_version=4.5.1
 ARG login_notes_version=1.8.1
 ARG polls_version=9.1.4
@@ -115,3 +115,6 @@ FROM docker.sunet.se/drive/nextcloud-base:${NEXTCLOUD_BASE_IMAGE_TAG}
 COPY --from=build --chown=www-data:root /var/www/html/custom_apps /var/www/html/custom_apps
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
+## Defining ENTRYPOINT resets the inherited CMD, so restate it: entrypoint.sh
+## execs this (php-fpm + apache + log tailing under supervisord).
+CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]
