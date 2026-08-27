@@ -19,6 +19,7 @@ ARG files_automatedtagging_version=4.0.0
 ARG files_retention_version=4.0.1
 ARG forms_version=5.3.2
 ARG groupfolders_version=21.0.8
+ARG guests_version=4.9.0
 ARG integration_jupyterhub_version=0.2.5
 ARG integration_oidc_version=0.1.11
 ARG integration_openai_version=4.5.1
@@ -75,6 +76,8 @@ RUN wget -q https://github.com/nextcloud-releases/forms/releases/download/v${for
   && cd /tmp && tar xf /tmp/forms.tar.gz && mv /tmp/forms /var/www/html/custom_apps/
 RUN wget -q https://github.com/nextcloud-releases/groupfolders/releases/download/v${groupfolders_version}/groupfolders-v${groupfolders_version}.tar.gz -O /tmp/groupfolders.tar.gz \
   && cd /tmp && tar xf /tmp/groupfolders.tar.gz && mv /tmp/groupfolders /var/www/html/custom_apps/
+RUN wget -q https://github.com/nextcloud-releases/guests/releases/download/v${guests_version}/guests-v${guests_version}.tar.gz -O /tmp/guests.tar.gz \
+  && cd /tmp && tar xf /tmp/guests.tar.gz && mv /tmp/guests /var/www/html/custom_apps/
 RUN wget -q https://github.com/SUNET/nextcloud-jupyter/releases/download/v${integration_jupyterhub_version}/integration_jupyterhub-${integration_jupyterhub_version}.tar.gz -O /tmp/integration_jupyterhub.tar.gz \
   && cd /tmp && tar xf /tmp/integration_jupyterhub.tar.gz && mv /tmp/integration_jupyterhub /var/www/html/custom_apps/
 RUN wget -q https://github.com/SUNET/nextcloud-integration_oidc/releases/download/v${integration_oidc_version}/integration_oidc-${integration_oidc_version}.tar.gz -O /tmp/integration_oidc.tar.gz \
