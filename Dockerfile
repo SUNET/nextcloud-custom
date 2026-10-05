@@ -30,7 +30,7 @@ ARG sharelisting_version=1.3.0
 ARG stepupauth_version=0.2.3
 ARG tasks_version=0.18.1
 ARG terms_of_service_version=4.7.3
-ARG theming_customcss_version=1.22.0
+ARG theming_customcss_version=1.20.0
 ARG twofactor_admin_version=4.12.0
 ARG twofactor_webauthn_version=2.7.1
 
