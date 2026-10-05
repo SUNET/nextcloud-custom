@@ -3,36 +3,36 @@ ARG NEXTCLOUD_BASE_IMAGE_TAG=33.0.9.3-1
 FROM docker.sunet.se/drive/nextcloud-base:${NEXTCLOUD_BASE_IMAGE_TAG} AS build
 
 # Apps from appstore
-ARG announcementcenter_version=7.4.1
-ARG assistant_version=3.4.3
-ARG auto_groups_version=1.7.1
-ARG calendar_version=6.5.0
+ARG announcementcenter_version=7.5.1
+ARG assistant_version=3.5.0
+ARG auto_groups_version=1.8.1
+ARG calendar_version=6.6.2
 ARG checksum_version=2.1.2
-ARG collectives_version=4.4.2
-ARG contacts_version=8.9.0
-ARG deck_version=1.17.4
+ARG collectives_version=4.7.1
+ARG contacts_version=8.9.1
+ARG deck_version=1.17.5
 ARG dicomviewer_version=2.3.3
 ARG edusign_version=0.0.11
-ARG eurooffice_version=11.0.0
+ARG eurooffice_version=11.0.5
 ARG files_accesscontrol_version=4.0.1
 ARG files_automatedtagging_version=4.0.0
 ARG files_retention_version=4.0.1
-ARG forms_version=5.3.2
-ARG groupfolders_version=21.0.8
-ARG guests_version=4.9.0
+ARG forms_version=5.4.0
+ARG groupfolders_version=21.0.15
+ARG guests_version=4.10.0
 ARG integration_jupyterhub_version=0.2.5
 ARG integration_oidc_version=0.1.11
-ARG integration_openai_version=4.5.1
-ARG login_notes_version=1.8.1
-ARG polls_version=9.1.4
-ARG richdocuments_version=10.2.0
+ARG integration_openai_version=4.5.2
+ARG login_notes_version=1.9.0
+ARG polls_version=9.3.0
+ARG richdocuments_version=10.3.2
 ARG sharelisting_version=1.3.0
 ARG stepupauth_version=0.2.3
-ARG tasks_version=0.18.0
-ARG terms_of_service_version=4.7.0
-ARG theming_customcss_version=1.20.0
-ARG twofactor_admin_version=4.11.1
-ARG twofactor_webauthn_version=2.7.0
+ARG tasks_version=0.18.1
+ARG terms_of_service_version=4.7.3
+ARG theming_customcss_version=1.22.0
+ARG twofactor_admin_version=4.12.0
+ARG twofactor_webauthn_version=2.7.1
 
 # Not published
 ARG imap_manager_version=0.0.7
