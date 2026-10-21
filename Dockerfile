@@ -1,4 +1,4 @@
-ARG NEXTCLOUD_BASE_IMAGE_TAG=33.0.9.3-1
+ARG NEXTCLOUD_BASE_IMAGE_TAG=33.0.9.3-2
 
 FROM docker.sunet.se/drive/nextcloud-base:${NEXTCLOUD_BASE_IMAGE_TAG} AS build
 
@@ -109,7 +109,7 @@ RUN wget -q https://github.com/SUNET/nextcloud-imap_manager/releases/download/v$
   && cd /tmp && tar xf /tmp/imap_manager.tar.gz && mv /tmp/imap_manager /var/www/html/custom_apps/
 RUN wget -q https://platform.sunet.se/SUNET/nextcloud-prisma-approve/releases/download/v${prismaapprove_version}/prismaapprove-${prismaapprove_version}.tar.gz -O /tmp/prismaapprove.tar.gz \
   && cd /tmp && tar xf /tmp/prismaapprove.tar.gz && mv /tmp/prismaapprove /var/www/html/custom_apps
-RUN wget -q https://sunet.drive.sunet.se/s/EeExMo3YY9xGxr8/download/rdsng-${rds_ng_version}.tar.gz -O /tmp/rdsng.tar.gz \
+RUN wget -q https://artifacts.drive.test.sunet.se/api/v1/repositories/temprepo/download/rdsng-${rds_ng_version}.tar.gz -O /tmp/rdsng.tar.gz \
   && cd /tmp && tar xf /tmp/rdsng.tar.gz && mv /tmp/rdsng /var/www/html/custom_apps
 RUN wget -q https://platform.sunet.se/SUNET/nextcloud-xmlconvert/releases/download/v${xmlconvert_version}/xmlconvert-${xmlconvert_version}.tar.gz -O /tmp/xmlconvert.tar.gz \
   && cd /tmp && tar xf /tmp/xmlconvert.tar.gz && mv /tmp/xmlconvert /var/www/html/custom_apps
