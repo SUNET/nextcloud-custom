@@ -1,4 +1,4 @@
-ARG NEXTCLOUD_BASE_IMAGE_TAG=33.0.9.3-3
+ARG NEXTCLOUD_BASE_IMAGE_TAG=33.0.9.3-4
 
 FROM docker.sunet.se/drive/nextcloud-base:${NEXTCLOUD_BASE_IMAGE_TAG} AS build
 
