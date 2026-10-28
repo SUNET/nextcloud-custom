@@ -98,7 +98,7 @@ RUN wget -q https://github.com/nextcloud/tasks/releases/download/v${tasks_versio
   && cd /tmp && tar xf /tmp/tasks.tar.gz && mv /tmp/tasks /var/www/html/custom_apps
 RUN wget -q https://github.com/nextcloud-releases/terms_of_service/releases/download/v${terms_of_service_version}/terms_of_service-v${terms_of_service_version}.tar.gz -O /tmp/terms_of_service.tar.gz \
   && cd /tmp && tar xf /tmp/terms_of_service.tar.gz && mv /tmp/terms_of_service /var/www/html/custom_apps
-RUN wget -q https://github.com/juliushaertl/theming_customcss/releases/download/v${theming_customcss_version}/theming_customcss.tar.gz  -O /tmp/theming_customcss.tar.gz \
+RUN wget -q https://github.com/nextcloud-releases/theming_customcss/releases/download/v${theming_customcss_version}/theming_customcss-v${theming_customcss_version}.tar.gz  -O /tmp/theming_customcss.tar.gz \
   && cd /tmp && tar xf /tmp/theming_customcss.tar.gz && mv /tmp/theming_customcss /var/www/html/custom_apps/theming_customcss
 RUN wget -q https://github.com/nextcloud-releases/twofactor_admin/releases/download/v${twofactor_admin_version}/twofactor_admin-v${twofactor_admin_version}.tar.gz -O /tmp/twofactor_admin.tar.gz \
   && cd /tmp && tar xf /tmp/twofactor_admin.tar.gz && mv /tmp/twofactor_admin /var/www/html/custom_apps/
